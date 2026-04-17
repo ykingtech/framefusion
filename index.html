@@ -27,79 +27,86 @@
         .photo-card:hover img { filter: grayscale(0%); transform: scale(1.05); }
         .video-container { position: relative; padding-bottom: 56.25%; height: 0; width: 100%; border-radius: 8px; overflow:hidden;}
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-        /* Star Rating Hover Effects */
         .star-rating i { cursor: pointer; transition: color 0.2s; }
-        .star-rating i:hover, .star-rating i.active { color: #eab308; /* yellow-500 */ }
+        .star-rating i:hover, .star-rating i.active { color: #eab308; }
     </style>
 </head>
-<body class="min-h-screen pb-12 flex flex-col items-center">
+<body class="min-h-screen pb-12 flex flex-col items-center selection:bg-white selection:text-black">
 
     <main id="main-content" class="w-full max-w-2xl bg-card min-h-screen shadow-2xl relative overflow-hidden border-x border-white/5 opacity-0 transition-opacity duration-1000">
         
         <div class="relative w-full h-64 sm:h-80">
-            <div class="absolute inset-0 bg-gradient-to-t from-card via-transparent to-black/40 z-10"></div>
+            <!-- අඳුරු ගතිය අයින් කරලා ලස්සනට Fade වෙන විදිහට Overlay එක වෙනස් කරලා ඇත -->
+            <div class="absolute inset-0 bg-gradient-to-t from-card via-card/10 to-transparent z-10 pointer-events-none"></div>
             <img id="ui-cover" src="https://via.placeholder.com/800x400" class="w-full h-full object-cover">
         </div>
 
-        <div class="relative z-20 px-6 sm:px-10 -mt-24">
+        <div class="relative z-20 px-6 sm:px-10 -mt-20 sm:-mt-24">
             <div class="flex justify-between items-end">
-                <div class="w-32 h-32 sm:w-40 sm:h-40 rounded-full border-4 border-card bg-white p-2 shadow-2xl relative overflow-hidden">
-                    <img id="ui-logo" src="https://via.placeholder.com/150" class="w-full h-full object-contain">
+                
+                <!-- ලෝගෝ එකේ සුදු පාට අයින් කරලා රවුමට කපපු තැන (Fixed Logo Container) -->
+                <div class="w-32 h-32 sm:w-40 sm:h-40 rounded-full border-4 border-card bg-card shadow-2xl relative overflow-hidden group">
+                    <img id="ui-logo" src="https://via.placeholder.com/150" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                 </div>
+                
                 <div class="flex gap-3 mb-2" id="social-links-container"></div>
             </div>
 
             <div class="mt-6">
-                <h1 id="ui-name" class="text-3xl sm:text-4xl font-bold tracking-tight text-white uppercase">Loading...</h1>
-                <p class="text-muted tracking-[0.2em] text-sm uppercase mt-1 mb-4">Professional Studio</p>
+                <h1 id="ui-name" class="text-3xl sm:text-4xl font-bold tracking-tight text-white uppercase drop-shadow-lg">Loading...</h1>
+                <p class="text-muted tracking-[0.2em] text-xs sm:text-sm uppercase mt-1 mb-4 font-semibold">Professional Studio</p>
                 <p id="ui-bio" class="text-light/80 text-sm sm:text-base leading-relaxed font-light max-w-lg"></p>
             </div>
 
             <div class="flex flex-col sm:flex-row gap-4 mt-8">
-                <button onclick="saveContact()" class="flex-1 bg-white hover:bg-gray-200 text-black py-3.5 rounded-xl font-semibold transition-all flex items-center justify-center gap-2">
+                <button onclick="saveContact()" class="flex-1 bg-white hover:bg-gray-200 text-black py-4 rounded-xl font-bold tracking-wide transition-all shadow-[0_0_30px_rgba(255,255,255,0.15)] flex items-center justify-center gap-2 transform hover:-translate-y-1">
                     <i class="fas fa-bookmark"></i> Save Contact
                 </button>
-                <a id="ui-whatsapp-btn" href="#" target="_blank" class="flex-1 border border-white/20 hover:bg-white/5 text-white py-3.5 rounded-xl font-semibold transition-all flex items-center justify-center gap-2">
+                <a id="ui-whatsapp-btn" href="#" target="_blank" class="flex-1 border border-white/20 hover:bg-white hover:text-black text-white py-4 rounded-xl font-bold tracking-wide transition-all flex items-center justify-center gap-2 transform hover:-translate-y-1">
                     <i class="fab fa-whatsapp text-lg"></i> WhatsApp
                 </a>
             </div>
         </div>
 
-        <hr class="border-white/10 my-10 mx-6 sm:mx-10">
+        <hr class="border-white/10 my-12 mx-6 sm:mx-10">
 
+        <!-- Portfolio Sections -->
         <div class="px-6 sm:px-10 pb-10" id="portfolio-container">
-            <div class="text-center text-gray-500 py-10"><i class="fas fa-spinner fa-spin text-2xl"></i></div>
+            <div class="text-center text-gray-500 py-10"><i class="fas fa-spinner fa-spin text-3xl"></i></div>
         </div>
     </main>
 
-    <div id="reviewModal" class="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-50 hidden opacity-0 transition-opacity duration-300">
-        <div class="bg-card border border-white/10 p-6 rounded-2xl w-full max-w-md mx-4 transform scale-95 transition-transform duration-300">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold text-white">Rate your experience</h3>
-                <button onclick="closeReviewModal()" class="text-gray-400 hover:text-white"><i class="fas fa-times"></i></button>
+    <!-- Review Modal -->
+    <div id="reviewModal" class="fixed inset-0 bg-black/90 backdrop-blur-md flex items-center justify-center z-50 hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-card border border-white/10 p-8 rounded-3xl w-full max-w-md mx-4 transform scale-95 transition-transform duration-300 shadow-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-white tracking-wide">Rate Experience</h3>
+                <button onclick="closeReviewModal()" class="text-gray-400 hover:text-white bg-white/5 w-8 h-8 rounded-full flex items-center justify-center transition"><i class="fas fa-times"></i></button>
             </div>
             
-            <div class="flex justify-center gap-2 text-3xl text-gray-600 mb-6 star-rating" id="star-container">
-                <i class="fas fa-star" onclick="setRating(1)"></i>
-                <i class="fas fa-star" onclick="setRating(2)"></i>
-                <i class="fas fa-star" onclick="setRating(3)"></i>
-                <i class="fas fa-star" onclick="setRating(4)"></i>
-                <i class="fas fa-star" onclick="setRating(5)"></i>
+            <div class="flex justify-center gap-3 text-4xl text-gray-600 mb-8 star-rating" id="star-container">
+                <i class="fas fa-star drop-shadow-md" onclick="setRating(1)"></i>
+                <i class="fas fa-star drop-shadow-md" onclick="setRating(2)"></i>
+                <i class="fas fa-star drop-shadow-md" onclick="setRating(3)"></i>
+                <i class="fas fa-star drop-shadow-md" onclick="setRating(4)"></i>
+                <i class="fas fa-star drop-shadow-md" onclick="setRating(5)"></i>
             </div>
 
-            <input type="text" id="rev-name" placeholder="Your Name" class="w-full bg-dark border border-white/10 rounded-lg p-3 text-white mb-4 outline-none focus:border-white/50">
-            <textarea id="rev-comment" placeholder="Tell us about the shoot..." rows="3" class="w-full bg-dark border border-white/10 rounded-lg p-3 text-white mb-6 outline-none focus:border-white/50"></textarea>
+            <input type="text" id="rev-name" placeholder="Your Name" class="w-full bg-dark/50 border border-white/10 rounded-xl p-4 text-white mb-4 outline-none focus:border-white/40 transition">
+            <textarea id="rev-comment" placeholder="Tell us about the shoot..." rows="3" class="w-full bg-dark/50 border border-white/10 rounded-xl p-4 text-white mb-6 outline-none focus:border-white/40 transition resize-none"></textarea>
             
-            <button onclick="submitReview()" id="btn-submit-rev" class="w-full bg-white text-black font-bold py-3 rounded-lg hover:bg-gray-200 transition">Post Review</button>
+            <button onclick="submitReview()" id="btn-submit-rev" class="w-full bg-white text-black font-bold py-4 rounded-xl hover:bg-gray-200 transition shadow-lg shadow-white/10 transform hover:-translate-y-0.5">Post Review</button>
         </div>
     </div>
 
-    <div id="lightboxModal" class="fixed inset-0 bg-black/95 flex flex-col items-center justify-center z-50 hidden opacity-0 transition-opacity">
+    <!-- Lightbox Modal -->
+    <div id="lightboxModal" class="fixed inset-0 bg-black/95 backdrop-blur-sm flex flex-col items-center justify-center z-50 hidden opacity-0 transition-opacity">
         <button onclick="closeModal('lightboxModal')" class="absolute top-6 right-6 w-12 h-12 bg-white/10 hover:bg-white hover:text-black rounded-full text-white flex items-center justify-center transition-all z-10"><i class="fas fa-times text-xl"></i></button>
-        <img id="lightboxImage" src="" class="max-w-full max-h-[80vh] object-contain transition-transform transform scale-95 duration-500 hidden">
-        <div id="lightboxVideoWrapper" class="w-full max-w-4xl px-4 hidden"><div class="video-container"><iframe id="lightboxVideo" src="" frameborder="0" allowfullscreen></iframe></div></div>
+        <img id="lightboxImage" src="" class="max-w-full max-h-[85vh] object-contain transition-transform transform scale-95 duration-500 hidden shadow-2xl rounded-lg">
+        <div id="lightboxVideoWrapper" class="w-full max-w-4xl px-4 hidden"><div class="video-container shadow-2xl"><iframe id="lightboxVideo" src="" frameborder="0" allowfullscreen></iframe></div></div>
     </div>
 
+    <!-- Firebase -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
         import { getFirestore, doc, getDoc, collection, query, orderBy, onSnapshot, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -121,7 +128,6 @@
         let allProjects = [];
         let allReviews = [];
 
-        // Load Profile
         async function loadProfile() {
             const snap = await getDoc(doc(db, "settings", "profile"));
             if (snap.exists()) {
@@ -136,14 +142,13 @@
                 else waBtn.style.display = 'none';
 
                 let socialsHTML = '';
-                if(profileData.insta) socialsHTML += `<a href="${profileData.insta}" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white hover:text-black flex items-center justify-center transition-all"><i class="fab fa-instagram"></i></a>`;
-                if(profileData.fb) socialsHTML += `<a href="${profileData.fb}" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white hover:text-black flex items-center justify-center transition-all"><i class="fab fa-facebook-f"></i></a>`;
+                if(profileData.insta) socialsHTML += `<a href="${profileData.insta}" class="w-12 h-12 rounded-full bg-white/5 border border-white/10 hover:bg-white hover:text-black flex items-center justify-center transition-all shadow-lg backdrop-blur-sm"><i class="fab fa-instagram text-lg"></i></a>`;
+                if(profileData.fb) socialsHTML += `<a href="${profileData.fb}" class="w-12 h-12 rounded-full bg-white/5 border border-white/10 hover:bg-white hover:text-black flex items-center justify-center transition-all shadow-lg backdrop-blur-sm"><i class="fab fa-facebook-f text-lg"></i></a>`;
                 document.getElementById('social-links-container').innerHTML = socialsHTML;
             }
             document.getElementById('main-content').classList.remove('opacity-0');
         }
 
-        // Load Projects & Reviews
         function loadData() {
             onSnapshot(query(collection(db, "projects"), orderBy("createdAt", "desc")), (snap) => {
                 allProjects = snap.docs.map(d => ({id: d.id, ...d.data()}));
@@ -162,36 +167,35 @@
             allProjects.forEach((proj) => {
                 if(!proj.items || proj.items.length === 0) return;
                 
-                // Render Media
                 let itemsHtml = proj.items.map(item => {
-                    if(item.type === 'photo') return `<div class="photo-card cursor-pointer rounded-2xl overflow-hidden relative aspect-square sm:aspect-[4/5] bg-dark" onclick="openLightbox('${item.url}', 'photo')"><img src="${item.url}" class="w-full h-full object-cover"></div>`;
+                    if(item.type === 'photo') return `<div class="photo-card cursor-pointer rounded-2xl overflow-hidden relative aspect-square sm:aspect-[4/5] bg-dark shadow-xl border border-white/5" onclick="openLightbox('${item.url}', 'photo')"><img src="${item.url}" class="w-full h-full object-cover"></div>`;
                     let vidId = item.url.match(/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/);
                     vidId = (vidId && vidId[2].length === 11) ? vidId[2] : null;
-                    return `<div class="photo-card cursor-pointer rounded-2xl overflow-hidden relative aspect-square sm:aspect-[4/5] bg-dark" onclick="openLightbox('${vidId}', 'youtube')"><img src="https://img.youtube.com/vi/${vidId}/hqdefault.jpg" class="w-full h-full object-cover opacity-80"><div class="absolute inset-0 flex items-center justify-center"><i class="fab fa-youtube text-4xl text-red-600"></i></div></div>`;
+                    return `<div class="photo-card cursor-pointer rounded-2xl overflow-hidden relative aspect-square sm:aspect-[4/5] bg-dark shadow-xl border border-white/5" onclick="openLightbox('${vidId}', 'youtube')"><img src="https://img.youtube.com/vi/${vidId}/hqdefault.jpg" class="w-full h-full object-cover opacity-70"><div class="absolute inset-0 flex items-center justify-center"><i class="fab fa-youtube text-5xl text-red-600 drop-shadow-2xl"></i></div></div>`;
                 }).join('');
 
-                // Render Reviews
                 const projReviews = allReviews.filter(r => r.projectId === proj.id);
                 let reviewsHtml = projReviews.map(r => `
-                    <div class="bg-white/5 p-4 rounded-xl border border-white/5">
-                        <div class="flex justify-between items-start mb-2">
-                            <h4 class="font-bold text-white text-sm">${r.name}</h4>
-                            <div class="text-yellow-500 text-xs">${'★'.repeat(r.rating)}${'<span class="text-gray-600">★</span>'.repeat(5-r.rating)}</div>
+                    <div class="bg-white/5 p-5 rounded-2xl border border-white/5 backdrop-blur-sm relative">
+                        <i class="fas fa-quote-left absolute top-4 right-4 text-white/5 text-3xl"></i>
+                        <div class="flex justify-between items-start mb-3">
+                            <h4 class="font-bold text-white text-base">${r.name}</h4>
+                            <div class="text-yellow-500 text-sm tracking-widest">${'★'.repeat(r.rating)}${'<span class="text-gray-600">★</span>'.repeat(5-r.rating)}</div>
                         </div>
-                        <p class="text-gray-400 text-sm italic">"${r.comment}"</p>
+                        <p class="text-gray-400 text-sm italic leading-relaxed">"${r.comment}"</p>
                     </div>
                 `).join('');
 
                 container.innerHTML += `
-                    <div class="mb-14">
-                        <div class="flex justify-between items-end mb-4 border-l-4 border-white/50 pl-3">
-                            <h2 class="text-2xl font-bold text-white tracking-wide">${proj.name}</h2>
-                            <button onclick="openReviewModal('${proj.id}')" class="text-xs bg-white/10 hover:bg-white hover:text-black px-3 py-1.5 rounded-full transition"><i class="fas fa-star text-yellow-500 mr-1"></i> Rate us</button>
+                    <div class="mb-16">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-bold text-white tracking-wide flex items-center gap-3"><span class="w-1 h-6 bg-white rounded-full"></span>${proj.name}</h2>
+                            <button onclick="openReviewModal('${proj.id}')" class="text-xs font-bold bg-white/10 hover:bg-white hover:text-black px-4 py-2 rounded-full transition uppercase tracking-wider flex items-center gap-2"><i class="fas fa-star text-yellow-500"></i> Rate</button>
                         </div>
                         
-                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 mb-6">${itemsHtml}</div>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-5 mb-8">${itemsHtml}</div>
                         
-                        ${projReviews.length > 0 ? `<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">${reviewsHtml}</div>` : ''}
+                        ${projReviews.length > 0 ? `<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">${reviewsHtml}</div>` : ''}
                     </div>
                 `;
             });
@@ -200,16 +204,14 @@
         loadProfile();
         loadData();
 
-        // --- REVIEW MODAL LOGIC ---
         let currentReviewProjectId = null;
         let currentRating = 5;
 
         window.openReviewModal = (pid) => {
             currentReviewProjectId = pid;
-            setRating(5); // Default 5 stars
+            setRating(5);
             document.getElementById('rev-name').value = '';
             document.getElementById('rev-comment').value = '';
-            
             const modal = document.getElementById('reviewModal');
             modal.classList.remove('hidden');
             void modal.offsetWidth;
@@ -237,19 +239,13 @@
             const name = document.getElementById('rev-name').value.trim();
             const comment = document.getElementById('rev-comment').value.trim();
             if(!name || !comment) return alert("Please enter your name and comment.");
-            
             const btn = document.getElementById('btn-submit-rev');
-            btn.innerText = "Posting..."; btn.disabled = true;
-
-            await addDoc(collection(db, "reviews"), {
-                projectId: currentReviewProjectId, name, rating: currentRating, comment, createdAt: Date.now()
-            });
-
+            btn.innerText = "Publishing..."; btn.disabled = true;
+            await addDoc(collection(db, "reviews"), { projectId: currentReviewProjectId, name, rating: currentRating, comment, createdAt: Date.now() });
             btn.innerText = "Post Review"; btn.disabled = false;
             closeReviewModal();
         };
 
-        // --- GLOBAL UI FUNCTIONS ---
         window.openLightbox = (src, type) => {
             const m = document.getElementById('lightboxModal'), img = document.getElementById('lightboxImage'), vid = document.getElementById('lightboxVideoWrapper'), vidIframe = document.getElementById('lightboxVideo');
             if(type === 'photo') { vid.classList.add('hidden'); img.src = src; img.classList.remove('hidden'); } 
@@ -263,7 +259,7 @@
             setTimeout(() => { m.classList.add('hidden'); document.getElementById('lightboxVideo').src = ''; }, 300);
         };
 
-        window.saveContact = () => { /* Contact Save (කලින් Code එකමයි) */
+        window.saveContact = () => {
             const vcard = `BEGIN:VCARD\nVERSION:3.0\nFN:${profileData.name || 'Studio'}\nTEL;TYPE=WORK,VOICE:${profileData.phone || ''}\nEND:VCARD`;
             const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([vcard], { type: "text/vcard" }));
             a.download = "Contact.vcf"; document.body.appendChild(a); a.click(); document.body.removeChild(a);
