@@ -23,10 +23,13 @@
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #0a0a0a; }
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
-       .photo-card img { transition: all 0.5s ease; }
-.photo-card:hover img { transform: scale(1.05); }
+        
+        /* Video එකටත් Hover effect එක ඇතුළත් කර ඇත */
+        .photo-card img, .photo-card video, .photo-card .icon-container { transition: all 0.5s ease; }
+        .photo-card:hover img, .photo-card:hover video, .photo-card:hover .icon-container { transform: scale(1.05); }
+        
         .video-container { position: relative; padding-bottom: 56.25%; height: 0; width: 100%; border-radius: 8px; overflow:hidden;}
-        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        .video-container iframe, .video-container video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
         .star-rating i { cursor: pointer; transition: color 0.2s; }
         .star-rating i:hover, .star-rating i.active { color: #eab308; }
     </style>
@@ -36,17 +39,15 @@
     <main id="main-content" class="w-full max-w-2xl bg-card min-h-screen shadow-2xl relative overflow-hidden border-x border-white/5 opacity-0 transition-opacity duration-1000">
         
         <div class="relative w-full h-64 sm:h-80">
-            <!-- අඳුරු ගතිය අයින් කරලා ලස්සනට Fade වෙන විදිහට Overlay එක වෙනස් කරලා ඇත -->
             <div class="absolute inset-0 bg-gradient-to-t from-card via-card/10 to-transparent z-10 pointer-events-none"></div>
-            <img id="ui-cover" src="https://via.placeholder.com/800x400" class="w-full h-full object-cover">
+            <img id="ui-cover" src="https://images.unsplash.com/photo-1452587925148-ce544e77e70d?q=80&w=2000&auto=format&fit=crop" class="w-full h-full object-cover">
         </div>
 
         <div class="relative z-20 px-6 sm:px-10 -mt-20 sm:-mt-24">
             <div class="flex justify-between items-end">
                 
-                <!-- ලෝගෝ එකේ සුදු පාට අයින් කරලා රවුමට කපපු තැන (Fixed Logo Container) -->
-                <div class="w-32 h-32 sm:w-40 sm:h-40 rounded-full border-4 border-card bg-card shadow-2xl relative overflow-hidden group">
-                    <img id="ui-logo" src="https://via.placeholder.com/150" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                <div class="w-32 h-32 sm:w-40 sm:h-40 rounded-full border-4 border-card bg-card shadow-2xl relative overflow-hidden group flex items-center justify-center">
+                    <img id="ui-logo" src="https://images.unsplash.com/photo-1554048612-b6a09faf798b?q=80&w=400&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                 </div>
                 
                 <div class="flex gap-3 mb-2" id="social-links-container"></div>
@@ -102,8 +103,23 @@
     <!-- Lightbox Modal -->
     <div id="lightboxModal" class="fixed inset-0 bg-black/95 backdrop-blur-sm flex flex-col items-center justify-center z-50 hidden opacity-0 transition-opacity">
         <button onclick="closeModal('lightboxModal')" class="absolute top-6 right-6 w-12 h-12 bg-white/10 hover:bg-white hover:text-black rounded-full text-white flex items-center justify-center transition-all z-10"><i class="fas fa-times text-xl"></i></button>
+        
+        <!-- Image Viewer -->
         <img id="lightboxImage" src="" class="max-w-full max-h-[85vh] object-contain transition-transform transform scale-95 duration-500 hidden shadow-2xl rounded-lg">
-        <div id="lightboxVideoWrapper" class="w-full max-w-4xl px-4 hidden"><div class="video-container shadow-2xl"><iframe id="lightboxVideo" src="" frameborder="0" allowfullscreen></iframe></div></div>
+        
+        <!-- Iframe Video Viewer (YouTube / Vimeo) -->
+        <div id="lightboxIframeWrapper" class="w-full max-w-4xl px-4 hidden">
+            <div class="video-container shadow-2xl bg-black">
+                <iframe id="lightboxIframe" src="" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </div>
+
+        <!-- Native MP4 Video Viewer -->
+        <div id="lightboxNativeWrapper" class="w-full max-w-4xl px-4 hidden">
+            <div class="video-container shadow-2xl bg-black">
+                <video id="lightboxNativeVideo" controls controlsList="nodownload" class="w-full h-full object-contain"></video>
+            </div>
+        </div>
     </div>
 
     <!-- Firebase -->
@@ -168,10 +184,39 @@
                 if(!proj.items || proj.items.length === 0) return;
                 
                 let itemsHtml = proj.items.map(item => {
-                    if(item.type === 'photo') return `<div class="photo-card cursor-pointer rounded-2xl overflow-hidden relative aspect-square sm:aspect-[4/5] bg-dark shadow-xl border border-white/5" onclick="openLightbox('${item.url}', 'photo')"><img src="${item.url}" class="w-full h-full object-cover"></div>`;
-                    let vidId = item.url.match(/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/);
-                    vidId = (vidId && vidId[2].length === 11) ? vidId[2] : null;
-                    return `<div class="photo-card cursor-pointer rounded-2xl overflow-hidden relative aspect-square sm:aspect-[4/5] bg-dark shadow-xl border border-white/5" onclick="openLightbox('${vidId}', 'youtube')"><img src="https://img.youtube.com/vi/${vidId}/hqdefault.jpg" class="w-full h-full object-cover opacity-70"><div class="absolute inset-0 flex items-center justify-center"><i class="fab fa-youtube text-5xl text-red-600 drop-shadow-2xl"></i></div></div>`;
+                    if(item.type === 'photo') {
+                        return `<div class="photo-card cursor-pointer rounded-2xl overflow-hidden relative aspect-square sm:aspect-[4/5] bg-dark shadow-xl border border-white/5" onclick="openLightbox('${item.url}', 'photo')"><img src="${item.url}" class="w-full h-full object-cover"></div>`;
+                    }
+                    
+                    // Video URL Parsing (YouTube, Vimeo, or MP4)
+                    let url = item.url;
+                    let thumbHtml = '';
+                    let clickArgs = '';
+
+                    if (url.includes('vimeo.com')) {
+                        let vId = url.match(/vimeo\.com\/(\d+)/)?.[1];
+                        if(!vId) return '';
+                        clickArgs = `'${vId}', 'vimeo'`;
+                        thumbHtml = `<div class="w-full h-full bg-zinc-900 flex items-center justify-center icon-container"><i class="fab fa-vimeo-v text-5xl text-blue-400 drop-shadow-lg"></i></div>`;
+                    } 
+                    else if (url.toLowerCase().endsWith('.mp4')) {
+                        clickArgs = `'${url}', 'mp4'`;
+                        // මෙන්න මෙතන තමයි වෙනස: <video> ටැග් එකක් පාවිච්චි කරලා, #t=1.5 කියන එකෙන් වීඩියෝ එකේ තත්පර 1.5 දී තියෙන රූපය පෙන්වන්න හදලා තියෙනවා.
+                        thumbHtml = `
+                            <video src="${url}#t=1.5" class="w-full h-full object-cover opacity-80" preload="metadata" muted playsinline></video>
+                            <div class="absolute inset-0 flex items-center justify-center icon-container"><i class="fas fa-play-circle text-5xl text-white/80 drop-shadow-lg"></i></div>
+                        `;
+                    } 
+                    else {
+                        // Default to YouTube
+                        let vidMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([\w-]{11})/);
+                        let vidId = vidMatch ? vidMatch[1] : null;
+                        if (!vidId) return '';
+                        clickArgs = `'${vidId}', 'youtube'`;
+                        thumbHtml = `<img src="https://img.youtube.com/vi/${vidId}/hqdefault.jpg" class="w-full h-full object-cover opacity-70"><div class="absolute inset-0 flex items-center justify-center icon-container"><i class="fab fa-youtube text-5xl text-red-600 drop-shadow-2xl"></i></div>`;
+                    }
+
+                    return `<div class="photo-card cursor-pointer rounded-2xl overflow-hidden relative aspect-square sm:aspect-[4/5] bg-dark shadow-xl border border-white/5" onclick="openLightbox(${clickArgs})">${thumbHtml}</div>`;
                 }).join('');
 
                 const projReviews = allReviews.filter(r => r.projectId === proj.id);
@@ -247,16 +292,57 @@
         };
 
         window.openLightbox = (src, type) => {
-            const m = document.getElementById('lightboxModal'), img = document.getElementById('lightboxImage'), vid = document.getElementById('lightboxVideoWrapper'), vidIframe = document.getElementById('lightboxVideo');
-            if(type === 'photo') { vid.classList.add('hidden'); img.src = src; img.classList.remove('hidden'); } 
-            else { img.classList.add('hidden'); vidIframe.src = `https://www.youtube.com/embed/${src}?autoplay=1`; vid.classList.remove('hidden'); }
-            m.classList.remove('hidden'); void m.offsetWidth; m.classList.remove('opacity-0'); if(type==='photo') img.classList.remove('scale-95');
+            const modal = document.getElementById('lightboxModal');
+            const img = document.getElementById('lightboxImage');
+            const iframeWrapper = document.getElementById('lightboxIframeWrapper');
+            const iframe = document.getElementById('lightboxIframe');
+            const nativeWrapper = document.getElementById('lightboxNativeWrapper');
+            const nativeVideo = document.getElementById('lightboxNativeVideo');
+
+            // Hide all first
+            img.classList.add('hidden');
+            iframeWrapper.classList.add('hidden');
+            nativeWrapper.classList.add('hidden');
+            iframe.src = '';
+            nativeVideo.src = '';
+
+            if(type === 'photo') { 
+                img.src = src; 
+                img.classList.remove('hidden'); 
+                img.classList.remove('scale-95');
+            } 
+            else if (type === 'youtube') { 
+                iframe.src = `https://www.youtube.com/embed/${src}?autoplay=1&rel=0`; 
+                iframeWrapper.classList.remove('hidden'); 
+            }
+            else if (type === 'vimeo') {
+                iframe.src = `https://player.vimeo.com/video/${src}?autoplay=1&color=ffffff&title=0&byline=0&portrait=0`; 
+                iframeWrapper.classList.remove('hidden'); 
+            }
+            else if (type === 'mp4') {
+                nativeVideo.src = src;
+                nativeWrapper.classList.remove('hidden');
+                nativeVideo.play();
+            }
+
+            modal.classList.remove('hidden'); 
+            void modal.offsetWidth; 
+            modal.classList.remove('opacity-0'); 
         };
 
         window.closeModal = (id) => {
-            const m = document.getElementById(id); m.classList.add('opacity-0');
+            const m = document.getElementById(id); 
+            m.classList.add('opacity-0');
             document.getElementById('lightboxImage').classList.add('scale-95');
-            setTimeout(() => { m.classList.add('hidden'); document.getElementById('lightboxVideo').src = ''; }, 300);
+            
+            setTimeout(() => { 
+                m.classList.add('hidden'); 
+                document.getElementById('lightboxIframe').src = ''; 
+                
+                const nativeVideo = document.getElementById('lightboxNativeVideo');
+                nativeVideo.pause();
+                nativeVideo.src = '';
+            }, 300);
         };
 
         window.saveContact = () => {
