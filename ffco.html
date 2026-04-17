@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FrameFusion - Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 min-h-screen text-gray-800 font-sans">
+
+    <div id="login-screen" class="min-h-screen flex items-center justify-center bg-gray-900">
+        <div class="bg-white p-8 rounded-xl shadow-2xl w-96 max-w-full">
+            <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Admin Login</h2>
+            <input type="email" id="email" placeholder="Email Address" class="w-full mb-4 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+            <input type="password" id="password" placeholder="Password" class="w-full mb-6 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+            <button onclick="login()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition">Login</button>
+            <p id="login-error" class="text-red-500 text-sm mt-3 text-center hidden"></p>
+        </div>
+    </div>
+
+    <div id="dashboard" class="hidden min-h-screen flex flex-col">
+        <nav class="bg-gray-900 text-white p-4 shadow-md flex justify-between items-center">
+            <h1 class="text-xl font-bold"><i class="fas fa-camera-retro mr-2"></i> FrameFusion Admin</h1>
+            <button onclick="logout()" class="bg-red-500 hover:bg-red-600 px-4 py-1.5 rounded-md text-sm font-bold transition">Logout</button>
+        </nav>
+
+        <div class="flex-1 max-w-6xl w-full mx-auto p-4 sm:p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <div class="md:col-span-1 bg-white p-5 rounded-xl shadow-sm border h-fit">
+                <h2 class="text-lg font-bold mb-4 border-b pb-2">Profile Settings</h2>
+                <div class="space-y-4">
+                    <div><label class="block text-xs font-semibold text-gray-600 mb-1">Studio Name</label><input type="text" id="prof-name" class="w-full border p-2 rounded text-sm"></div>
+                    <div><label class="block text-xs font-semibold text-gray-600 mb-1">Bio</label><textarea id="prof-bio" rows="3" class="w-full border p-2 rounded text-sm"></textarea></div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div><label class="block text-xs font-semibold text-gray-600 mb-1">WhatsApp</label><input type="text" id="prof-phone" class="w-full border p-2 rounded text-sm"></div>
+                        <div><label class="block text-xs font-semibold text-gray-600 mb-1">Email</label><input type="email" id="prof-email" class="w-full border p-2 rounded text-sm"></div>
+                    </div>
+                    <div><label class="block text-xs font-semibold text-gray-600 mb-1">Facebook</label><input type="text" id="prof-fb" class="w-full border p-2 rounded text-sm"></div>
+                    <div><label class="block text-xs font-semibold text-gray-600 mb-1">Instagram</label><input type="text" id="prof-insta" class="w-full border p-2 rounded text-sm"></div>
+                    <div class="pt-2 border-t"><label class="block text-xs font-semibold text-gray-600 mb-1">Logo</label><input type="file" id="file-logo" class="w-full text-sm"></div>
+                    <div><label class="block text-xs font-semibold text-gray-600 mb-1">Cover Photo</label><input type="file" id="file-cover" class="w-full text-sm"></div>
+                    <button onclick="saveProfile()" id="btn-save-prof" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 rounded shadow transition"><i class="fas fa-save"></i> Save Settings</button>
+                </div>
+            </div>
+
+            <div class="md:col-span-2 bg-white p-5 rounded-xl shadow-sm border">
+                <div class="flex justify-between items-center mb-4 border-b pb-2">
+                    <h2 class="text-lg font-bold">Projects & Reviews</h2>
+                    <button onclick="createNewProject()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-md text-sm font-bold transition"><i class="fas fa-plus"></i> New Project</button>
+                </div>
+                <div id="projects-container" class="space-y-6"></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, collection, query, orderBy, onSnapshot, addDoc, updateDoc, deleteDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+        import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+        // මෙතනට ඔයාගේ Firebase Config එක දාන්න (කලින් දුන්න එකමයි)
+        const firebaseConfig = {
+            apiKey: "AIzaSyCj6eoLnrYeNb4hRg5kdmRT9fHVhTJvEA0",
+            authDomain: "business-profile-4f6cb.firebaseapp.com",
+            projectId: "business-profile-4f6cb",
+            storageBucket: "business-profile-4f6cb.firebasestorage.app",
+            messagingSenderId: "229994315976",
+            appId: "1:229994315976:web:68535e4a84f3d2597825fd",
+            measurementId: "G-S8HZY02RXQ"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+
+        let currentProfileData = {};
+        let allProjects = [];
+        let allReviews = [];
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('dashboard').classList.remove('hidden');
+                loadProfile();
+                loadData();
+            } else {
+                document.getElementById('login-screen').classList.remove('hidden');
+                document.getElementById('dashboard').classList.add('hidden');
+            }
+        });
+
+        window.login = () => signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('password').value).catch(err => alert(err.message));
+        window.logout = () => signOut(auth);
+
+        async function loadProfile() {
+            const snap = await getDoc(doc(db, "settings", "profile"));
+            if (snap.exists()) {
+                currentProfileData = snap.data();
+                document.getElementById('prof-name').value = currentProfileData.name || '';
+                document.getElementById('prof-bio').value = currentProfileData.bio || '';
+                document.getElementById('prof-phone').value = currentProfileData.phone || '';
+                document.getElementById('prof-email').value = currentProfileData.email || '';
+                document.getElementById('prof-fb').value = currentProfileData.fb || '';
+                document.getElementById('prof-insta').value = currentProfileData.insta || '';
+            }
+        }
+
+        window.saveProfile = async () => { /* (කලින් තිබ්බ Code එකමයි) */ 
+            const btn = document.getElementById('btn-save-prof');
+            btn.innerHTML = `Saving...`;
+            let data = {
+                name: document.getElementById('prof-name').value, bio: document.getElementById('prof-bio').value,
+                phone: document.getElementById('prof-phone').value, email: document.getElementById('prof-email').value,
+                fb: document.getElementById('prof-fb').value, insta: document.getElementById('prof-insta').value,
+                logoUrl: currentProfileData.logoUrl || null, coverUrl: currentProfileData.coverUrl || null
+            };
+            const logoFile = document.getElementById('file-logo').files[0];
+            const coverFile = document.getElementById('file-cover').files[0];
+            if (logoFile) data.logoUrl = await uploadFile(logoFile, `profile/logo_${Date.now()}`);
+            if (coverFile) data.coverUrl = await uploadFile(coverFile, `profile/cover_${Date.now()}`);
+            await setDoc(doc(db, "settings", "profile"), data);
+            alert("Saved!"); btn.innerHTML = `Save Settings`;
+        };
+
+        function loadData() {
+            onSnapshot(query(collection(db, "projects"), orderBy("createdAt", "desc")), (snap) => {
+                allProjects = snap.docs.map(d => ({id: d.id, ...d.data()}));
+                renderDashboard();
+            });
+            onSnapshot(query(collection(db, "reviews"), orderBy("createdAt", "desc")), (snap) => {
+                allReviews = snap.docs.map(d => ({id: d.id, ...d.data()}));
+                renderDashboard();
+            });
+        }
+
+        function renderDashboard() {
+            const container = document.getElementById('projects-container');
+            container.innerHTML = '';
+            allProjects.forEach(proj => {
+                const projReviews = allReviews.filter(r => r.projectId === proj.id);
+                let itemsHtml = (proj.items || []).map((item, i) => `<div class="relative w-16 h-16 bg-gray-200 rounded overflow-hidden"><img src="${item.type==='photo'?item.url:'https://via.placeholder.com/150?text=Vid'}" class="w-full h-full object-cover"><button onclick="deleteItem('${proj.id}', ${i})" class="absolute top-0 right-0 bg-red-600 text-white w-5 h-5 flex items-center justify-center"><i class="fas fa-times text-xs"></i></button></div>`).join('');
+                
+                let reviewsHtml = projReviews.map(r => `
+                    <div class="bg-white border rounded p-2 text-sm flex justify-between items-center mt-2 shadow-sm">
+                        <div>
+                            <p class="font-bold text-gray-800">${r.name} <span class="text-yellow-500">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</span></p>
+                            <p class="text-gray-600">${r.comment}</p>
+                        </div>
+                        <button onclick="deleteReview('${r.id}')" class="text-red-500 hover:text-red-700 p-2"><i class="fas fa-trash"></i></button>
+                    </div>
+                `).join('');
+
+                container.innerHTML += `
+                    <div class="border rounded-lg p-4 bg-gray-50">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="font-bold text-lg">${proj.name}</h3>
+                            <button onclick="deleteProject('${proj.id}')" class="text-red-500 text-sm"><i class="fas fa-trash"></i> Delete Project</button>
+                        </div>
+                        <div class="flex gap-2 mb-3 flex-wrap">${itemsHtml}</div>
+                        <div class="flex gap-2 mb-4">
+                            <label class="bg-gray-200 px-3 py-1 cursor-pointer text-sm rounded"><input type="file" multiple onchange="uploadProjectPhotos(this, '${proj.id}')" class="hidden"> + Photos</label>
+                            <button onclick="addYoutube('${proj.id}')" class="bg-red-100 text-red-700 px-3 py-1 rounded text-sm">+ YouTube</button>
+                            <span id="up-${proj.id}" class="hidden text-blue-500 text-sm">Uploading...</span>
+                        </div>
+                        <div class="bg-gray-100 p-3 rounded-lg border">
+                            <h4 class="font-semibold text-gray-700 text-sm"><i class="fas fa-star text-yellow-500"></i> Client Reviews (${projReviews.length})</h4>
+                            ${reviewsHtml || '<p class="text-xs text-gray-500 mt-1">No reviews yet.</p>'}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        window.createNewProject = async () => {
+            const name = prompt("Project Name:");
+            if (name) await addDoc(collection(db, "projects"), { name, createdAt: Date.now(), items: [] });
+        };
+        window.deleteProject = async (pid) => { if(confirm("Delete project?")) await deleteDoc(doc(db, "projects", pid)); };
+        window.deleteReview = async (rid) => { if(confirm("Delete this review?")) await deleteDoc(doc(db, "reviews", rid)); };
+        
+        window.addYoutube = async (pid) => {
+            const url = prompt("YouTube URL:");
+            if(url) await updateDoc(doc(db, "projects", pid), { items: arrayUnion({ type: 'youtube', url, addedAt: Date.now() }) });
+        };
+        window.deleteItem = async (pid, idx) => {
+            let snap = await getDoc(doc(db, "projects", pid));
+            let items = snap.data().items; items.splice(idx, 1);
+            await updateDoc(doc(db, "projects", pid), { items });
+        };
+        window.uploadProjectPhotos = async (input, pid) => {
+            if(!input.files.length) return;
+            document.getElementById(`up-${pid}`).classList.remove('hidden');
+            for(let file of input.files) {
+                let url = await uploadFile(file, `projects/${pid}/${Date.now()}`);
+                await updateDoc(doc(db, "projects", pid), { items: arrayUnion({ type: 'photo', url, addedAt: Date.now() }) });
+            }
+            document.getElementById(`up-${pid}`).classList.add('hidden');
+        };
+        function uploadFile(file, path) {
+            return new Promise((res) => {
+                const task = uploadBytesResumable(ref(storage, path), file);
+                task.on('state_changed', null, null, () => getDownloadURL(task.snapshot.ref).then(res));
+            });
+        }
+    </script>
+</body>
+</html>
