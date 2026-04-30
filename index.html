@@ -54,37 +54,17 @@
             pointer-events: none;
         }
 
-        #preloader-logo {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            transform: scale(0.8);
-            opacity: 0;
-            animation: fadeInScale 1s ease-out forwards;
+        /* Camera Shutter Animation */
+        .aperture-icon {
+            font-size: 5rem;
+            color: #f5f5f5;
+            animation: apertureSpin 2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
         }
 
-        @keyframes fadeInScale {
-            0% { transform: scale(0.8); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        
-        #preloader-spinner {
-            position: absolute;
-            width: 120px;
-            height: 120px;
-            border: 2px solid transparent;
-            border-top-color: #f5f5f5;
-            border-bottom-color: #f5f5f5;
-            border-radius: 50%;
-            animation: spin 1.5s linear infinite;
-            opacity: 0.5;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        @keyframes apertureSpin {
+            0% { transform: rotate(0deg) scale(0.8); opacity: 0.5; }
+            50% { transform: rotate(180deg) scale(1.1); opacity: 1; filter: drop-shadow(0 0 20px rgba(255,255,255,0.6)); }
+            100% { transform: rotate(360deg) scale(0.8); opacity: 0.5; }
         }
 
         /* Hide content initially to prevent scroll jumping during preloader */
@@ -93,10 +73,9 @@
 </head>
 <body class="loading min-h-screen pb-12 flex flex-col items-center selection:bg-white selection:text-black">
 
-    <!-- Cinematic Preloader -->
+    <!-- Cinematic Preloader with Camera Shutter -->
     <div id="preloader">
-        <div id="preloader-spinner"></div>
-        <img id="preloader-logo" src="https://images.unsplash.com/photo-1554048612-b6a09faf798b?q=80&w=400&auto=format&fit=crop" alt="FrameFusion">
+        <i class="fas fa-aperture aperture-icon"></i>
     </div>
 
     <main id="main-content" class="w-full max-w-5xl bg-card min-h-screen shadow-2xl relative overflow-hidden border-x border-white/5 opacity-0 transition-opacity duration-1000">
@@ -214,8 +193,6 @@
                     
                     if(profileData.logoUrl) {
                         document.getElementById('ui-logo').src = profileData.logoUrl;
-                        // Preloader එකේ ලෝගෝ එකත් අප්ඩේට් කරන්න
-                        document.getElementById('preloader-logo').src = profileData.logoUrl;
                     }
                     
                     let waBtn = document.getElementById('ui-whatsapp-btn');
@@ -244,7 +221,7 @@
             
             setTimeout(() => {
                 document.getElementById('main-content').classList.remove('opacity-0');
-            }, 300); // Wait a bit before showing the main content
+            }, 300); 
         }
 
         function loadData() {
@@ -363,7 +340,7 @@
             });
         }
 
-        loadProfile(); // This now handles the preloader removal
+        loadProfile(); 
         loadData();
 
         let currentReviewProjectId = null;
