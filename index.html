@@ -200,9 +200,9 @@
                         if(!driveId) return '';
                         clickArgs = `'${driveId}', 'gdrive'`;
                         
-                        // Google Drive Thumbnail ගැටලුව මගහැරීමට, ලස්සන අඳුරු පසුබිමක් සහ Drive ලෝගෝව පෙන්වන්න සකස් කර ඇත.
+                        // Google Drive Video එකෙන් තත්පර 1.5 Thumbnail එකක් ලෙස ගැනීම
                         thumbHtml = `
-                            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover opacity-50">
+                            <video src="https://drive.google.com/uc?export=download&id=${driveId}#t=1.5" class="w-full h-full object-cover opacity-80" preload="metadata" muted playsinline></video>
                             <div class="absolute inset-0 flex items-center justify-center icon-container"><i class="fab fa-google-drive text-5xl text-blue-500 drop-shadow-2xl"></i></div>
                         `;
                     }
