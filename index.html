@@ -56,14 +56,12 @@
 
         /* Camera Shutter Animation */
         .aperture-icon {
-            font-size: 5rem;
-            color: #f5f5f5;
             animation: apertureSpin 2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
         }
 
         @keyframes apertureSpin {
             0% { transform: rotate(0deg) scale(0.8); opacity: 0.5; }
-            50% { transform: rotate(180deg) scale(1.1); opacity: 1; filter: drop-shadow(0 0 20px rgba(255,255,255,0.6)); }
+            50% { transform: rotate(180deg) scale(1.1); opacity: 1; filter: drop-shadow(0 0 15px rgba(255,255,255,0.5)); }
             100% { transform: rotate(360deg) scale(0.8); opacity: 0.5; }
         }
 
@@ -73,9 +71,17 @@
 </head>
 <body class="loading min-h-screen pb-12 flex flex-col items-center selection:bg-white selection:text-black">
 
-    <!-- Cinematic Preloader with Camera Shutter -->
+    <!-- Cinematic Preloader with Inline SVG Camera Shutter -->
     <div id="preloader">
-        <i class="fas fa-aperture aperture-icon"></i>
+        <svg class="aperture-icon" xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#f5f5f5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="14.31" y1="8" x2="20.05" y2="17.94"></line>
+            <line x1="9.69" y1="8" x2="21.17" y2="8"></line>
+            <line x1="7.38" y1="12" x2="13.12" y2="2.06"></line>
+            <line x1="9.69" y1="16" x2="3.95" y2="6.06"></line>
+            <line x1="14.31" y1="16" x2="2.83" y2="16"></line>
+            <line x1="16.62" y1="12" x2="10.88" y2="21.94"></line>
+        </svg>
     </div>
 
     <main id="main-content" class="w-full max-w-5xl bg-card min-h-screen shadow-2xl relative overflow-hidden border-x border-white/5 opacity-0 transition-opacity duration-1000">
