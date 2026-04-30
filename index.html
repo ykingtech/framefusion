@@ -28,8 +28,6 @@
         .photo-card img, .photo-card video, .photo-card .icon-container { transition: all 0.5s ease; }
         .photo-card:hover img, .photo-card:hover video, .photo-card:hover .icon-container { transform: scale(1.05); }
         
-        .video-container { position: relative; height: 0; width: 100%; border-radius: 8px; overflow:hidden;}
-        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
         .star-rating i { cursor: pointer; transition: color 0.2s; }
         .star-rating i:hover, .star-rating i.active { color: #eab308; }
     </style>
@@ -102,20 +100,18 @@
 
     <!-- Lightbox Modal -->
     <div id="lightboxModal" class="fixed inset-0 bg-black/95 backdrop-blur-sm flex flex-col items-center justify-center z-50 hidden opacity-0 transition-opacity">
-        <button onclick="closeModal('lightboxModal')" class="absolute top-6 right-6 w-12 h-12 bg-white/10 hover:bg-white hover:text-black rounded-full text-white flex items-center justify-center transition-all z-10"><i class="fas fa-times text-xl"></i></button>
+        <button onclick="closeModal('lightboxModal')" class="absolute top-4 right-4 sm:top-6 sm:right-6 w-12 h-12 bg-white/10 hover:bg-white hover:text-black rounded-full text-white flex items-center justify-center transition-all z-20"><i class="fas fa-times text-xl"></i></button>
         
         <!-- Image Viewer -->
-        <img id="lightboxImage" src="" class="max-w-full max-h-[85vh] object-contain transition-transform transform scale-95 duration-500 hidden shadow-2xl rounded-lg">
+        <img id="lightboxImage" src="" class="max-w-full max-h-[85vh] object-contain transition-transform transform scale-95 duration-500 hidden shadow-2xl rounded-lg px-2">
         
-        <!-- Iframe Video Viewer (YouTube / Vimeo / Google Drive / TikTok) -->
-        <div id="lightboxIframeWrapper" class="w-full px-4 hidden mx-auto flex justify-center">
-            <div id="lightboxIframeContainer" class="video-container shadow-2xl bg-black w-full">
-                <iframe id="lightboxIframe" src="" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
-            </div>
+        <!-- Iframe Video Viewer -->
+        <div id="lightboxIframeWrapper" class="hidden mx-auto flex items-center justify-center z-10 w-full relative">
+            <iframe id="lightboxIframe" src="" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen class="rounded-xl shadow-2xl bg-black"></iframe>
         </div>
 
         <!-- Native MP4 Video Viewer -->
-        <video id="lightboxNativeVideo" controls controlsList="nodownload" class="max-w-full max-h-[85vh] object-contain transition-transform transform scale-95 duration-500 hidden shadow-2xl rounded-lg bg-black"></video>
+        <video id="lightboxNativeVideo" controls controlsList="nodownload" class="w-full max-w-4xl max-h-[85vh] object-contain transition-transform transform scale-95 duration-500 hidden shadow-2xl rounded-lg bg-black px-2"></video>
     </div>
 
     <!-- Firebase -->
@@ -187,7 +183,7 @@
                         return `<div class="photo-card cursor-pointer rounded-2xl overflow-hidden relative aspect-square sm:aspect-[4/5] bg-dark shadow-xl border border-white/5" onclick="openLightbox('${item.url}', 'photo')"><img src="${item.url}" class="w-full h-full object-cover"></div>`;
                     }
                     
-                    // Video URL Parsing (YouTube, Vimeo, Google Drive, TikTok or MP4)
+                    // Video URL Parsing 
                     let url = item.url;
                     let thumbHtml = '';
                     let clickArgs = '';
@@ -203,8 +199,10 @@
                         let driveId = driveMatch ? driveMatch[1] : null;
                         if(!driveId) return '';
                         clickArgs = `'${driveId}', 'gdrive'`;
+                        
+                        // Google Drive Thumbnail ගැටලුව මගහැරීමට, ලස්සන අඳුරු පසුබිමක් සහ Drive ලෝගෝව පෙන්වන්න සකස් කර ඇත.
                         thumbHtml = `
-                            <video src="https://drive.google.com/uc?export=download&id=${driveId}#t=1.5" class="w-full h-full object-cover opacity-70" preload="metadata" muted playsinline></video>
+                            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover opacity-50">
                             <div class="absolute inset-0 flex items-center justify-center icon-container"><i class="fab fa-google-drive text-5xl text-blue-500 drop-shadow-2xl"></i></div>
                         `;
                     }
@@ -218,7 +216,6 @@
                             <img id="tt-thumb-${ttId}" src="https://images.unsplash.com/photo-1611605698335-8b1569810432?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover opacity-40 transition-opacity duration-500">
                             <div class="absolute inset-0 flex items-center justify-center icon-container"><i class="fab fa-tiktok text-5xl text-white drop-shadow-2xl"></i></div>
                         `;
-                        
                         tiktokFetches.push(ttId);
                     }
                     else if (url.toLowerCase().endsWith('.mp4')) {
@@ -330,7 +327,6 @@
             const modal = document.getElementById('lightboxModal');
             const img = document.getElementById('lightboxImage');
             const iframeWrapper = document.getElementById('lightboxIframeWrapper');
-            const iframeContainer = document.getElementById('lightboxIframeContainer');
             const iframe = document.getElementById('lightboxIframe');
             const nativeVideo = document.getElementById('lightboxNativeVideo');
 
@@ -349,9 +345,11 @@
             else if (type === 'tiktok' || type === 'youtube-short') {
                 iframe.src = type === 'tiktok' ? `https://www.tiktok.com/embed/v2/${src}` : `https://www.youtube.com/embed/${src}?autoplay=1&rel=0`;
                 
-                // Vertical Video Layout (9:16)
-                iframeWrapper.className = "w-full max-w-[400px] px-4 hidden mx-auto flex justify-center"; 
-                iframeContainer.style.paddingBottom = "177.77%"; 
+                // ෆෝන් එකේ බලද්දි ලොකුවට පේන්න Vertical size එක සකස් කිරීම
+                iframe.style.width = "100%";
+                iframe.style.maxWidth = "420px";
+                iframe.style.height = "100%";
+                iframeWrapper.className = "w-full px-2 sm:px-4 hidden flex flex-col items-center justify-center h-[85vh] mt-4 z-10 relative";
                 iframeWrapper.classList.remove('hidden');
             }
             else if (type === 'youtube' || type === 'vimeo' || type === 'gdrive') { 
@@ -359,9 +357,12 @@
                 else if (type === 'vimeo') iframe.src = `https://player.vimeo.com/video/${src}?autoplay=1&color=ffffff&title=0&byline=0&portrait=0`; 
                 else iframe.src = `https://drive.google.com/file/d/${src}/preview`; 
                 
-                // Horizontal Video Layout (16:9)
-                iframeWrapper.className = "w-full max-w-4xl px-4 hidden mx-auto flex justify-center"; 
-                iframeContainer.style.paddingBottom = "56.25%"; 
+                // ෆෝන් එකේ බලද්දි තිරයේ උපරිම ඉඩ ගන්න Horizontal size එක සකස් කිරීම
+                iframe.style.width = "100%";
+                iframe.style.maxWidth = "1000px";
+                iframe.style.aspectRatio = "16/9";
+                iframe.style.height = "auto";
+                iframeWrapper.className = "w-full px-2 sm:px-4 hidden flex flex-col items-center justify-center h-auto max-h-[85vh] z-10 relative";
                 iframeWrapper.classList.remove('hidden'); 
             }
             else if (type === 'mp4') {
