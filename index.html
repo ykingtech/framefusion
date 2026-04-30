@@ -107,7 +107,7 @@
         <!-- Image Viewer -->
         <img id="lightboxImage" src="" class="max-w-full max-h-[85vh] object-contain transition-transform transform scale-95 duration-500 hidden shadow-2xl rounded-lg">
         
-        <!-- Iframe Video Viewer (YouTube / Vimeo) -->
+        <!-- Iframe Video Viewer (YouTube / Vimeo / Google Drive) -->
         <div id="lightboxIframeWrapper" class="w-full max-w-4xl px-4 hidden">
             <div class="video-container shadow-2xl bg-black">
                 <iframe id="lightboxIframe" src="" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
@@ -188,7 +188,7 @@
                         return `<div class="photo-card cursor-pointer rounded-2xl overflow-hidden relative aspect-square sm:aspect-[4/5] bg-dark shadow-xl border border-white/5" onclick="openLightbox('${item.url}', 'photo')"><img src="${item.url}" class="w-full h-full object-cover"></div>`;
                     }
                     
-                    // Video URL Parsing (YouTube, Vimeo, or MP4)
+                    // Video URL Parsing (YouTube, Vimeo, Google Drive, or MP4)
                     let url = item.url;
                     let thumbHtml = '';
                     let clickArgs = '';
@@ -199,6 +199,15 @@
                         clickArgs = `'${vId}', 'vimeo'`;
                         thumbHtml = `<div class="w-full h-full bg-zinc-900 flex items-center justify-center icon-container"><i class="fab fa-vimeo-v text-5xl text-blue-400 drop-shadow-lg"></i></div>`;
                     } 
+                    else if (url.includes('drive.google.com')) {
+                        // Google Drive ලින්ක් එකෙන් ID එක වෙන් කර ගැනීම
+                        let driveMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
+                        let driveId = driveMatch ? driveMatch[1] : null;
+                        if(!driveId) return '';
+                        clickArgs = `'${driveId}', 'gdrive'`;
+                        // Google Drive Thumbnail එක සහ Icon එක
+                        thumbHtml = `<img src="https://drive.google.com/thumbnail?id=${driveId}&sz=w800" class="w-full h-full object-cover opacity-70"><div class="absolute inset-0 flex items-center justify-center icon-container"><i class="fab fa-google-drive text-5xl text-blue-500 drop-shadow-2xl"></i></div>`;
+                    }
                     else if (url.toLowerCase().endsWith('.mp4')) {
                         clickArgs = `'${url}', 'mp4'`;
                         // මෙන්න මෙතන තමයි වෙනස: <video> ටැග් එකක් පාවිච්චි කරලා, #t=1.5 කියන එකෙන් වීඩියෝ එකේ තත්පර 1.5 දී තියෙන රූපය පෙන්වන්න හදලා තියෙනවා.
@@ -317,6 +326,10 @@
             }
             else if (type === 'vimeo') {
                 iframe.src = `https://player.vimeo.com/video/${src}?autoplay=1&color=ffffff&title=0&byline=0&portrait=0`; 
+                iframeWrapper.classList.remove('hidden'); 
+            }
+            else if (type === 'gdrive') {
+                iframe.src = `https://drive.google.com/file/d/${src}/preview`; 
                 iframeWrapper.classList.remove('hidden'); 
             }
             else if (type === 'mp4') {
