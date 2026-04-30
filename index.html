@@ -36,48 +36,52 @@
 
     <main id="main-content" class="w-full max-w-2xl bg-card min-h-screen shadow-2xl relative overflow-hidden border-x border-white/5 opacity-0 transition-opacity duration-1000">
         
-        <div class="relative w-full h-64 sm:h-80">
+        <!-- Cover Photo (Mobile එකට h-48, Desktop එකට h-80) -->
+        <div class="relative w-full h-48 sm:h-80">
             <div class="absolute inset-0 bg-gradient-to-t from-card via-card/10 to-transparent z-10 pointer-events-none"></div>
             <img id="ui-cover" src="https://images.unsplash.com/photo-1452587925148-ce544e77e70d?q=80&w=2000&auto=format&fit=crop" class="w-full h-full object-cover">
         </div>
 
-        <div class="relative z-20 px-6 sm:px-10 -mt-20 sm:-mt-24">
+        <!-- Margin සහ Padding Responsive කර ඇත -->
+        <div class="relative z-20 px-5 sm:px-10 -mt-14 sm:-mt-24">
             <div class="flex justify-between items-end">
                 
-                <div class="w-32 h-32 sm:w-40 sm:h-40 rounded-full border-4 border-card bg-card shadow-2xl relative overflow-hidden group flex items-center justify-center">
+                <!-- Logo Size (Mobile එකට w-28 h-28, Desktop එකට w-40 h-40) -->
+                <div class="w-28 h-28 sm:w-40 sm:h-40 rounded-full border-4 border-card bg-card shadow-2xl relative overflow-hidden group flex items-center justify-center">
                     <img id="ui-logo" src="https://images.unsplash.com/photo-1554048612-b6a09faf798b?q=80&w=400&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                 </div>
                 
-                <div class="flex gap-3 mb-2" id="social-links-container"></div>
+                <div class="flex gap-2 sm:gap-3 mb-2 sm:mb-4" id="social-links-container"></div>
             </div>
 
-            <div class="mt-6">
-                <!-- Verified Badge එක මෙතැනට එකතු කර ඇත -->
-                <div class="flex items-center gap-2">
-                    <h1 id="ui-name" class="text-3xl sm:text-4xl font-bold tracking-tight text-white uppercase drop-shadow-lg">Loading...</h1>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24" id="verified-badge" class="text-blue-500 flex-shrink-0">
+            <div class="mt-4 sm:mt-6">
+                <!-- Name & Verified Badge -->
+                <div class="flex items-center gap-2 flex-wrap">
+                    <h1 id="ui-name" class="text-[26px] sm:text-4xl font-bold tracking-tight text-white uppercase drop-shadow-lg leading-tight">Loading...</h1>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" id="verified-badge" class="text-blue-500 flex-shrink-0 w-6 h-6 sm:w-7 sm:h-7 mt-1">
                         <path fill="currentColor" fill-rule="evenodd" d="M10.9388 1.13669C11.4793 0.449229 12.5208 0.44923 13.0613 1.13669L14.808 3.35829L17.527 2.58767C18.3683 2.34921 19.2109 2.96138 19.2441 3.83525L19.3514 6.65926L22.004 7.63397C22.8249 7.93559 23.1467 8.92611 22.6599 9.6526L21.0868 12.0003L22.6599 14.3481C23.1467 15.0746 22.8249 16.0651 22.004 16.3667L19.3514 17.3414L19.2441 20.1654C19.2109 21.0393 18.3683 21.6515 17.527 21.413L14.808 20.6424L13.0613 22.864C12.5208 23.5515 11.4793 23.5515 10.9388 22.864L9.19206 20.6424L6.47311 21.413C5.63175 21.6515 4.78916 21.0393 4.75596 20.1654L4.64866 17.3414L1.99603 16.3667C1.17519 16.0651 0.853351 15.0746 1.34014 14.3481L2.91324 12.0003L1.34013 9.6526C0.85335 8.92611 1.17519 7.93559 1.99603 7.63397L4.64866 6.65926L4.75596 3.83525C4.78916 2.96138 5.63175 2.34921 6.47311 2.58767L9.19206 3.35829L10.9388 1.13669ZM9.21967 11.8486C9.51256 11.5557 9.98744 11.5557 10.2803 11.8486L11.75 13.3182L15.2197 9.84858C15.5126 9.55568 15.9874 9.55568 16.2803 9.84858C16.5732 10.1415 16.5732 10.6163 16.2803 10.9092L12.2803 14.9092C11.9874 15.2021 11.5126 15.2021 11.2197 14.9092L9.21967 12.9092C8.92678 12.6163 8.92678 12.1415 9.21967 11.8486Z" clip-rule="evenodd"></path>
                     </svg>
                 </div>
                 
                 <p class="text-muted tracking-[0.2em] text-xs sm:text-sm uppercase mt-1 mb-4 font-semibold">Professional Studio</p>
-                <p id="ui-bio" class="text-light/80 text-sm sm:text-base leading-relaxed font-light max-w-lg"></p>
+                <!-- whitespace-pre-wrap එකතු කර ඇත (Line breaks සඳහා) -->
+                <p id="ui-bio" class="text-light/90 text-sm sm:text-base leading-relaxed font-light max-w-lg whitespace-pre-wrap"></p>
             </div>
 
-            <div class="flex flex-col sm:flex-row gap-4 mt-8">
-                <button onclick="saveContact()" class="flex-1 bg-white hover:bg-gray-200 text-black py-4 rounded-xl font-bold tracking-wide transition-all shadow-[0_0_30px_rgba(255,255,255,0.15)] flex items-center justify-center gap-2 transform hover:-translate-y-1">
+            <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-8">
+                <button onclick="saveContact()" class="flex-1 bg-white hover:bg-gray-200 text-black py-3 sm:py-4 rounded-xl font-bold tracking-wide transition-all shadow-[0_0_30px_rgba(255,255,255,0.15)] flex items-center justify-center gap-2 transform hover:-translate-y-1">
                     <i class="fas fa-bookmark"></i> Save Contact
                 </button>
-                <a id="ui-whatsapp-btn" href="#" target="_blank" class="flex-1 border border-white/20 hover:bg-white hover:text-black text-white py-4 rounded-xl font-bold tracking-wide transition-all flex items-center justify-center gap-2 transform hover:-translate-y-1">
+                <a id="ui-whatsapp-btn" href="#" target="_blank" class="flex-1 border border-white/20 hover:bg-white hover:text-black text-white py-3 sm:py-4 rounded-xl font-bold tracking-wide transition-all flex items-center justify-center gap-2 transform hover:-translate-y-1">
                     <i class="fab fa-whatsapp text-lg"></i> WhatsApp
                 </a>
             </div>
         </div>
 
-        <hr class="border-white/10 my-12 mx-6 sm:mx-10">
+        <hr class="border-white/10 my-10 mx-5 sm:mx-10">
 
         <!-- Portfolio Sections -->
-        <div class="px-6 sm:px-10 pb-10" id="portfolio-container">
+        <div class="px-5 sm:px-10 pb-10" id="portfolio-container">
             <div class="text-center text-gray-500 py-10"><i class="fas fa-spinner fa-spin text-3xl"></i></div>
         </div>
     </main>
@@ -157,8 +161,8 @@
                 else waBtn.style.display = 'none';
 
                 let socialsHTML = '';
-                if(profileData.insta) socialsHTML += `<a href="${profileData.insta}" class="w-12 h-12 rounded-full bg-white/5 border border-white/10 hover:bg-white hover:text-black flex items-center justify-center transition-all shadow-lg backdrop-blur-sm"><i class="fab fa-instagram text-lg"></i></a>`;
-                if(profileData.fb) socialsHTML += `<a href="${profileData.fb}" class="w-12 h-12 rounded-full bg-white/5 border border-white/10 hover:bg-white hover:text-black flex items-center justify-center transition-all shadow-lg backdrop-blur-sm"><i class="fab fa-facebook-f text-lg"></i></a>`;
+                if(profileData.insta) socialsHTML += `<a href="${profileData.insta}" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/5 border border-white/10 hover:bg-white hover:text-black flex items-center justify-center transition-all shadow-lg backdrop-blur-sm"><i class="fab fa-instagram text-base sm:text-lg"></i></a>`;
+                if(profileData.fb) socialsHTML += `<a href="${profileData.fb}" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/5 border border-white/10 hover:bg-white hover:text-black flex items-center justify-center transition-all shadow-lg backdrop-blur-sm"><i class="fab fa-facebook-f text-base sm:text-lg"></i></a>`;
                 document.getElementById('social-links-container').innerHTML = socialsHTML;
             }
             document.getElementById('main-content').classList.remove('opacity-0');
@@ -207,7 +211,6 @@
                         if(!driveId) return '';
                         clickArgs = `'${driveId}', 'gdrive'`;
                         
-                        // Google Drive Video එකෙන් තත්පර 1.5 Thumbnail එකක් ලෙස ගැනීම
                         thumbHtml = `
                             <video src="https://drive.google.com/uc?export=download&id=${driveId}#t=1.5" class="w-full h-full object-cover opacity-80" preload="metadata" muted playsinline></video>
                             <div class="absolute inset-0 flex items-center justify-center icon-container"><i class="fab fa-google-drive text-5xl text-blue-500 drop-shadow-2xl"></i></div>
@@ -233,7 +236,6 @@
                         `;
                     } 
                     else {
-                        // Default to YouTube
                         let isShort = url.includes('/shorts/');
                         let vidMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([\w-]{11})/);
                         let vidId = vidMatch ? vidMatch[1] : null;
@@ -260,8 +262,8 @@
                 container.innerHTML += `
                     <div class="mb-16">
                         <div class="flex justify-between items-center mb-6">
-                            <h2 class="text-2xl font-bold text-white tracking-wide flex items-center gap-3"><span class="w-1 h-6 bg-white rounded-full"></span>${proj.name}</h2>
-                            <button onclick="openReviewModal('${proj.id}')" class="text-xs font-bold bg-white/10 hover:bg-white hover:text-black px-4 py-2 rounded-full transition uppercase tracking-wider flex items-center gap-2"><i class="fas fa-star text-yellow-500"></i> Rate</button>
+                            <h2 class="text-xl sm:text-2xl font-bold text-white tracking-wide flex items-center gap-2 sm:gap-3"><span class="w-1 h-5 sm:h-6 bg-white rounded-full"></span>${proj.name}</h2>
+                            <button onclick="openReviewModal('${proj.id}')" class="text-xs font-bold bg-white/10 hover:bg-white hover:text-black px-3 sm:px-4 py-2 rounded-full transition uppercase tracking-wider flex items-center gap-2"><i class="fas fa-star text-yellow-500"></i> Rate</button>
                         </div>
                         
                         <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-5 mb-8">${itemsHtml}</div>
@@ -352,7 +354,6 @@
             else if (type === 'tiktok' || type === 'youtube-short') {
                 iframe.src = type === 'tiktok' ? `https://www.tiktok.com/embed/v2/${src}` : `https://www.youtube.com/embed/${src}?autoplay=1&rel=0`;
                 
-                // ෆෝන් එකේ බලද්දි ලොකුවට පේන්න Vertical size එක සකස් කිරීම
                 iframe.style.width = "100%";
                 iframe.style.maxWidth = "420px";
                 iframe.style.height = "100%";
@@ -364,7 +365,6 @@
                 else if (type === 'vimeo') iframe.src = `https://player.vimeo.com/video/${src}?autoplay=1&color=ffffff&title=0&byline=0&portrait=0`; 
                 else iframe.src = `https://drive.google.com/file/d/${src}/preview`; 
                 
-                // ෆෝන් එකේ බලද්දි තිරයේ උපරිම ඉඩ ගන්න Horizontal size එක සකස් කිරීම
                 iframe.style.width = "100%";
                 iframe.style.maxWidth = "1000px";
                 iframe.style.aspectRatio = "16/9";
