@@ -65,7 +65,6 @@
             100% { transform: rotate(360deg) scale(0.8); opacity: 0.5; }
         }
 
-        /* Hide content initially to prevent scroll jumping during preloader */
         body.loading { overflow: hidden; }
     </style>
 </head>
@@ -88,6 +87,7 @@
         
         <div class="relative w-full h-48 sm:h-72 md:h-96">
             <div class="absolute inset-0 bg-gradient-to-t from-card via-card/10 to-transparent z-10 pointer-events-none"></div>
+            <!-- Cover image is above the fold, no lazy loading needed here -->
             <img id="ui-cover" src="https://images.unsplash.com/photo-1452587925148-ce544e77e70d?q=80&w=2000&auto=format&fit=crop" class="w-full h-full object-cover">
         </div>
 
@@ -95,6 +95,7 @@
             <div class="flex justify-between items-end">
                 
                 <div class="w-28 h-28 sm:w-40 sm:h-40 md:w-48 md:h-48 rounded-full border-4 border-card bg-card shadow-2xl relative overflow-hidden group flex items-center justify-center">
+                    <!-- Logo is above the fold, no lazy loading needed here -->
                     <img id="ui-logo" src="https://images.unsplash.com/photo-1554048612-b6a09faf798b?q=80&w=400&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                 </div>
                 
@@ -213,10 +214,10 @@
             } catch (error) {
                 console.error("Error loading profile:", error);
             } finally {
-                // Minimum time for preloader to show its animation (1.5s)
+                // Minimum time for preloader is now 0.8s (much faster)
                 setTimeout(() => {
                     removePreloader();
-                }, 1500);
+                }, 800);
             }
         }
 
@@ -252,7 +253,8 @@
                 
                 let itemsHtml = proj.items.map(item => {
                     if(item.type === 'photo') {
-                        return `<div class="photo-card cursor-pointer rounded-2xl overflow-hidden relative aspect-square sm:aspect-[4/5] bg-dark shadow-xl border border-white/5" onclick="openLightbox('${item.url}', 'photo')"><img src="${item.url}" class="w-full h-full object-cover"></div>`;
+                        // loading="lazy" එකතු කර ඇත
+                        return `<div class="photo-card cursor-pointer rounded-2xl overflow-hidden relative aspect-square sm:aspect-[4/5] bg-dark shadow-xl border border-white/5" onclick="openLightbox('${item.url}', 'photo')"><img src="${item.url}" loading="lazy" class="w-full h-full object-cover"></div>`;
                     }
                     
                     let url = item.url;
@@ -271,8 +273,9 @@
                         if(!driveId) return '';
                         clickArgs = `'${driveId}', 'gdrive'`;
                         
+                        // Drive Video එකෙත් Lazy Load කිරීම සඳහා data-src යොදා ඇත
                         thumbHtml = `
-                            <video src="https://drive.google.com/uc?export=download&id=${driveId}#t=1.5" class="w-full h-full object-cover opacity-80" preload="metadata" muted playsinline></video>
+                            <video data-src="https://drive.google.com/uc?export=download&id=${driveId}#t=1.5" class="w-full h-full object-cover opacity-80 lazy-video" preload="none" muted playsinline></video>
                             <div class="absolute inset-0 flex items-center justify-center icon-container"><i class="fab fa-google-drive text-5xl text-blue-500 drop-shadow-2xl"></i></div>
                         `;
                     }
@@ -282,16 +285,18 @@
                         if(!ttId) return '';
                         clickArgs = `'${ttId}', 'tiktok'`;
                         
+                        // loading="lazy" එකතු කර ඇත
                         thumbHtml = `
-                            <img id="tt-thumb-${ttId}" src="https://images.unsplash.com/photo-1611605698335-8b1569810432?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover opacity-40 transition-opacity duration-500">
+                            <img id="tt-thumb-${ttId}" src="https://images.unsplash.com/photo-1611605698335-8b1569810432?q=80&w=800&auto=format&fit=crop" loading="lazy" class="w-full h-full object-cover opacity-40 transition-opacity duration-500">
                             <div class="absolute inset-0 flex items-center justify-center icon-container"><i class="fab fa-tiktok text-5xl text-white drop-shadow-2xl"></i></div>
                         `;
                         tiktokFetches.push(ttId);
                     }
                     else if (url.toLowerCase().endsWith('.mp4')) {
                         clickArgs = `'${url}', 'mp4'`;
+                        // Lazy Video Load කිරීම සඳහා data-src සහ lazy-video class එක යොදා ඇත
                         thumbHtml = `
-                            <video src="${url}#t=1.5" class="w-full h-full object-cover opacity-80" preload="metadata" muted playsinline></video>
+                            <video data-src="${url}#t=1.5" class="w-full h-full object-cover opacity-80 lazy-video" preload="none" muted playsinline></video>
                             <div class="absolute inset-0 flex items-center justify-center icon-container"><i class="fas fa-play-circle text-5xl text-white/80 drop-shadow-lg"></i></div>
                         `;
                     } 
@@ -301,7 +306,8 @@
                         let vidId = vidMatch ? vidMatch[1] : null;
                         if (!vidId) return '';
                         clickArgs = `'${vidId}', '${isShort ? 'youtube-short' : 'youtube'}'`;
-                        thumbHtml = `<img src="https://img.youtube.com/vi/${vidId}/hqdefault.jpg" class="w-full h-full object-cover opacity-70"><div class="absolute inset-0 flex items-center justify-center icon-container"><i class="fab fa-youtube text-5xl text-red-600 drop-shadow-2xl"></i></div>`;
+                        // loading="lazy" එකතු කර ඇත
+                        thumbHtml = `<img src="https://img.youtube.com/vi/${vidId}/hqdefault.jpg" loading="lazy" class="w-full h-full object-cover opacity-70"><div class="absolute inset-0 flex items-center justify-center icon-container"><i class="fab fa-youtube text-5xl text-red-600 drop-shadow-2xl"></i></div>`;
                     }
 
                     return `<div class="photo-card cursor-pointer rounded-2xl overflow-hidden relative aspect-square sm:aspect-[4/5] bg-dark shadow-xl border border-white/5" onclick="openLightbox(${clickArgs})">${thumbHtml}</div>`;
@@ -333,6 +339,7 @@
                 `;
             });
             
+            // TikTok Thumbnails Load
             tiktokFetches.forEach(ttId => {
                 fetch(`https://www.tiktok.com/oembed?url=https://www.tiktok.com/@user/video/${ttId}`)
                 .then(res => res.json())
@@ -343,6 +350,22 @@
                         imgEl.classList.remove('opacity-40'); 
                     }
                 }).catch(e => console.error('TikTok thumb error', e));
+            });
+
+            // Intersection Observer (වීඩියෝ Lazy Load කිරීම සඳහා)
+            const videoObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const video = entry.target;
+                        video.src = video.getAttribute('data-src');
+                        video.preload = "metadata"; // තිරයට ආවාම පමණක් Metadata Load කරයි
+                        observer.unobserve(video);
+                    }
+                });
+            }, { rootMargin: "100px" });
+
+            document.querySelectorAll('.lazy-video').forEach(vid => {
+                videoObserver.observe(vid);
             });
         }
 
