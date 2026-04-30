@@ -107,7 +107,7 @@
         <!-- Image Viewer -->
         <img id="lightboxImage" src="" class="max-w-full max-h-[85vh] object-contain transition-transform transform scale-95 duration-500 hidden shadow-2xl rounded-lg">
         
-        <!-- Iframe Video Viewer (YouTube / Vimeo / Google Drive) -->
+        <!-- Iframe Video Viewer (YouTube / Vimeo / Google Drive / TikTok) -->
         <div id="lightboxIframeWrapper" class="w-full max-w-4xl px-4 hidden">
             <div class="video-container shadow-2xl bg-black">
                 <iframe id="lightboxIframe" src="" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
@@ -180,6 +180,9 @@
             const container = document.getElementById('portfolio-container');
             container.innerHTML = '';
             
+            // TikTok Thumbnails Load කිරීම සඳහා Array එකක්
+            let tiktokFetches = [];
+            
             allProjects.forEach((proj) => {
                 if(!proj.items || proj.items.length === 0) return;
                 
@@ -188,7 +191,7 @@
                         return `<div class="photo-card cursor-pointer rounded-2xl overflow-hidden relative aspect-square sm:aspect-[4/5] bg-dark shadow-xl border border-white/5" onclick="openLightbox('${item.url}', 'photo')"><img src="${item.url}" class="w-full h-full object-cover"></div>`;
                     }
                     
-                    // Video URL Parsing (YouTube, Vimeo, Google Drive, or MP4)
+                    // Video URL Parsing (YouTube, Vimeo, Google Drive, TikTok or MP4)
                     let url = item.url;
                     let thumbHtml = '';
                     let clickArgs = '';
@@ -200,17 +203,29 @@
                         thumbHtml = `<div class="w-full h-full bg-zinc-900 flex items-center justify-center icon-container"><i class="fab fa-vimeo-v text-5xl text-blue-400 drop-shadow-lg"></i></div>`;
                     } 
                     else if (url.includes('drive.google.com')) {
-                        // Google Drive ලින්ක් එකෙන් ID එක වෙන් කර ගැනීම
                         let driveMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
                         let driveId = driveMatch ? driveMatch[1] : null;
                         if(!driveId) return '';
                         clickArgs = `'${driveId}', 'gdrive'`;
-                        
-                        // Video ටැග් එක හරහා Thumbnail එකක් ගැනීම
                         thumbHtml = `
                             <video src="https://drive.google.com/uc?export=download&id=${driveId}#t=1.5" class="w-full h-full object-cover opacity-70" preload="metadata" muted playsinline></video>
                             <div class="absolute inset-0 flex items-center justify-center icon-container"><i class="fab fa-google-drive text-5xl text-blue-500 drop-shadow-2xl"></i></div>
                         `;
+                    }
+                    else if (url.includes('tiktok.com') || url.includes('data-video-id=')) {
+                        // TikTok URL එකෙන් හෝ Embed Code එකෙන් Video ID එක වෙන් කර ගැනීම
+                        let ttMatch = url.match(/(?:video\/|v2\/|data-video-id=")(\d+)/);
+                        let ttId = ttMatch ? ttMatch[1] : null;
+                        if(!ttId) return '';
+                        clickArgs = `'${ttId}', 'tiktok'`;
+                        
+                        // මූලිකව පෙන්වීමට රූපයක් සහ Icon එකක්. (පසුව API එකෙන් නියම Thumbnail එක දමනු ලැබේ)
+                        thumbHtml = `
+                            <img id="tt-thumb-${ttId}" src="https://images.unsplash.com/photo-1611605698335-8b1569810432?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover opacity-40 transition-opacity duration-500">
+                            <div class="absolute inset-0 flex items-center justify-center icon-container"><i class="fab fa-tiktok text-5xl text-white drop-shadow-2xl"></i></div>
+                        `;
+                        
+                        tiktokFetches.push(ttId);
                     }
                     else if (url.toLowerCase().endsWith('.mp4')) {
                         clickArgs = `'${url}', 'mp4'`;
@@ -255,6 +270,19 @@
                         ${projReviews.length > 0 ? `<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">${reviewsHtml}</div>` : ''}
                     </div>
                 `;
+            });
+            
+            // TikTok Thumbnails Load කිරීම (කේතය Render වුණාට පස්සේ)
+            tiktokFetches.forEach(ttId => {
+                fetch(`https://www.tiktok.com/oembed?url=https://www.tiktok.com/@user/video/${ttId}`)
+                .then(res => res.json())
+                .then(data => {
+                    let imgEl = document.getElementById(`tt-thumb-${ttId}`);
+                    if (imgEl && data.thumbnail_url) {
+                        imgEl.src = data.thumbnail_url;
+                        imgEl.classList.remove('opacity-40'); // රූපය ආවම opacity එක අයින් කර පැහැදිලිව පෙන්වීම
+                    }
+                }).catch(e => console.error('TikTok thumb error', e));
             });
         }
 
@@ -333,6 +361,10 @@
             }
             else if (type === 'gdrive') {
                 iframe.src = `https://drive.google.com/file/d/${src}/preview`; 
+                iframeWrapper.classList.remove('hidden'); 
+            }
+            else if (type === 'tiktok') {
+                iframe.src = `https://www.tiktok.com/embed/v2/${src}`; 
                 iframeWrapper.classList.remove('hidden'); 
             }
             else if (type === 'mp4') {
