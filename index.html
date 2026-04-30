@@ -28,8 +28,8 @@
         .photo-card img, .photo-card video, .photo-card .icon-container { transition: all 0.5s ease; }
         .photo-card:hover img, .photo-card:hover video, .photo-card:hover .icon-container { transform: scale(1.05); }
         
-        .video-container { position: relative; padding-bottom: 56.25%; height: 0; width: 100%; border-radius: 8px; overflow:hidden;}
-        .video-container iframe, .video-container video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        .video-container { position: relative; height: 0; width: 100%; border-radius: 8px; overflow:hidden;}
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
         .star-rating i { cursor: pointer; transition: color 0.2s; }
         .star-rating i:hover, .star-rating i.active { color: #eab308; }
     </style>
@@ -108,18 +108,14 @@
         <img id="lightboxImage" src="" class="max-w-full max-h-[85vh] object-contain transition-transform transform scale-95 duration-500 hidden shadow-2xl rounded-lg">
         
         <!-- Iframe Video Viewer (YouTube / Vimeo / Google Drive / TikTok) -->
-        <div id="lightboxIframeWrapper" class="w-full max-w-4xl px-4 hidden">
-            <div class="video-container shadow-2xl bg-black">
+        <div id="lightboxIframeWrapper" class="w-full px-4 hidden mx-auto flex justify-center">
+            <div id="lightboxIframeContainer" class="video-container shadow-2xl bg-black w-full">
                 <iframe id="lightboxIframe" src="" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
             </div>
         </div>
 
         <!-- Native MP4 Video Viewer -->
-        <div id="lightboxNativeWrapper" class="w-full max-w-4xl px-4 hidden">
-            <div class="video-container shadow-2xl bg-black">
-                <video id="lightboxNativeVideo" controls controlsList="nodownload" class="w-full h-full object-contain"></video>
-            </div>
-        </div>
+        <video id="lightboxNativeVideo" controls controlsList="nodownload" class="max-w-full max-h-[85vh] object-contain transition-transform transform scale-95 duration-500 hidden shadow-2xl rounded-lg bg-black"></video>
     </div>
 
     <!-- Firebase -->
@@ -213,13 +209,11 @@
                         `;
                     }
                     else if (url.includes('tiktok.com') || url.includes('data-video-id=')) {
-                        // TikTok URL එකෙන් හෝ Embed Code එකෙන් Video ID එක වෙන් කර ගැනීම
                         let ttMatch = url.match(/(?:video\/|v2\/|data-video-id=")(\d+)/);
                         let ttId = ttMatch ? ttMatch[1] : null;
                         if(!ttId) return '';
                         clickArgs = `'${ttId}', 'tiktok'`;
                         
-                        // මූලිකව පෙන්වීමට රූපයක් සහ Icon එකක්. (පසුව API එකෙන් නියම Thumbnail එක දමනු ලැබේ)
                         thumbHtml = `
                             <img id="tt-thumb-${ttId}" src="https://images.unsplash.com/photo-1611605698335-8b1569810432?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover opacity-40 transition-opacity duration-500">
                             <div class="absolute inset-0 flex items-center justify-center icon-container"><i class="fab fa-tiktok text-5xl text-white drop-shadow-2xl"></i></div>
@@ -236,10 +230,11 @@
                     } 
                     else {
                         // Default to YouTube
+                        let isShort = url.includes('/shorts/');
                         let vidMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([\w-]{11})/);
                         let vidId = vidMatch ? vidMatch[1] : null;
                         if (!vidId) return '';
-                        clickArgs = `'${vidId}', 'youtube'`;
+                        clickArgs = `'${vidId}', '${isShort ? 'youtube-short' : 'youtube'}'`;
                         thumbHtml = `<img src="https://img.youtube.com/vi/${vidId}/hqdefault.jpg" class="w-full h-full object-cover opacity-70"><div class="absolute inset-0 flex items-center justify-center icon-container"><i class="fab fa-youtube text-5xl text-red-600 drop-shadow-2xl"></i></div>`;
                     }
 
@@ -272,7 +267,7 @@
                 `;
             });
             
-            // TikTok Thumbnails Load කිරීම (කේතය Render වුණාට පස්සේ)
+            // TikTok Thumbnails Load කිරීම
             tiktokFetches.forEach(ttId => {
                 fetch(`https://www.tiktok.com/oembed?url=https://www.tiktok.com/@user/video/${ttId}`)
                 .then(res => res.json())
@@ -280,7 +275,7 @@
                     let imgEl = document.getElementById(`tt-thumb-${ttId}`);
                     if (imgEl && data.thumbnail_url) {
                         imgEl.src = data.thumbnail_url;
-                        imgEl.classList.remove('opacity-40'); // රූපය ආවම opacity එක අයින් කර පැහැදිලිව පෙන්වීම
+                        imgEl.classList.remove('opacity-40'); 
                     }
                 }).catch(e => console.error('TikTok thumb error', e));
             });
@@ -335,14 +330,14 @@
             const modal = document.getElementById('lightboxModal');
             const img = document.getElementById('lightboxImage');
             const iframeWrapper = document.getElementById('lightboxIframeWrapper');
+            const iframeContainer = document.getElementById('lightboxIframeContainer');
             const iframe = document.getElementById('lightboxIframe');
-            const nativeWrapper = document.getElementById('lightboxNativeWrapper');
             const nativeVideo = document.getElementById('lightboxNativeVideo');
 
             // Hide all first
             img.classList.add('hidden');
             iframeWrapper.classList.add('hidden');
-            nativeWrapper.classList.add('hidden');
+            nativeVideo.classList.add('hidden');
             iframe.src = '';
             nativeVideo.src = '';
 
@@ -351,25 +346,28 @@
                 img.classList.remove('hidden'); 
                 img.classList.remove('scale-95');
             } 
-            else if (type === 'youtube') { 
-                iframe.src = `https://www.youtube.com/embed/${src}?autoplay=1&rel=0`; 
-                iframeWrapper.classList.remove('hidden'); 
+            else if (type === 'tiktok' || type === 'youtube-short') {
+                iframe.src = type === 'tiktok' ? `https://www.tiktok.com/embed/v2/${src}` : `https://www.youtube.com/embed/${src}?autoplay=1&rel=0`;
+                
+                // Vertical Video Layout (9:16)
+                iframeWrapper.className = "w-full max-w-[400px] px-4 hidden mx-auto flex justify-center"; 
+                iframeContainer.style.paddingBottom = "177.77%"; 
+                iframeWrapper.classList.remove('hidden');
             }
-            else if (type === 'vimeo') {
-                iframe.src = `https://player.vimeo.com/video/${src}?autoplay=1&color=ffffff&title=0&byline=0&portrait=0`; 
-                iframeWrapper.classList.remove('hidden'); 
-            }
-            else if (type === 'gdrive') {
-                iframe.src = `https://drive.google.com/file/d/${src}/preview`; 
-                iframeWrapper.classList.remove('hidden'); 
-            }
-            else if (type === 'tiktok') {
-                iframe.src = `https://www.tiktok.com/embed/v2/${src}`; 
+            else if (type === 'youtube' || type === 'vimeo' || type === 'gdrive') { 
+                if (type === 'youtube') iframe.src = `https://www.youtube.com/embed/${src}?autoplay=1&rel=0`; 
+                else if (type === 'vimeo') iframe.src = `https://player.vimeo.com/video/${src}?autoplay=1&color=ffffff&title=0&byline=0&portrait=0`; 
+                else iframe.src = `https://drive.google.com/file/d/${src}/preview`; 
+                
+                // Horizontal Video Layout (16:9)
+                iframeWrapper.className = "w-full max-w-4xl px-4 hidden mx-auto flex justify-center"; 
+                iframeContainer.style.paddingBottom = "56.25%"; 
                 iframeWrapper.classList.remove('hidden'); 
             }
             else if (type === 'mp4') {
                 nativeVideo.src = src;
-                nativeWrapper.classList.remove('hidden');
+                nativeVideo.classList.remove('hidden');
+                nativeVideo.classList.remove('scale-95');
                 nativeVideo.play();
             }
 
@@ -382,6 +380,7 @@
             const m = document.getElementById(id); 
             m.classList.add('opacity-0');
             document.getElementById('lightboxImage').classList.add('scale-95');
+            document.getElementById('lightboxNativeVideo').classList.add('scale-95');
             
             setTimeout(() => { 
                 m.classList.add('hidden'); 
