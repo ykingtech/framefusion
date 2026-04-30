@@ -205,12 +205,15 @@
                         let driveId = driveMatch ? driveMatch[1] : null;
                         if(!driveId) return '';
                         clickArgs = `'${driveId}', 'gdrive'`;
-                        // Google Drive Thumbnail එක සහ Icon එක
-                        thumbHtml = `<img src="https://drive.google.com/thumbnail?id=${driveId}&sz=w800" class="w-full h-full object-cover opacity-70"><div class="absolute inset-0 flex items-center justify-center icon-container"><i class="fab fa-google-drive text-5xl text-blue-500 drop-shadow-2xl"></i></div>`;
+                        
+                        // Video ටැග් එක හරහා Thumbnail එකක් ගැනීම
+                        thumbHtml = `
+                            <video src="https://drive.google.com/uc?export=download&id=${driveId}#t=1.5" class="w-full h-full object-cover opacity-70" preload="metadata" muted playsinline></video>
+                            <div class="absolute inset-0 flex items-center justify-center icon-container"><i class="fab fa-google-drive text-5xl text-blue-500 drop-shadow-2xl"></i></div>
+                        `;
                     }
                     else if (url.toLowerCase().endsWith('.mp4')) {
                         clickArgs = `'${url}', 'mp4'`;
-                        // මෙන්න මෙතන තමයි වෙනස: <video> ටැග් එකක් පාවිච්චි කරලා, #t=1.5 කියන එකෙන් වීඩියෝ එකේ තත්පර 1.5 දී තියෙන රූපය පෙන්වන්න හදලා තියෙනවා.
                         thumbHtml = `
                             <video src="${url}#t=1.5" class="w-full h-full object-cover opacity-80" preload="metadata" muted playsinline></video>
                             <div class="absolute inset-0 flex items-center justify-center icon-container"><i class="fas fa-play-circle text-5xl text-white/80 drop-shadow-lg"></i></div>
