@@ -13,41 +13,102 @@
             theme: {
                 extend: {
                     fontFamily: { sans: ['Outfit', 'sans-serif'] },
-                    colors: { dark: '#0a0a0a', card: '#141414', light: '#f5f5f5', muted: '#a3a3a3' }
+                    colors: { dark: '#0a0a0a', card: '#141414', light: '#f5f5f5', muted: '#a3a3a3' },
+                    animation: {
+                        'pulse-slow': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
                 }
             }
         }
     </script>
     <style>
-        body { background-color: #0a0a0a; color: #f5f5f5; }
+        body { background-color: #0a0a0a; color: #f5f5f5; margin: 0; padding: 0; overflow-x: hidden; }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #0a0a0a; }
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
         
-        /* Video එකටත් Hover effect එක ඇතුළත් කර ඇත */
         .photo-card img, .photo-card video, .photo-card .icon-container { transition: all 0.5s ease; }
         .photo-card:hover img, .photo-card:hover video, .photo-card:hover .icon-container { transform: scale(1.05); }
         
         .star-rating i { cursor: pointer; transition: color 0.2s; }
         .star-rating i:hover, .star-rating i.active { color: #eab308; }
+
+        /* Cinematic Pre-loader Styles */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #0a0a0a;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.8s cubic-bezier(0.86, 0, 0.07, 1), opacity 0.8s ease-out;
+        }
+        
+        #preloader.slide-up {
+            transform: translateY(-100%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #preloader-logo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            transform: scale(0.8);
+            opacity: 0;
+            animation: fadeInScale 1s ease-out forwards;
+        }
+
+        @keyframes fadeInScale {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        #preloader-spinner {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border: 2px solid transparent;
+            border-top-color: #f5f5f5;
+            border-bottom-color: #f5f5f5;
+            border-radius: 50%;
+            animation: spin 1.5s linear infinite;
+            opacity: 0.5;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Hide content initially to prevent scroll jumping during preloader */
+        body.loading { overflow: hidden; }
     </style>
 </head>
-<body class="min-h-screen pb-12 flex flex-col items-center selection:bg-white selection:text-black">
+<body class="loading min-h-screen pb-12 flex flex-col items-center selection:bg-white selection:text-black">
 
-    <!-- max-w-5xl මගින් ලැප්ටොප් සඳහා පළල වැඩි කර ඇත -->
+    <!-- Cinematic Preloader -->
+    <div id="preloader">
+        <div id="preloader-spinner"></div>
+        <img id="preloader-logo" src="https://images.unsplash.com/photo-1554048612-b6a09faf798b?q=80&w=400&auto=format&fit=crop" alt="FrameFusion">
+    </div>
+
     <main id="main-content" class="w-full max-w-5xl bg-card min-h-screen shadow-2xl relative overflow-hidden border-x border-white/5 opacity-0 transition-opacity duration-1000">
         
-        <!-- Cover Photo (Mobile එකට h-48, Tablet h-72, Desktop එකට md:h-96) -->
         <div class="relative w-full h-48 sm:h-72 md:h-96">
             <div class="absolute inset-0 bg-gradient-to-t from-card via-card/10 to-transparent z-10 pointer-events-none"></div>
             <img id="ui-cover" src="https://images.unsplash.com/photo-1452587925148-ce544e77e70d?q=80&w=2000&auto=format&fit=crop" class="w-full h-full object-cover">
         </div>
 
-        <!-- Margin සහ Padding Responsive කර ඇත -->
         <div class="relative z-20 px-5 sm:px-12 md:px-16 -mt-14 sm:-mt-24 md:-mt-32">
             <div class="flex justify-between items-end">
                 
-                <!-- Logo Size (Mobile එකට w-28, Tablet w-40, Desktop w-48) -->
                 <div class="w-28 h-28 sm:w-40 sm:h-40 md:w-48 md:h-48 rounded-full border-4 border-card bg-card shadow-2xl relative overflow-hidden group flex items-center justify-center">
                     <img id="ui-logo" src="https://images.unsplash.com/photo-1554048612-b6a09faf798b?q=80&w=400&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                 </div>
@@ -56,7 +117,6 @@
             </div>
 
             <div class="mt-4 sm:mt-8">
-                <!-- Name & Verified Badge -->
                 <div class="flex items-center gap-2 flex-wrap">
                     <h1 id="ui-name" class="text-[26px] sm:text-4xl md:text-5xl font-bold tracking-tight text-white uppercase drop-shadow-lg leading-tight">Loading...</h1>
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" id="verified-badge" class="text-blue-500 flex-shrink-0 w-6 h-6 sm:w-8 sm:h-8 md:w-9 md:h-9 mt-1">
@@ -68,7 +128,6 @@
                 <p id="ui-bio" class="text-light/90 text-sm sm:text-base leading-relaxed font-light max-w-3xl whitespace-pre-wrap"></p>
             </div>
 
-            <!-- Buttons: max-w-2xl මගින් Desktop එකේදී Buttons අනවශ්‍ය ලෙස දිගු වීම වලකයි -->
             <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-8 max-w-2xl">
                 <button onclick="saveContact()" class="flex-1 bg-white hover:bg-gray-200 text-black py-3 sm:py-4 rounded-xl font-bold tracking-wide transition-all shadow-[0_0_30px_rgba(255,255,255,0.15)] flex items-center justify-center gap-2 transform hover:-translate-y-1">
                     <i class="fas fa-bookmark"></i> Save Contact
@@ -81,7 +140,6 @@
 
         <hr class="border-white/10 my-10 mx-5 sm:mx-12 md:mx-16">
 
-        <!-- Portfolio Sections -->
         <div class="px-5 sm:px-12 md:px-16 pb-12" id="portfolio-container">
             <div class="text-center text-gray-500 py-10"><i class="fas fa-spinner fa-spin text-3xl"></i></div>
         </div>
@@ -114,15 +172,12 @@
     <div id="lightboxModal" class="fixed inset-0 bg-black/95 backdrop-blur-sm flex flex-col items-center justify-center z-50 hidden opacity-0 transition-opacity">
         <button onclick="closeModal('lightboxModal')" class="absolute top-4 right-4 sm:top-6 sm:right-6 w-12 h-12 bg-white/10 hover:bg-white hover:text-black rounded-full text-white flex items-center justify-center transition-all z-20"><i class="fas fa-times text-xl"></i></button>
         
-        <!-- Image Viewer -->
         <img id="lightboxImage" src="" class="max-w-full max-h-[85vh] object-contain transition-transform transform scale-95 duration-500 hidden shadow-2xl rounded-lg px-2">
         
-        <!-- Iframe Video Viewer -->
         <div id="lightboxIframeWrapper" class="hidden mx-auto flex items-center justify-center z-10 w-full relative">
             <iframe id="lightboxIframe" src="" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen class="rounded-xl shadow-2xl bg-black"></iframe>
         </div>
 
-        <!-- Native MP4 Video Viewer -->
         <video id="lightboxNativeVideo" controls controlsList="nodownload" class="w-full max-w-4xl max-h-[85vh] object-contain transition-transform transform scale-95 duration-500 hidden shadow-2xl rounded-lg bg-black px-2"></video>
     </div>
 
@@ -149,24 +204,47 @@
         let allReviews = [];
 
         async function loadProfile() {
-            const snap = await getDoc(doc(db, "settings", "profile"));
-            if (snap.exists()) {
-                profileData = snap.data();
-                document.getElementById('ui-name').innerText = profileData.name || "Studio";
-                document.getElementById('ui-bio').innerText = profileData.bio || "";
-                if(profileData.coverUrl) document.getElementById('ui-cover').src = profileData.coverUrl;
-                if(profileData.logoUrl) document.getElementById('ui-logo').src = profileData.logoUrl;
-                
-                let waBtn = document.getElementById('ui-whatsapp-btn');
-                if(profileData.phone) waBtn.href = `https://wa.me/${profileData.phone.replace(/[^0-9]/g, '')}`;
-                else waBtn.style.display = 'none';
+            try {
+                const snap = await getDoc(doc(db, "settings", "profile"));
+                if (snap.exists()) {
+                    profileData = snap.data();
+                    document.getElementById('ui-name').innerText = profileData.name || "Studio";
+                    document.getElementById('ui-bio').innerText = profileData.bio || "";
+                    if(profileData.coverUrl) document.getElementById('ui-cover').src = profileData.coverUrl;
+                    
+                    if(profileData.logoUrl) {
+                        document.getElementById('ui-logo').src = profileData.logoUrl;
+                        // Preloader එකේ ලෝගෝ එකත් අප්ඩේට් කරන්න
+                        document.getElementById('preloader-logo').src = profileData.logoUrl;
+                    }
+                    
+                    let waBtn = document.getElementById('ui-whatsapp-btn');
+                    if(profileData.phone) waBtn.href = `https://wa.me/${profileData.phone.replace(/[^0-9]/g, '')}`;
+                    else waBtn.style.display = 'none';
 
-                let socialsHTML = '';
-                if(profileData.insta) socialsHTML += `<a href="${profileData.insta}" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/5 border border-white/10 hover:bg-white hover:text-black flex items-center justify-center transition-all shadow-lg backdrop-blur-sm"><i class="fab fa-instagram text-base sm:text-lg"></i></a>`;
-                if(profileData.fb) socialsHTML += `<a href="${profileData.fb}" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/5 border border-white/10 hover:bg-white hover:text-black flex items-center justify-center transition-all shadow-lg backdrop-blur-sm"><i class="fab fa-facebook-f text-base sm:text-lg"></i></a>`;
-                document.getElementById('social-links-container').innerHTML = socialsHTML;
+                    let socialsHTML = '';
+                    if(profileData.insta) socialsHTML += `<a href="${profileData.insta}" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/5 border border-white/10 hover:bg-white hover:text-black flex items-center justify-center transition-all shadow-lg backdrop-blur-sm"><i class="fab fa-instagram text-base sm:text-lg"></i></a>`;
+                    if(profileData.fb) socialsHTML += `<a href="${profileData.fb}" class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/5 border border-white/10 hover:bg-white hover:text-black flex items-center justify-center transition-all shadow-lg backdrop-blur-sm"><i class="fab fa-facebook-f text-base sm:text-lg"></i></a>`;
+                    document.getElementById('social-links-container').innerHTML = socialsHTML;
+                }
+            } catch (error) {
+                console.error("Error loading profile:", error);
+            } finally {
+                // Minimum time for preloader to show its animation (1.5s)
+                setTimeout(() => {
+                    removePreloader();
+                }, 1500);
             }
-            document.getElementById('main-content').classList.remove('opacity-0');
+        }
+
+        function removePreloader() {
+            const preloader = document.getElementById('preloader');
+            preloader.classList.add('slide-up');
+            document.body.classList.remove('loading');
+            
+            setTimeout(() => {
+                document.getElementById('main-content').classList.remove('opacity-0');
+            }, 300); // Wait a bit before showing the main content
         }
 
         function loadData() {
@@ -184,7 +262,6 @@
             const container = document.getElementById('portfolio-container');
             container.innerHTML = '';
             
-            // TikTok Thumbnails Load කිරීම සඳහා Array එකක්
             let tiktokFetches = [];
             
             allProjects.forEach((proj) => {
@@ -195,7 +272,6 @@
                         return `<div class="photo-card cursor-pointer rounded-2xl overflow-hidden relative aspect-square sm:aspect-[4/5] bg-dark shadow-xl border border-white/5" onclick="openLightbox('${item.url}', 'photo')"><img src="${item.url}" class="w-full h-full object-cover"></div>`;
                     }
                     
-                    // Video URL Parsing 
                     let url = item.url;
                     let thumbHtml = '';
                     let clickArgs = '';
@@ -267,16 +343,13 @@
                             <button onclick="openReviewModal('${proj.id}')" class="text-xs sm:text-sm font-bold bg-white/10 hover:bg-white hover:text-black px-4 sm:px-5 py-2.5 rounded-full transition uppercase tracking-wider flex items-center gap-2"><i class="fas fa-star text-yellow-500"></i> Rate</button>
                         </div>
                         
-                        <!-- Desktop එකේදී තීරු 4ක් (md:grid-cols-4) පෙනෙන පරිදි සකසා ඇත -->
                         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-5 md:gap-6 mb-8">${itemsHtml}</div>
                         
-                        <!-- Reviews Desktop එකේදී තීරු 3ක් (lg:grid-cols-3) පෙනෙන පරිදි සකසා ඇත -->
                         ${projReviews.length > 0 ? `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">${reviewsHtml}</div>` : ''}
                     </div>
                 `;
             });
             
-            // TikTok Thumbnails Load කිරීම
             tiktokFetches.forEach(ttId => {
                 fetch(`https://www.tiktok.com/oembed?url=https://www.tiktok.com/@user/video/${ttId}`)
                 .then(res => res.json())
@@ -290,7 +363,7 @@
             });
         }
 
-        loadProfile();
+        loadProfile(); // This now handles the preloader removal
         loadData();
 
         let currentReviewProjectId = null;
@@ -342,7 +415,6 @@
             const iframe = document.getElementById('lightboxIframe');
             const nativeVideo = document.getElementById('lightboxNativeVideo');
 
-            // Hide all first
             img.classList.add('hidden');
             iframeWrapper.classList.add('hidden');
             nativeVideo.classList.add('hidden');
