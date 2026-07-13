@@ -9,13 +9,16 @@
 </head>
 <body class="bg-gray-100 min-h-screen text-gray-800 font-sans">
 
-    <div id="login-screen" class="min-h-screen flex items-center justify-center bg-gray-900">
+    <div id="login-screen" class="min-h-screen flex items-center justify-center bg-gray-900 px-4">
         <div class="bg-white p-8 rounded-xl shadow-2xl w-96 max-w-full">
-            <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Admin Login</h2>
-            <input type="email" id="email" placeholder="Email Address" class="w-full mb-4 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-            <input type="password" id="password" placeholder="Password" class="w-full mb-6 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
-            <button onclick="login()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition">Login</button>
-            <p id="login-error" class="text-red-500 text-sm mt-3 text-center hidden"></p>
+            <div class="text-center mb-6">
+                <i class="fas fa-camera-retro text-3xl text-gray-800 mb-2"></i>
+                <h2 class="text-2xl font-bold text-gray-800">FrameFusion Admin</h2>
+                <p class="text-xs text-gray-500 mt-1">Enter password to continue</p>
+            </div>
+            <input type="password" id="password" placeholder="Password" inputmode="numeric" class="w-full mb-4 px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-center text-lg tracking-[0.5em]">
+            <button onclick="login()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition">Unlock</button>
+            <p id="login-error" class="text-red-500 text-sm mt-3 text-center hidden">Wrong password. Try again.</p>
         </div>
     </div>
 
@@ -26,37 +29,68 @@
         </nav>
 
         <div class="flex-1 max-w-6xl w-full mx-auto p-4 sm:p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-            
-            <div class="md:col-span-1 bg-white p-5 rounded-xl shadow-sm border h-fit">
-                <h2 class="text-lg font-bold mb-4 border-b pb-2">Profile Settings</h2>
-                <div class="space-y-4">
-                    <div><label class="block text-xs font-semibold text-gray-600 mb-1">Studio Name</label><input type="text" id="prof-name" class="w-full border p-2 rounded text-sm"></div>
-                    <div><label class="block text-xs font-semibold text-gray-600 mb-1">Bio</label><textarea id="prof-bio" rows="3" class="w-full border p-2 rounded text-sm"></textarea></div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <div><label class="block text-xs font-semibold text-gray-600 mb-1">WhatsApp</label><input type="text" id="prof-phone" class="w-full border p-2 rounded text-sm"></div>
-                        <div><label class="block text-xs font-semibold text-gray-600 mb-1">Email</label><input type="email" id="prof-email" class="w-full border p-2 rounded text-sm"></div>
+
+            <div class="md:col-span-1 space-y-6 h-fit">
+                <!-- Profile -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border">
+                    <h2 class="text-lg font-bold mb-4 border-b pb-2">Profile Settings</h2>
+                    <div class="space-y-4">
+                        <div><label class="block text-xs font-semibold text-gray-600 mb-1">Studio Name</label><input type="text" id="prof-name" class="w-full border p-2 rounded text-sm"></div>
+                        <div><label class="block text-xs font-semibold text-gray-600 mb-1">Bio</label><textarea id="prof-bio" rows="3" class="w-full border p-2 rounded text-sm"></textarea></div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div><label class="block text-xs font-semibold text-gray-600 mb-1">WhatsApp</label><input type="text" id="prof-phone" class="w-full border p-2 rounded text-sm"></div>
+                            <div><label class="block text-xs font-semibold text-gray-600 mb-1">Email</label><input type="email" id="prof-email" class="w-full border p-2 rounded text-sm"></div>
+                        </div>
+                        <div><label class="block text-xs font-semibold text-gray-600 mb-1">Facebook</label><input type="text" id="prof-fb" class="w-full border p-2 rounded text-sm"></div>
+                        <div><label class="block text-xs font-semibold text-gray-600 mb-1">Instagram</label><input type="text" id="prof-insta" class="w-full border p-2 rounded text-sm"></div>
+                        <div class="pt-2 border-t"><label class="block text-xs font-semibold text-gray-600 mb-1">Logo <span class="text-green-600 font-bold">(HD)</span></label><input type="file" id="file-logo" accept="image/*" class="w-full text-sm"></div>
+                        <button onclick="saveProfile()" id="btn-save-prof" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 rounded shadow transition"><i class="fas fa-save"></i> Save Settings</button>
                     </div>
-                    <div><label class="block text-xs font-semibold text-gray-600 mb-1">Facebook</label><input type="text" id="prof-fb" class="w-full border p-2 rounded text-sm"></div>
-                    <div><label class="block text-xs font-semibold text-gray-600 mb-1">Instagram</label><input type="text" id="prof-insta" class="w-full border p-2 rounded text-sm"></div>
-                    <div class="pt-2 border-t"><label class="block text-xs font-semibold text-gray-600 mb-1">Logo</label><input type="file" id="file-logo" class="w-full text-sm"></div>
-                    <div><label class="block text-xs font-semibold text-gray-600 mb-1">Cover Photo</label><input type="file" id="file-cover" class="w-full text-sm"></div>
-                    <button onclick="saveProfile()" id="btn-save-prof" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 rounded shadow transition"><i class="fas fa-save"></i> Save Settings</button>
+                </div>
+
+                <!-- Live stream -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-red-200">
+                    <h2 class="text-lg font-bold mb-1 border-b pb-2 text-red-600"><i class="fas fa-tower-broadcast mr-1"></i> Live Now Banner</h2>
+                    <p class="text-xs text-gray-500 mb-4 mt-2">YouTube live link එකක් දැම්මම site එකේ Live Streaming section එකේ උඩින්ම "LIVE NOW" player එකක් පෙන්නනවා. Stream එක ඉවර වුනාම URL එක මකලා Save කරන්න.</p>
+                    <div class="space-y-3">
+                        <div><label class="block text-xs font-semibold text-gray-600 mb-1">Live Title</label><input type="text" id="prof-livetitle" placeholder="Savini & Kaveen — Wedding Live" class="w-full border p-2 rounded text-sm"></div>
+                        <div><label class="block text-xs font-semibold text-gray-600 mb-1">Live URL (YouTube)</label><input type="text" id="prof-liveurl" placeholder="https://youtube.com/live/..." class="w-full border p-2 rounded text-sm"></div>
+                        <button onclick="saveLive()" id="btn-save-live" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 rounded shadow transition"><i class="fas fa-broadcast-tower"></i> Update Live Banner</button>
+                    </div>
                 </div>
             </div>
 
             <div class="md:col-span-2 bg-white p-5 rounded-xl shadow-sm border">
                 <div class="flex justify-between items-center mb-4 border-b pb-2">
                     <h2 class="text-lg font-bold">Projects & Reviews</h2>
-                    <button onclick="createNewProject()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-md text-sm font-bold transition"><i class="fas fa-plus"></i> New Project</button>
+                    <button onclick="openNewProjectModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-md text-sm font-bold transition"><i class="fas fa-plus"></i> New Project</button>
                 </div>
                 <div id="projects-container" class="space-y-6"></div>
             </div>
         </div>
     </div>
 
+    <!-- New Project Modal -->
+    <div id="newProjectModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm items-center justify-center z-50 hidden px-4">
+        <div class="bg-white p-6 rounded-xl shadow-2xl w-full max-w-sm">
+            <h3 class="text-lg font-bold mb-4">New Project</h3>
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Project Name</label>
+            <input type="text" id="np-name" placeholder="Savini & Kaveen Wedding" class="w-full border p-2 rounded text-sm mb-4">
+            <label class="block text-xs font-semibold text-gray-600 mb-1">Section</label>
+            <select id="np-category" class="w-full border p-2 rounded text-sm mb-6 bg-white">
+                <option value="live">📡 Live Streaming</option>
+                <option value="weddings" selected>💍 Weddings</option>
+                <option value="events">🥂 Events</option>
+            </select>
+            <div class="flex gap-2">
+                <button onclick="closeNewProjectModal()" class="flex-1 border py-2 rounded font-bold text-sm text-gray-600 hover:bg-gray-100 transition">Cancel</button>
+                <button onclick="createNewProject()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-bold text-sm transition">Create</button>
+            </div>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc, collection, query, orderBy, onSnapshot, addDoc, updateDoc, deleteDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -70,27 +104,47 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
         const db = getFirestore(app);
+
+        /* ---------- SIMPLE PASSWORD LOGIN ---------- */
+        const ADMIN_PIN = "1116";
+
+        function showDashboard() {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+            loadProfile();
+            loadData();
+        }
+
+        window.login = () => {
+            const pass = document.getElementById('password').value.trim();
+            if (pass === ADMIN_PIN) {
+                sessionStorage.setItem('ff_admin', '1');
+                document.getElementById('login-error').classList.add('hidden');
+                showDashboard();
+            } else {
+                document.getElementById('login-error').classList.remove('hidden');
+                document.getElementById('password').value = '';
+            }
+        };
+        window.logout = () => {
+            sessionStorage.removeItem('ff_admin');
+            location.reload();
+        };
+        document.getElementById('password').addEventListener('keydown', (e) => { if (e.key === 'Enter') window.login(); });
+
+        if (sessionStorage.getItem('ff_admin') === '1') showDashboard();
+
+        const CAT_LABEL = {
+            live:     { name: 'Live Streaming', badge: 'bg-red-100 text-red-700' },
+            weddings: { name: 'Weddings',       badge: 'bg-pink-100 text-pink-700' },
+            events:   { name: 'Events',         badge: 'bg-amber-100 text-amber-700' }
+        };
 
         let currentProfileData = {};
         let allProjects = [];
         let allReviews = [];
-
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                document.getElementById('login-screen').classList.add('hidden');
-                document.getElementById('dashboard').classList.remove('hidden');
-                loadProfile();
-                loadData();
-            } else {
-                document.getElementById('login-screen').classList.remove('hidden');
-                document.getElementById('dashboard').classList.add('hidden');
-            }
-        });
-
-        window.login = () => signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('password').value).catch(err => alert(err.message));
-        window.logout = () => signOut(auth);
+        let listenersStarted = false;
 
         async function loadProfile() {
             const snap = await getDoc(doc(db, "settings", "profile"));
@@ -102,30 +156,57 @@
                 document.getElementById('prof-email').value = currentProfileData.email || '';
                 document.getElementById('prof-fb').value = currentProfileData.fb || '';
                 document.getElementById('prof-insta').value = currentProfileData.insta || '';
+                document.getElementById('prof-livetitle').value = currentProfileData.liveTitle || '';
+                document.getElementById('prof-liveurl').value = currentProfileData.liveUrl || '';
             }
         }
 
-        window.saveProfile = async () => { 
+        window.saveProfile = async () => {
             const btn = document.getElementById('btn-save-prof');
             btn.innerHTML = `Saving...`;
             let data = {
+                ...currentProfileData,
                 name: document.getElementById('prof-name').value, bio: document.getElementById('prof-bio').value,
                 phone: document.getElementById('prof-phone').value, email: document.getElementById('prof-email').value,
                 fb: document.getElementById('prof-fb').value, insta: document.getElementById('prof-insta').value,
-                logoUrl: currentProfileData.logoUrl || null, coverUrl: currentProfileData.coverUrl || null
+                logoUrl: currentProfileData.logoUrl || null
             };
             const logoFile = document.getElementById('file-logo').files[0];
-            const coverFile = document.getElementById('file-cover').files[0];
-            
-            // Compress and convert to Base64 directly
-            if (logoFile) data.logoUrl = await compressImageToBase64(logoFile, 400, 0.7); // Logo width 400px
-            if (coverFile) data.coverUrl = await compressImageToBase64(coverFile, 800, 0.6); // Cover width 800px
 
-            await setDoc(doc(db, "settings", "profile"), data);
-            alert("Saved!"); btn.innerHTML = `Save Settings`;
+            // Logo: 512px HQ
+            if (logoFile) data.logoUrl = await compressImageToBase64(logoFile, 512, 0.8);
+
+            try {
+                await setDoc(doc(db, "settings", "profile"), data);
+                currentProfileData = data;
+                alert("Saved!");
+            } catch (e) {
+                alert("Save failed: " + e.message);
+            }
+            btn.innerHTML = `<i class="fas fa-save"></i> Save Settings`;
+        };
+
+        window.saveLive = async () => {
+            const btn = document.getElementById('btn-save-live');
+            btn.innerHTML = `Saving...`;
+            const data = {
+                ...currentProfileData,
+                liveTitle: document.getElementById('prof-livetitle').value.trim(),
+                liveUrl: document.getElementById('prof-liveurl').value.trim()
+            };
+            try {
+                await setDoc(doc(db, "settings", "profile"), data);
+                currentProfileData = data;
+                alert(data.liveUrl ? "LIVE banner is now showing on the site!" : "LIVE banner hidden.");
+            } catch (e) {
+                alert("Save failed: " + e.message);
+            }
+            btn.innerHTML = `<i class="fas fa-broadcast-tower"></i> Update Live Banner`;
         };
 
         function loadData() {
+            if (listenersStarted) return;
+            listenersStarted = true;
             onSnapshot(query(collection(db, "projects"), orderBy("createdAt", "desc")), (snap) => {
                 allProjects = snap.docs.map(d => ({id: d.id, ...d.data()}));
                 renderDashboard();
@@ -140,9 +221,16 @@
             const container = document.getElementById('projects-container');
             container.innerHTML = '';
             allProjects.forEach(proj => {
+                const cat = CAT_LABEL[proj.category] ? proj.category : 'weddings';
                 const projReviews = allReviews.filter(r => r.projectId === proj.id);
-                let itemsHtml = (proj.items || []).map((item, i) => `<div class="relative w-16 h-16 bg-gray-200 rounded overflow-hidden"><img src="${item.type==='photo'?item.url:'https://via.placeholder.com/150?text=Vid'}" class="w-full h-full object-cover"><button onclick="deleteItem('${proj.id}', ${i})" class="absolute top-0 right-0 bg-red-600 text-white w-5 h-5 flex items-center justify-center"><i class="fas fa-times text-xs"></i></button></div>`).join('');
-                
+                let itemsHtml = (proj.items || []).map((item, i) => `
+                    <div class="relative w-16 h-16 bg-gray-200 rounded overflow-hidden">
+                        ${item.type==='photo'
+                            ? `<img src="${item.url}" class="w-full h-full object-cover">`
+                            : `<div class="w-full h-full bg-gray-800 text-white flex items-center justify-center"><i class="fas fa-video"></i></div>`}
+                        <button onclick="deleteItem('${proj.id}', ${i})" class="absolute top-0 right-0 bg-red-600 text-white w-5 h-5 flex items-center justify-center"><i class="fas fa-times text-xs"></i></button>
+                    </div>`).join('');
+
                 let reviewsHtml = projReviews.map(r => `
                     <div class="bg-white border rounded p-2 text-sm flex justify-between items-center mt-2 shadow-sm">
                         <div>
@@ -155,13 +243,23 @@
 
                 container.innerHTML += `
                     <div class="border rounded-lg p-4 bg-gray-50">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="font-bold text-lg">${proj.name}</h3>
-                            <button onclick="deleteProject('${proj.id}')" class="text-red-500 text-sm"><i class="fas fa-trash"></i> Delete Project</button>
+                        <div class="flex justify-between items-center mb-2 gap-2 flex-wrap">
+                            <div class="flex items-center gap-2">
+                                <h3 class="font-bold text-lg">${proj.name}</h3>
+                                <span class="text-[11px] font-bold px-2 py-0.5 rounded-full ${CAT_LABEL[cat].badge}">${CAT_LABEL[cat].name}</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <select onchange="changeCategory('${proj.id}', this.value)" class="border rounded text-xs p-1.5 bg-white">
+                                    <option value="live" ${cat==='live'?'selected':''}>📡 Live Streaming</option>
+                                    <option value="weddings" ${cat==='weddings'?'selected':''}>💍 Weddings</option>
+                                    <option value="events" ${cat==='events'?'selected':''}>🥂 Events</option>
+                                </select>
+                                <button onclick="deleteProject('${proj.id}')" class="text-red-500 text-sm"><i class="fas fa-trash"></i></button>
+                            </div>
                         </div>
                         <div class="flex gap-2 mb-3 flex-wrap">${itemsHtml}</div>
                         <div class="flex gap-2 mb-4">
-                            <label class="bg-gray-200 px-3 py-1 cursor-pointer text-sm rounded"><input type="file" multiple onchange="uploadProjectPhotos(this, '${proj.id}')" class="hidden"> + Photos</label>
+                            <label class="bg-gray-200 px-3 py-1 cursor-pointer text-sm rounded"><input type="file" multiple accept="image/*" onchange="uploadProjectPhotos(this, '${proj.id}')" class="hidden"> + Photos</label>
                             <button onclick="addYoutube('${proj.id}')" class="bg-red-100 text-red-700 px-3 py-1 rounded text-sm">+ YouTube</button>
                             <span id="up-${proj.id}" class="hidden text-blue-500 text-sm">Uploading...</span>
                         </div>
@@ -174,13 +272,32 @@
             });
         }
 
-        window.createNewProject = async () => {
-            const name = prompt("Project Name:");
-            if (name) await addDoc(collection(db, "projects"), { name, createdAt: Date.now(), items: [] });
+        /* ---- new project modal ---- */
+        window.openNewProjectModal = () => {
+            document.getElementById('np-name').value = '';
+            const m = document.getElementById('newProjectModal');
+            m.classList.remove('hidden'); m.classList.add('flex');
+            document.getElementById('np-name').focus();
         };
+        window.closeNewProjectModal = () => {
+            const m = document.getElementById('newProjectModal');
+            m.classList.add('hidden'); m.classList.remove('flex');
+        };
+        window.createNewProject = async () => {
+            const name = document.getElementById('np-name').value.trim();
+            const category = document.getElementById('np-category').value;
+            if (!name) return alert("Please enter a project name.");
+            await addDoc(collection(db, "projects"), { name, category, createdAt: Date.now(), items: [] });
+            closeNewProjectModal();
+        };
+
+        window.changeCategory = async (pid, category) => {
+            await updateDoc(doc(db, "projects", pid), { category });
+        };
+
         window.deleteProject = async (pid) => { if(confirm("Delete project?")) await deleteDoc(doc(db, "projects", pid)); };
         window.deleteReview = async (rid) => { if(confirm("Delete this review?")) await deleteDoc(doc(db, "reviews", rid)); };
-        
+
         window.addYoutube = async (pid) => {
             const url = prompt("YouTube URL:");
             if(url) await updateDoc(doc(db, "projects", pid), { items: arrayUnion({ type: 'youtube', url, addedAt: Date.now() }) });
@@ -195,20 +312,15 @@
             if(!input.files.length) return;
             document.getElementById(`up-${pid}`).classList.remove('hidden');
             for(let file of input.files) {
-                // Compress photo and get Base64 Data URL (Width 800px, 60% Quality to stay within Firestore 1MB limit)
                 let base64Data = await compressImageToBase64(file, 800, 0.6);
-                
-                // Save directly to Firestore database array
-                await updateDoc(doc(db, "projects", pid), { 
-                    items: arrayUnion({ type: 'photo', url: base64Data, addedAt: Date.now() }) 
+                await updateDoc(doc(db, "projects", pid), {
+                    items: arrayUnion({ type: 'photo', url: base64Data, addedAt: Date.now() })
                 });
             }
             document.getElementById(`up-${pid}`).classList.add('hidden');
-            input.value = ''; // clear input
+            input.value = '';
         };
 
-        // --- NEW COMPRESSOR FUNCTION ---
-        // Converts file to a compressed Base64 string directly
         function compressImageToBase64(file, maxWidth = 800, quality = 0.6) {
             return new Promise((resolve) => {
                 const reader = new FileReader();
@@ -220,18 +332,17 @@
                         const canvas = document.createElement('canvas');
                         let width = img.width;
                         let height = img.height;
-                        
+
                         if (width > maxWidth) {
                             height = Math.round((height * maxWidth) / width);
                             width = maxWidth;
                         }
                         canvas.width = width;
                         canvas.height = height;
-                        
+
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
-                        
-                        // Return the Base64 Data URL directly
+
                         resolve(canvas.toDataURL('image/jpeg', quality));
                     };
                 };
