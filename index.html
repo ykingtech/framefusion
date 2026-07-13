@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FrameFusion Studio</title>
+    <title>FrameFusion Studio — Live Streaming · Weddings · Events</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
     <script>
         tailwind.config = {
             theme: {
@@ -23,68 +24,347 @@
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #0a0a0a; }
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
-        
-        /* Video එකටත් Hover effect එක ඇතුළත් කර ඇත */
+
         .photo-card img, .photo-card video, .photo-card .icon-container { transition: all 0.5s ease; }
         .photo-card:hover img, .photo-card:hover video, .photo-card:hover .icon-container { transform: scale(1.05); }
-        
-        .video-container { position: relative; padding-bottom: 56.25%; height: 0; width: 100%; border-radius: 8px; overflow:hidden;}
+
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; width: 100%; border-radius: 12px; overflow:hidden;}
         .video-container iframe, .video-container video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
         .star-rating i { cursor: pointer; transition: color 0.2s; }
         .star-rating i:hover, .star-rating i.active { color: #eab308; }
+
+        /* LIVE pulse */
+        .live-dot { animation: livepulse 1.4s ease-in-out infinite; }
+        @keyframes livepulse { 0%,100%{ opacity:1; transform:scale(1);} 50%{ opacity:.4; transform:scale(.8);} }
+
+        /* loader */
+        #loader { transition: opacity .7s ease; }
+        .loader-bar { animation: shimmer 1.4s ease-in-out infinite; }
+        @keyframes shimmer { 0%{ transform:translateX(-110%);} 100%{ transform:translateX(320%);} }
+        .loader-ring { animation: spin 1.1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* scroll cue */
+        .scroll-cue { animation: cue 1.8s ease-in-out infinite; }
+        @keyframes cue { 0%,100%{ transform:translateY(0); opacity:.5;} 50%{ transform:translateY(8px); opacity:1;} }
+
+        /* section reveal */
+        .reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
+        .reveal.in { opacity: 1; transform: none; }
+        @media (prefers-reduced-motion: reduce) {
+            .reveal { opacity: 1; transform: none; transition: none; }
+            .live-dot, .scroll-cue, .loader-bar { animation: none; }
+        }
+
+        .cat-tab.active { background: #f5f5f5; color: #0a0a0a; border-color: #f5f5f5; }
+
+        /* 3D project shapes */
+        .shape-wrap { perspective: 300px; width: 44px; height: 44px; display: grid; place-items: center; }
+        .shape3d { width: 34px; height: 34px; position: relative; transform-style: preserve-3d;
+            animation: spin3d 9s linear infinite; }
+        .shape3d > b { position: absolute; inset: 0; border-radius: 6px; border: 1.5px solid; }
+        .shape3d .f1 { transform: translateZ(17px); }
+        .shape3d .f2 { transform: rotateY(180deg) translateZ(17px); }
+        .shape3d .f3 { transform: rotateY(90deg) translateZ(17px); }
+        .shape3d .f4 { transform: rotateY(-90deg) translateZ(17px); }
+        .shape3d .f5 { transform: rotateX(90deg) translateZ(17px); }
+        .shape3d .f6 { transform: rotateX(-90deg) translateZ(17px); }
+        @keyframes spin3d { from { transform: rotateX(-22deg) rotateY(0deg); } to { transform: rotateX(-22deg) rotateY(360deg); } }
+        /* 3D video camera (live bars) */
+        .cam-wrap { perspective: 340px; width: 82px; height: 64px; display: grid; place-items: center; }
+        .cam3d { width: 66px; height: 48px; position: relative; transform-style: preserve-3d;
+            animation: spin3d 10s linear infinite; }
+        .proj-card:hover .cam3d { animation-duration: 3s; }
+        .cam3d span { position: absolute; transform-style: preserve-3d; }
+        .cam3d b { position: absolute; border: 1.5px solid rgba(239,68,68,.75); background: rgba(239,68,68,.08); border-radius: 3px; }
+
+        .cam-body { width: 42px; height: 26px; left: 12px; top: 16px; }
+        .cam-body .cbf { width: 42px; height: 26px; transform: translateZ(10px); }
+        .cam-body .cbb { width: 42px; height: 26px; transform: rotateY(180deg) translateZ(10px); }
+        .cam-body .cbl { width: 20px; height: 26px; left: 11px; transform: rotateY(-90deg) translateZ(21px); }
+        .cam-body .cbr { width: 20px; height: 26px; left: 11px; transform: rotateY(90deg) translateZ(21px); }
+        .cam-body .cbt { width: 42px; height: 20px; top: 3px; transform: rotateX(90deg) translateZ(13px); }
+        .cam-body .cbd { width: 42px; height: 20px; top: 3px; transform: rotateX(-90deg) translateZ(13px); }
+
+        .cam-lens { width: 16px; height: 16px; left: 25px; top: 21px; transform: translateZ(18px); }
+        .cam-lens b { width: 16px; height: 16px; }
+        .cam-lens .clf { transform: translateZ(8px); background: rgba(59,89,152,.45); border-radius: 50%; }
+        .cam-lens .clb { transform: rotateY(180deg) translateZ(8px); }
+        .cam-lens .cll { transform: rotateY(-90deg) translateZ(8px); }
+        .cam-lens .clr { transform: rotateY(90deg) translateZ(8px); }
+        .cam-lens .clt { transform: rotateX(90deg) translateZ(8px); }
+        .cam-lens .cld { transform: rotateX(-90deg) translateZ(8px); }
+
+        .cam-handle { width: 30px; height: 8px; left: 18px; top: 3px; }
+        .cam-handle .chf { width: 30px; height: 8px; transform: translateZ(6px); }
+        .cam-handle .chb { width: 30px; height: 8px; transform: rotateY(180deg) translateZ(6px); }
+        .cam-handle .chl { width: 12px; height: 8px; left: 9px; transform: rotateY(-90deg) translateZ(15px); }
+        .cam-handle .chr { width: 12px; height: 8px; left: 9px; transform: rotateY(90deg) translateZ(15px); }
+        .cam-handle .cht { width: 30px; height: 12px; top: -2px; transform: rotateX(90deg) translateZ(4px); }
+        .cam-handle .chd { width: 30px; height: 12px; top: -2px; transform: rotateX(-90deg) translateZ(4px); }
+
+        .cam-rec { width: 6px; height: 6px; border-radius: 50% !important; background: #ff2244 !important;
+            border: none !important; right: 3px; top: 3px; transform: translateZ(11px);
+            box-shadow: 0 0 8px #ff2244; animation: livepulse 1.4s ease-in-out infinite; }
+
+        @media (prefers-reduced-motion: reduce) {
+            .cam3d { animation: none; transform: rotateX(-22deg) rotateY(35deg); }
+            .cam-rec { animation: none; }
+        }
+        .proj-card:hover .shape3d { animation-duration: 2.5s; }
+        .sh-live > b     { border-color: rgba(239,68,68,.75);  background: rgba(239,68,68,.08); }
+        .sh-weddings > b { border-color: rgba(244,114,182,.75); background: rgba(244,114,182,.08); }
+        .sh-events > b   { border-color: rgba(251,191,36,.75); background: rgba(251,191,36,.08); }
+        @media (prefers-reduced-motion: reduce) { .shape3d { animation: none; transform: rotateX(-22deg) rotateY(35deg); } }
+        section { scroll-margin-top: 80px; }
+        #home { scroll-margin-top: 0; }
+        #cam3d { touch-action: pan-y; }
     </style>
 </head>
-<body class="min-h-screen pb-12 flex flex-col items-center selection:bg-white selection:text-black">
+<body class="min-h-screen selection:bg-white selection:text-black">
 
-    <main id="main-content" class="w-full max-w-2xl bg-card min-h-screen shadow-2xl relative overflow-hidden border-x border-white/5 opacity-0 transition-opacity duration-1000">
-        
-        <div class="relative w-full h-64 sm:h-80">
-            <div class="absolute inset-0 bg-gradient-to-t from-card via-card/10 to-transparent z-10 pointer-events-none"></div>
-            <img id="ui-cover" src="https://images.unsplash.com/photo-1452587925148-ce544e77e70d?q=80&w=2000&auto=format&fit=crop" class="w-full h-full object-cover">
+    <!-- ================= LOADING SCREEN ================= -->
+    <div id="loader" class="fixed inset-0 z-[100] bg-dark flex flex-col items-center justify-center gap-7">
+        <div class="relative w-24 h-24">
+            <div class="absolute inset-0 rounded-full border-2 border-white/10"></div>
+            <div class="loader-ring absolute inset-0 rounded-full border-2 border-transparent border-t-white"></div>
+            <div class="absolute inset-3 rounded-full border border-white/10"></div>
+            <div class="absolute inset-0 flex items-center justify-center"><i class="fas fa-camera text-2xl text-white/90"></i></div>
         </div>
+        <div class="text-center">
+            <div class="text-white font-extrabold tracking-[0.35em] uppercase text-base sm:text-lg">FrameFusion</div>
+            <div class="text-muted tracking-[0.3em] uppercase text-[10px] mt-2">Live Streaming · Weddings · Events</div>
+        </div>
+        <div class="w-44 h-[3px] bg-white/10 overflow-hidden rounded-full">
+            <div class="loader-bar h-full w-1/3 bg-white rounded-full"></div>
+        </div>
+    </div>
 
-        <div class="relative z-20 px-6 sm:px-10 -mt-20 sm:-mt-24">
-            <div class="flex justify-between items-end">
-                
-                <div class="w-32 h-32 sm:w-40 sm:h-40 rounded-full border-4 border-card bg-card shadow-2xl relative overflow-hidden group flex items-center justify-center">
-                    <img id="ui-logo" src="https://images.unsplash.com/photo-1554048612-b6a09faf798b?q=80&w=400&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+    <main id="main-content" class="w-full">
+
+        <!-- ================= HOME — 3D CAMERA ================= -->
+        <section id="home" class="relative h-[100svh] min-h-[600px] overflow-hidden">
+            <div class="absolute inset-0 pointer-events-none" style="background:
+                radial-gradient(60% 45% at 50% 42%, rgba(212,162,78,0.10), transparent 70%),
+                radial-gradient(40% 30% at 20% 10%, rgba(99,102,241,0.07), transparent 70%),
+                #0a0a0a;"></div>
+
+            <canvas id="cam3d" class="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing"></canvas>
+
+            <div class="relative z-10 h-full max-w-6xl mx-auto px-5 sm:px-8 flex flex-col items-center justify-between text-center pointer-events-none pt-12 sm:pt-16 pb-7">
+                <div>
+                    <p class="text-muted tracking-[0.4em] uppercase text-[10px] sm:text-xs mb-3">Professional Studio</p>
+                    <h1 id="ui-name" class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white uppercase drop-shadow-2xl">FrameFusion</h1>
+                    <p class="text-white/60 tracking-[0.3em] text-[10px] sm:text-sm uppercase mt-3 font-semibold">Live Streaming · Weddings · Events</p>
                 </div>
-                
-                <div class="flex gap-3 mb-2" id="social-links-container"></div>
-            </div>
 
-            <div class="mt-6">
-                <h1 id="ui-name" class="text-3xl sm:text-4xl font-bold tracking-tight text-white uppercase drop-shadow-lg">Loading...</h1>
-                <p class="text-muted tracking-[0.2em] text-xs sm:text-sm uppercase mt-1 mb-4 font-semibold">Professional Studio</p>
-                <p id="ui-bio" class="text-light/80 text-sm sm:text-base leading-relaxed font-light max-w-lg"></p>
+                <div class="w-full max-w-3xl pointer-events-auto">
+                    <div class="scroll-cue text-white/50 text-xs tracking-[0.3em] uppercase mb-5"><i class="fas fa-chevron-down"></i></div>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                        <button onclick="goSec('sec-live')" class="group bg-white/[0.04] border border-white/10 hover:border-red-500/60 hover:bg-red-500/5 backdrop-blur-md rounded-2xl px-5 py-4 sm:py-5 text-left transition-all transform hover:-translate-y-1">
+                            <div class="flex items-center gap-3">
+                                <span class="w-10 h-10 rounded-xl bg-red-500/10 border border-red-500/30 flex items-center justify-center shrink-0"><i class="fas fa-tower-broadcast text-red-500"></i></span>
+                                <div>
+                                    <div class="text-white font-bold text-sm sm:text-base">Live Streams</div>
+                                    <div class="text-muted text-[11px] group-hover:text-red-400 transition">Watch live <i class="fas fa-arrow-right text-[9px]"></i></div>
+                                </div>
+                            </div>
+                        </button>
+                        <button onclick="goSec('sec-weddings')" class="group bg-white/[0.04] border border-white/10 hover:border-pink-400/60 hover:bg-pink-500/5 backdrop-blur-md rounded-2xl px-5 py-4 sm:py-5 text-left transition-all transform hover:-translate-y-1">
+                            <div class="flex items-center gap-3">
+                                <span class="w-10 h-10 rounded-xl bg-pink-500/10 border border-pink-500/30 flex items-center justify-center shrink-0"><i class="fas fa-heart text-pink-400"></i></span>
+                                <div>
+                                    <div class="text-white font-bold text-sm sm:text-base">Weddings</div>
+                                    <div class="text-muted text-[11px] group-hover:text-pink-300 transition">View stories <i class="fas fa-arrow-right text-[9px]"></i></div>
+                                </div>
+                            </div>
+                        </button>
+                        <button onclick="goSec('sec-events')" class="group bg-white/[0.04] border border-white/10 hover:border-amber-400/60 hover:bg-amber-500/5 backdrop-blur-md rounded-2xl px-5 py-4 sm:py-5 text-left transition-all transform hover:-translate-y-1">
+                            <div class="flex items-center gap-3">
+                                <span class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center shrink-0"><i class="fas fa-champagne-glasses text-amber-400"></i></span>
+                                <div>
+                                    <div class="text-white font-bold text-sm sm:text-base">Events</div>
+                                    <div class="text-muted text-[11px] group-hover:text-amber-300 transition">See coverage <i class="fas fa-arrow-right text-[9px]"></i></div>
+                                </div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
             </div>
+        </section>
 
-            <div class="flex flex-col sm:flex-row gap-4 mt-8">
-                <button onclick="saveContact()" class="flex-1 bg-white hover:bg-gray-200 text-black py-4 rounded-xl font-bold tracking-wide transition-all shadow-[0_0_30px_rgba(255,255,255,0.15)] flex items-center justify-center gap-2 transform hover:-translate-y-1">
-                    <i class="fas fa-bookmark"></i> Save Contact
+        <!-- ================= ABOUT / PROFILE ================= -->
+        <section id="about" class="max-w-6xl mx-auto px-5 sm:px-8 pt-16 reveal">
+            <div class="bg-white/[0.03] border border-white/10 rounded-3xl p-6 sm:p-12 backdrop-blur-md shadow-2xl relative overflow-hidden">
+                <div class="absolute -top-28 -right-28 w-80 h-80 rounded-full bg-[#d4a24e]/10 blur-3xl pointer-events-none"></div>
+                <div class="absolute -bottom-28 -left-28 w-80 h-80 rounded-full bg-indigo-500/5 blur-3xl pointer-events-none"></div>
+
+                <div class="flex flex-col sm:flex-row items-center gap-7 sm:gap-12 relative">
+                    <div class="relative shrink-0">
+                        <div class="absolute -inset-2 rounded-full bg-gradient-to-tr from-[#d4a24e]/40 via-transparent to-white/20 blur-md pointer-events-none"></div>
+                        <div class="w-32 h-32 sm:w-44 sm:h-44 rounded-full border-2 border-white/20 bg-card shadow-2xl relative overflow-hidden group flex items-center justify-center">
+                            <img id="ui-logo" src="https://images.unsplash.com/photo-1554048612-b6a09faf798b?q=80&w=400&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="Logo">
+                        </div>
+                    </div>
+
+                    <div class="flex-1 text-center sm:text-left">
+                        <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 justify-center sm:justify-start">
+                            <h2 id="ui-name-2" class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white uppercase">FrameFusion</h2>
+                            <span id="ui-rating" class="hidden items-center gap-1.5 bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 text-xs font-bold px-3 py-1.5 rounded-full"><i class="fas fa-star"></i> <span id="ui-rating-txt"></span></span>
+                        </div>
+                        <p class="text-muted tracking-[0.2em] text-[10px] sm:text-xs uppercase mt-2 font-semibold">Live Streaming · Weddings · Events</p>
+                        <p id="ui-bio" class="text-light/80 text-sm sm:text-base leading-relaxed font-light max-w-2xl mt-5 mx-auto sm:mx-0"></p>
+
+                        <div class="flex flex-col sm:flex-row items-center gap-4 mt-8">
+                            <button onclick="saveContact()" class="w-full sm:w-auto bg-white hover:bg-gray-200 text-black py-4 px-8 rounded-xl font-bold tracking-wide transition-all shadow-[0_0_30px_rgba(255,255,255,0.15)] flex items-center justify-center gap-2 transform hover:-translate-y-1">
+                                <i class="fas fa-bookmark"></i> Save Contact
+                            </button>
+                            <a id="ui-whatsapp-btn" href="#" target="_blank" class="w-full sm:w-auto border border-white/20 hover:bg-white hover:text-black text-white py-4 px-8 rounded-xl font-bold tracking-wide transition-all flex items-center justify-center gap-2 transform hover:-translate-y-1">
+                                <i class="fab fa-whatsapp text-lg"></i> WhatsApp
+                            </a>
+                            <div class="flex gap-3" id="social-links-container"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-10 relative">
+                    <div class="bg-white/[0.03] border border-white/10 rounded-2xl px-4 py-4 flex items-center gap-3">
+                        <i class="fas fa-camera text-white/70"></i>
+                        <span class="text-xs sm:text-sm font-semibold text-white/80">Photography</span>
+                    </div>
+                    <div class="bg-white/[0.03] border border-white/10 rounded-2xl px-4 py-4 flex items-center gap-3">
+                        <i class="fas fa-film text-white/70"></i>
+                        <span class="text-xs sm:text-sm font-semibold text-white/80">Cinematography</span>
+                    </div>
+                    <div class="bg-white/[0.03] border border-white/10 rounded-2xl px-4 py-4 flex items-center gap-3">
+                        <i class="fas fa-tower-broadcast text-red-500/80"></i>
+                        <span class="text-xs sm:text-sm font-semibold text-white/80">Live Streaming</span>
+                    </div>
+                    <div class="bg-white/[0.03] border border-white/10 rounded-2xl px-4 py-4 flex items-center gap-3">
+                        <i class="fas fa-paper-plane text-white/70"></i>
+                        <span class="text-xs sm:text-sm font-semibold text-white/80">Drone Coverage</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= CATEGORY NAV ================= -->
+        <div id="cat-nav" class="sticky top-0 z-40 mt-12 bg-dark/85 backdrop-blur-md border-y border-white/10">
+            <div class="max-w-6xl mx-auto px-4 sm:px-8 py-3 flex gap-2 sm:gap-3 overflow-x-auto no-scrollbar">
+                <button onclick="goSec('home')" aria-label="Home" class="whitespace-nowrap border border-white/15 text-white/80 hover:bg-white hover:text-black px-4 py-2.5 rounded-full text-xs sm:text-sm font-bold transition shrink-0">
+                    <i class="fas fa-house"></i>
                 </button>
-                <a id="ui-whatsapp-btn" href="#" target="_blank" class="flex-1 border border-white/20 hover:bg-white hover:text-black text-white py-4 rounded-xl font-bold tracking-wide transition-all flex items-center justify-center gap-2 transform hover:-translate-y-1">
-                    <i class="fab fa-whatsapp text-lg"></i> WhatsApp
-                </a>
+                <button data-target="sec-live" class="cat-tab whitespace-nowrap border border-white/15 text-white/80 px-4 sm:px-6 py-2.5 rounded-full text-xs sm:text-sm font-bold tracking-wide transition flex items-center gap-2">
+                    <i class="fas fa-tower-broadcast text-red-500"></i> Live Streaming <span id="count-live" class="opacity-60"></span>
+                </button>
+                <button data-target="sec-weddings" class="cat-tab whitespace-nowrap border border-white/15 text-white/80 px-4 sm:px-6 py-2.5 rounded-full text-xs sm:text-sm font-bold tracking-wide transition flex items-center gap-2">
+                    <i class="fas fa-heart text-pink-400"></i> Weddings <span id="count-weddings" class="opacity-60"></span>
+                </button>
+                <button data-target="sec-events" class="cat-tab whitespace-nowrap border border-white/15 text-white/80 px-4 sm:px-6 py-2.5 rounded-full text-xs sm:text-sm font-bold tracking-wide transition flex items-center gap-2">
+                    <i class="fas fa-champagne-glasses text-amber-400"></i> Events <span id="count-events" class="opacity-60"></span>
+                </button>
             </div>
         </div>
 
-        <hr class="border-white/10 my-12 mx-6 sm:mx-10">
+        <!-- ================= SECTIONS ================= -->
+        <div class="max-w-6xl mx-auto px-5 sm:px-8">
 
-        <!-- Portfolio Sections -->
-        <div class="px-6 sm:px-10 pb-10" id="portfolio-container">
-            <div class="text-center text-gray-500 py-10"><i class="fas fa-spinner fa-spin text-3xl"></i></div>
+            <!-- LIVE STREAMING -->
+            <section id="sec-live" class="pt-14 pb-4 reveal">
+                <div class="flex items-center gap-4 mb-2">
+                    <span class="w-12 h-12 rounded-2xl bg-red-500/10 border border-red-500/30 flex items-center justify-center"><i class="fas fa-tower-broadcast text-red-500 text-xl"></i></span>
+                    <div>
+                        <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-white">Live Streaming</h2>
+                        <p class="text-muted text-xs sm:text-sm mt-0.5">Multi-cam HD live streams — family anywhere in the world can watch your day live.</p>
+                    </div>
+                </div>
+                <div id="live-banner" class="hidden mt-6"></div>
+                <div id="proj-live" class="mt-8"></div>
+            </section>
+
+            <hr class="border-white/10 my-10">
+
+            <!-- WEDDINGS -->
+            <section id="sec-weddings" class="pt-4 pb-4 reveal">
+                <div class="flex items-center gap-4 mb-2">
+                    <span class="w-12 h-12 rounded-2xl bg-pink-500/10 border border-pink-500/30 flex items-center justify-center"><i class="fas fa-heart text-pink-400 text-xl"></i></span>
+                    <div>
+                        <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-white">Weddings</h2>
+                        <p class="text-muted text-xs sm:text-sm mt-0.5">Cinematic wedding photography &amp; films — your story, told frame by frame.</p>
+                    </div>
+                </div>
+                <div id="proj-weddings" class="mt-8"></div>
+            </section>
+
+            <hr class="border-white/10 my-10">
+
+            <!-- EVENTS -->
+            <section id="sec-events" class="pt-4 pb-10 reveal">
+                <div class="flex items-center gap-4 mb-2">
+                    <span class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center"><i class="fas fa-champagne-glasses text-amber-400 text-xl"></i></span>
+                    <div>
+                        <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-white">Events</h2>
+                        <p class="text-muted text-xs sm:text-sm mt-0.5">Concerts, birthdays, corporate events &amp; more — covered end to end.</p>
+                    </div>
+                </div>
+                <div id="proj-events" class="mt-8"></div>
+            </section>
         </div>
+
+        <!-- FOOTER -->
+        <footer class="border-t border-white/10 mt-16 py-12">
+            <div class="max-w-6xl mx-auto px-5 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
+                <div>
+                    <div class="text-white font-extrabold tracking-[0.3em] uppercase text-sm">FrameFusion</div>
+                    <p class="text-muted text-xs mt-1 tracking-widest uppercase">Live Streaming · Weddings · Events</p>
+                </div>
+                <div class="flex gap-5 text-[11px] text-muted uppercase tracking-[0.15em]">
+                    <a href="#home" class="hover:text-white transition">Home</a>
+                    <a href="#sec-live" class="hover:text-white transition">Live</a>
+                    <a href="#sec-weddings" class="hover:text-white transition">Weddings</a>
+                    <a href="#sec-events" class="hover:text-white transition">Events</a>
+                </div>
+                <p class="text-muted text-[11px] tracking-widest uppercase">© <span id="ui-year"></span> <span id="ui-footer-name">FrameFusion Studio</span></p>
+            </div>
+        </footer>
     </main>
 
+    <!-- Floating WhatsApp -->
+    <a id="ui-whatsapp-fab" href="#" target="_blank" class="hidden fixed bottom-6 right-6 z-40 w-14 h-14 rounded-full bg-green-500 hover:bg-green-400 text-white text-2xl flex items-center justify-center shadow-2xl shadow-green-500/30 transition transform hover:scale-110" aria-label="WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Project Viewer -->
+    <div id="projectViewer" class="fixed inset-0 z-[55] bg-dark hidden flex-col">
+        <div class="shrink-0 bg-dark/90 backdrop-blur-md border-b border-white/10">
+            <div class="max-w-6xl mx-auto px-5 sm:px-8 py-4 flex items-center gap-4">
+                <button onclick="closeProject()" class="w-10 h-10 shrink-0 rounded-full bg-white/10 hover:bg-white hover:text-black text-white flex items-center justify-center transition" aria-label="Back"><i class="fas fa-arrow-left"></i></button>
+                <div class="flex-1 min-w-0">
+                    <h3 id="pv-title" class="text-white font-extrabold text-lg sm:text-2xl tracking-wide truncate"></h3>
+                    <p id="pv-meta" class="text-muted text-[11px] sm:text-xs tracking-widest uppercase"></p>
+                </div>
+                <button id="pv-rate" class="shrink-0 text-xs font-bold bg-white/10 hover:bg-white hover:text-black px-4 py-2.5 rounded-full transition uppercase tracking-wider flex items-center gap-2"><i class="fas fa-star text-yellow-500"></i> Rate</button>
+            </div>
+        </div>
+        <div class="flex-1 overflow-y-auto">
+            <div class="max-w-6xl mx-auto px-5 sm:px-8 py-8">
+                <div id="pv-items" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5"></div>
+                <div id="pv-reviews-wrap" class="mt-12 hidden">
+                    <h4 class="text-white font-bold text-lg mb-5 flex items-center gap-3"><span class="w-1 h-5 bg-white rounded-full"></span>Client Reviews</h4>
+                    <div id="pv-reviews" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Review Modal -->
-    <div id="reviewModal" class="fixed inset-0 bg-black/90 backdrop-blur-md flex items-center justify-center z-50 hidden opacity-0 transition-opacity duration-300">
+    <div id="reviewModal" class="fixed inset-0 bg-black/90 backdrop-blur-md flex items-center justify-center z-[80] hidden opacity-0 transition-opacity duration-300">
         <div class="bg-card border border-white/10 p-8 rounded-3xl w-full max-w-md mx-4 transform scale-95 transition-transform duration-300 shadow-2xl">
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-2xl font-bold text-white tracking-wide">Rate Experience</h3>
                 <button onclick="closeReviewModal()" class="text-gray-400 hover:text-white bg-white/5 w-8 h-8 rounded-full flex items-center justify-center transition"><i class="fas fa-times"></i></button>
             </div>
-            
+
             <div class="flex justify-center gap-3 text-4xl text-gray-600 mb-8 star-rating" id="star-container">
                 <i class="fas fa-star drop-shadow-md" onclick="setRating(1)"></i>
                 <i class="fas fa-star drop-shadow-md" onclick="setRating(2)"></i>
@@ -95,26 +375,23 @@
 
             <input type="text" id="rev-name" placeholder="Your Name" class="w-full bg-dark/50 border border-white/10 rounded-xl p-4 text-white mb-4 outline-none focus:border-white/40 transition">
             <textarea id="rev-comment" placeholder="Tell us about the shoot..." rows="3" class="w-full bg-dark/50 border border-white/10 rounded-xl p-4 text-white mb-6 outline-none focus:border-white/40 transition resize-none"></textarea>
-            
+
             <button onclick="submitReview()" id="btn-submit-rev" class="w-full bg-white text-black font-bold py-4 rounded-xl hover:bg-gray-200 transition shadow-lg shadow-white/10 transform hover:-translate-y-0.5">Post Review</button>
         </div>
     </div>
 
     <!-- Lightbox Modal -->
-    <div id="lightboxModal" class="fixed inset-0 bg-black/95 backdrop-blur-sm flex flex-col items-center justify-center z-50 hidden opacity-0 transition-opacity">
+    <div id="lightboxModal" class="fixed inset-0 bg-black/95 backdrop-blur-sm flex flex-col items-center justify-center z-[70] hidden opacity-0 transition-opacity">
         <button onclick="closeModal('lightboxModal')" class="absolute top-6 right-6 w-12 h-12 bg-white/10 hover:bg-white hover:text-black rounded-full text-white flex items-center justify-center transition-all z-10"><i class="fas fa-times text-xl"></i></button>
-        
-        <!-- Image Viewer -->
-        <img id="lightboxImage" src="" class="max-w-full max-h-[85vh] object-contain transition-transform transform scale-95 duration-500 hidden shadow-2xl rounded-lg">
-        
-        <!-- Iframe Video Viewer (YouTube / Vimeo) -->
+
+        <img id="lightboxImage" src="" class="max-w-full max-h-[85vh] object-contain transition-transform transform scale-95 duration-500 hidden shadow-2xl rounded-lg" alt="">
+
         <div id="lightboxIframeWrapper" class="w-full max-w-4xl px-4 hidden">
             <div class="video-container shadow-2xl bg-black">
                 <iframe id="lightboxIframe" src="" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
             </div>
         </div>
 
-        <!-- Native MP4 Video Viewer -->
         <div id="lightboxNativeWrapper" class="w-full max-w-4xl px-4 hidden">
             <div class="video-container shadow-2xl bg-black">
                 <video id="lightboxNativeVideo" controls controlsList="nodownload" class="w-full h-full object-contain"></video>
@@ -122,7 +399,148 @@
         </div>
     </div>
 
-    <!-- Firebase -->
+    <!-- ================= LOADER CONTROL ================= -->
+    <script>
+        const loaderStart = Date.now();
+        let loaderHidden = false;
+        window.hideLoader = () => {
+            if (loaderHidden) return;
+            loaderHidden = true;
+            const el = document.getElementById('loader');
+            const wait = Math.max(0, 1400 - (Date.now() - loaderStart));
+            setTimeout(() => {
+                el.style.opacity = '0';
+                setTimeout(() => el.remove(), 750);
+            }, wait);
+        };
+        setTimeout(() => window.hideLoader(), 8000); // failsafe
+
+        window.goSec = (id) => document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+    </script>
+
+    <!-- ================= 3D CAMERA ================= -->
+    <script>
+    (function(){
+        if (!window.THREE) return;
+        const canvas = document.getElementById('cam3d');
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+        const scene = new THREE.Scene();
+        const cam = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
+
+        /* lights */
+        scene.add(new THREE.AmbientLight(0xffffff, 0.35));
+        const key = new THREE.DirectionalLight(0xffffff, 1.1); key.position.set(5, 7, 6); scene.add(key);
+        const rim = new THREE.PointLight(0xd4a24e, 1.8, 40); rim.position.set(-7, 3, -4); scene.add(rim);
+        const fill = new THREE.PointLight(0x6a7cff, 0.6, 40); fill.position.set(6, -3, 5); scene.add(fill);
+
+        /* materials */
+        const bodyMat = new THREE.MeshStandardMaterial({ color: 0x1d1d21, roughness: 0.45, metalness: 0.6 });
+        const darkMat = new THREE.MeshStandardMaterial({ color: 0x0d0d10, roughness: 0.3, metalness: 0.7 });
+        const goldMat = new THREE.MeshStandardMaterial({ color: 0xd4a24e, roughness: 0.25, metalness: 0.9 });
+
+        /* camera model */
+        const g = new THREE.Group();
+        g.add(new THREE.Mesh(new THREE.BoxGeometry(3.4, 2.1, 1.1), bodyMat));                        // body
+
+        const grip = new THREE.Mesh(new THREE.BoxGeometry(0.75, 1.95, 1.3), darkMat);
+        grip.position.set(-1.55, -0.05, 0.08); g.add(grip);                                          // grip
+
+        const top = new THREE.Mesh(new THREE.BoxGeometry(3.4, 0.28, 1.0), darkMat);
+        top.position.y = 1.18; g.add(top);                                                           // top plate
+
+        const hump = new THREE.Mesh(new THREE.BoxGeometry(1.15, 0.55, 0.92), bodyMat);
+        hump.position.y = 1.45; g.add(hump);                                                         // prism hump
+
+        const shutter = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 0.13, 24), goldMat);
+        shutter.position.set(-1.35, 1.38, 0.15); g.add(shutter);                                     // shutter button
+
+        const dial = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.14, 24), darkMat);
+        dial.position.set(1.25, 1.38, -0.15); g.add(dial);                                           // mode dial
+
+        const lens = new THREE.Mesh(new THREE.CylinderGeometry(0.85, 0.92, 1.55, 48), new THREE.MeshStandardMaterial({ color: 0x232327, roughness: 0.35, metalness: 0.7 }));
+        lens.rotation.x = Math.PI / 2; lens.position.z = 1.25; g.add(lens);                          // lens barrel
+
+        const focusRing = new THREE.Mesh(new THREE.TorusGeometry(0.9, 0.08, 16, 64), darkMat);
+        focusRing.position.z = 1.0; g.add(focusRing);                                                // focus ring
+
+        const goldRing = new THREE.Mesh(new THREE.TorusGeometry(0.87, 0.045, 16, 64), goldMat);
+        goldRing.position.z = 1.62; g.add(goldRing);                                                 // brand ring
+
+        const glass = new THREE.Mesh(new THREE.CylinderGeometry(0.68, 0.68, 0.07, 48),
+            new THREE.MeshStandardMaterial({ color: 0x101828, roughness: 0.05, metalness: 1, emissive: 0x1c2f57, emissiveIntensity: 0.7 }));
+        glass.rotation.x = Math.PI / 2; glass.position.z = 2.02; g.add(glass);                       // front glass
+
+        const innerGlass = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.35, 0.03, 32),
+            new THREE.MeshStandardMaterial({ color: 0x2a3f6e, roughness: 0, metalness: 1, emissive: 0x3b5998, emissiveIntensity: 0.9 }));
+        innerGlass.rotation.x = Math.PI / 2; innerGlass.position.z = 2.06; g.add(innerGlass);        // inner element
+
+        const recMat = new THREE.MeshStandardMaterial({ color: 0xff2244, emissive: 0xff2244, emissiveIntensity: 2 });
+        const rec = new THREE.Mesh(new THREE.SphereGeometry(0.07, 16, 16), recMat);
+        rec.position.set(1.42, 1.38, 0.25); g.add(rec);                                              // REC light
+
+        const shoe = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.1, 0.5), goldMat);
+        shoe.position.y = 1.78; g.add(shoe);                                                         // hot shoe
+
+        g.rotation.y = -0.45;
+        scene.add(g);
+
+        /* floating dust */
+        const N = 160;
+        const pos = new Float32Array(N * 3);
+        for (let i = 0; i < N * 3; i++) pos[i] = (Math.random() - 0.5) * 26;
+        const pGeo = new THREE.BufferGeometry();
+        pGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+        const pts = new THREE.Points(pGeo, new THREE.PointsMaterial({ color: 0xd4a24e, size: 0.055, transparent: true, opacity: 0.45 }));
+        scene.add(pts);
+
+        /* interaction: hover parallax + drag rotate */
+        let hoverX = 0, hoverY = 0, userX = 0, userY = 0, dragging = false, px = 0, py = 0;
+        window.addEventListener('pointermove', (e) => {
+            if (dragging) {
+                userY += (e.clientX - px) * 0.006;
+                userX += (e.clientY - py) * 0.006;
+                userX = Math.max(-0.6, Math.min(0.7, userX));
+                px = e.clientX; py = e.clientY;
+                return;
+            }
+            hoverY = (e.clientX / innerWidth * 2 - 1) * 0.35;
+            hoverX = (e.clientY / innerHeight * 2 - 1) * 0.18;
+        });
+        canvas.addEventListener('pointerdown', (e) => { dragging = true; px = e.clientX; py = e.clientY; });
+        window.addEventListener('pointerup', () => { dragging = false; });
+
+        const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        function resize() {
+            const w = canvas.clientWidth || innerWidth, h = canvas.clientHeight || innerHeight;
+            renderer.setSize(w, h, false);
+            renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+            cam.aspect = w / h;
+            cam.position.set(0, 0.45, w < 640 ? 11.5 : 9);
+            cam.updateProjectionMatrix();
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        let t = 0;
+        function loop() {
+            requestAnimationFrame(loop);
+            t += 0.01;
+            if (!reduced) {
+                const sway = Math.sin(t * 0.5) * 0.35;
+                g.rotation.y += ((sway + hoverY + userY - 0.45) - g.rotation.y) * 0.05;
+                g.rotation.x += ((Math.sin(t * 0.33) * 0.06 + hoverX + userX) - g.rotation.x) * 0.05;
+                g.position.y = Math.sin(t * 0.8) * 0.14 - 0.1;
+                recMat.emissiveIntensity = 1.6 + Math.sin(t * 4.5) * 1.3;
+                pts.rotation.y = t * 0.02;
+            }
+            renderer.render(scene, cam);
+        }
+        loop();
+    })();
+    </script>
+
+    <!-- ================= FIREBASE ================= -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
         import { getFirestore, doc, getDoc, collection, query, orderBy, onSnapshot, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -140,29 +558,89 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        const CATEGORIES = ['live', 'weddings', 'events'];
         let profileData = {};
         let allProjects = [];
         let allReviews = [];
 
-        async function loadProfile() {
-            const snap = await getDoc(doc(db, "settings", "profile"));
-            if (snap.exists()) {
-                profileData = snap.data();
-                document.getElementById('ui-name').innerText = profileData.name || "Studio";
-                document.getElementById('ui-bio').innerText = profileData.bio || "";
-                if(profileData.coverUrl) document.getElementById('ui-cover').src = profileData.coverUrl;
-                if(profileData.logoUrl) document.getElementById('ui-logo').src = profileData.logoUrl;
-                
-                let waBtn = document.getElementById('ui-whatsapp-btn');
-                if(profileData.phone) waBtn.href = `https://wa.me/${profileData.phone.replace(/[^0-9]/g, '')}`;
-                else waBtn.style.display = 'none';
+        document.getElementById('ui-year').innerText = new Date().getFullYear();
 
-                let socialsHTML = '';
-                if(profileData.insta) socialsHTML += `<a href="${profileData.insta}" class="w-12 h-12 rounded-full bg-white/5 border border-white/10 hover:bg-white hover:text-black flex items-center justify-center transition-all shadow-lg backdrop-blur-sm"><i class="fab fa-instagram text-lg"></i></a>`;
-                if(profileData.fb) socialsHTML += `<a href="${profileData.fb}" class="w-12 h-12 rounded-full bg-white/5 border border-white/10 hover:bg-white hover:text-black flex items-center justify-center transition-all shadow-lg backdrop-blur-sm"><i class="fab fa-facebook-f text-lg"></i></a>`;
-                document.getElementById('social-links-container').innerHTML = socialsHTML;
+        async function loadProfile() {
+            try {
+                const snap = await getDoc(doc(db, "settings", "profile"));
+                if (snap.exists()) {
+                    profileData = snap.data();
+                    document.getElementById('ui-name').innerText = profileData.name || "Studio";
+                    document.getElementById('ui-name-2').innerText = profileData.name || "Studio";
+                    document.getElementById('ui-footer-name').innerText = profileData.name || "FrameFusion Studio";
+                    document.getElementById('ui-bio').innerText = profileData.bio || "";
+                    if(profileData.logoUrl) document.getElementById('ui-logo').src = profileData.logoUrl;
+
+                    const waBtn = document.getElementById('ui-whatsapp-btn');
+                    const waFab = document.getElementById('ui-whatsapp-fab');
+                    if(profileData.phone) {
+                        const waLink = `https://wa.me/${profileData.phone.replace(/[^0-9]/g, '')}`;
+                        waBtn.href = waLink;
+                        waFab.href = waLink;
+                        waFab.classList.remove('hidden');
+                    } else {
+                        waBtn.style.display = 'none';
+                    }
+
+                    let socialsHTML = '';
+                    if(profileData.insta) socialsHTML += `<a href="${profileData.insta}" target="_blank" class="w-12 h-12 rounded-full bg-white/5 border border-white/10 hover:bg-white hover:text-black flex items-center justify-center transition-all shadow-lg backdrop-blur-sm"><i class="fab fa-instagram text-lg"></i></a>`;
+                    if(profileData.fb) socialsHTML += `<a href="${profileData.fb}" target="_blank" class="w-12 h-12 rounded-full bg-white/5 border border-white/10 hover:bg-white hover:text-black flex items-center justify-center transition-all shadow-lg backdrop-blur-sm"><i class="fab fa-facebook-f text-lg"></i></a>`;
+                    document.getElementById('social-links-container').innerHTML = socialsHTML;
+
+                    renderLiveBanner();
+                }
+            } catch (e) {
+                console.error("Profile load failed:", e);
             }
-            document.getElementById('main-content').classList.remove('opacity-0');
+            window.hideLoader();
+        }
+
+        /* ---- 3D video camera markup (shared) ---- */
+        function videoCamHtml() {
+            return `
+                <span class="cam3d">
+                    <span class="cam-body">
+                        <b class="cbf"></b><b class="cbb"></b><b class="cbl"></b><b class="cbr"></b><b class="cbt"></b><b class="cbd"></b>
+                        <b class="cam-rec"></b>
+                    </span>
+                    <span class="cam-lens">
+                        <b class="clb"></b><b class="cll"></b><b class="clr"></b><b class="clt"></b><b class="cld"></b><b class="clf"></b>
+                    </span>
+                    <span class="cam-handle">
+                        <b class="chf"></b><b class="chb"></b><b class="chl"></b><b class="chr"></b><b class="cht"></b><b class="chd"></b>
+                    </span>
+                </span>`;
+        }
+
+        /* ---- LIVE NOW banner (set liveUrl in admin) — opens YouTube directly ---- */
+        function renderLiveBanner() {
+            const box = document.getElementById('live-banner');
+            const url = (profileData.liveUrl || '').trim();
+            if (!url) { box.classList.add('hidden'); box.innerHTML = ''; return; }
+
+            box.innerHTML = `
+                <a href="${url}" target="_blank" rel="noopener" class="proj-card group block rounded-2xl border border-red-500/40 hover:border-red-500/90 bg-gradient-to-r from-red-500/15 via-white/[0.03] to-transparent p-5 sm:p-8 shadow-[0_0_60px_rgba(239,68,68,0.15)] transition-all transform hover:-translate-y-1">
+                    <div class="flex items-center gap-5 sm:gap-8">
+                        <span class="cam-wrap shrink-0">${videoCamHtml()}</span>
+                        <div class="flex-1 min-w-0">
+                            <span class="inline-flex items-center gap-2 bg-red-600 text-white text-[10px] sm:text-[11px] font-extrabold tracking-[0.2em] uppercase px-3 py-1.5 rounded-full">
+                                <span class="live-dot w-2 h-2 rounded-full bg-white inline-block"></span> Live Now
+                            </span>
+                            <div class="text-white font-extrabold text-base sm:text-2xl tracking-wide mt-2.5 truncate">${profileData.liveTitle || 'We are live right now'}</div>
+                            <div class="text-muted text-xs sm:text-sm mt-1">Tap to watch live on YouTube</div>
+                        </div>
+                        <span class="hidden sm:inline-flex items-center gap-2.5 bg-red-600 group-hover:bg-red-500 text-white text-xs font-bold uppercase tracking-[0.15em] px-6 py-3.5 rounded-full transition-all shrink-0">
+                            <i class="fab fa-youtube"></i> Watch Live
+                        </span>
+                        <i class="fab fa-youtube sm:hidden text-red-500 text-3xl shrink-0"></i>
+                    </div>
+                </a>`;
+            box.classList.remove('hidden');
         }
 
         function loadData() {
@@ -176,51 +654,124 @@
             });
         }
 
-        function renderPortfolio() {
-            const container = document.getElementById('portfolio-container');
-            container.innerHTML = '';
-            
-            allProjects.forEach((proj) => {
-                if(!proj.items || proj.items.length === 0) return;
-                
-                let itemsHtml = proj.items.map(item => {
-                    if(item.type === 'photo') {
-                        return `<div class="photo-card cursor-pointer rounded-2xl overflow-hidden relative aspect-square sm:aspect-[4/5] bg-dark shadow-xl border border-white/5" onclick="openLightbox('${item.url}', 'photo')"><img src="${item.url}" class="w-full h-full object-cover"></div>`;
-                    }
-                    
-                    // Video URL Parsing (YouTube, Vimeo, or MP4)
-                    let url = item.url;
-                    let thumbHtml = '';
-                    let clickArgs = '';
+        function projectCategory(proj) {
+            return CATEGORIES.includes(proj.category) ? proj.category : 'weddings';
+        }
 
-                    if (url.includes('vimeo.com')) {
-                        let vId = url.match(/vimeo\.com\/(\d+)/)?.[1];
-                        if(!vId) return '';
-                        clickArgs = `'${vId}', 'vimeo'`;
-                        thumbHtml = `<div class="w-full h-full bg-zinc-900 flex items-center justify-center icon-container"><i class="fab fa-vimeo-v text-5xl text-blue-400 drop-shadow-lg"></i></div>`;
-                    } 
-                    else if (url.toLowerCase().endsWith('.mp4')) {
-                        clickArgs = `'${url}', 'mp4'`;
-                        // මෙන්න මෙතන තමයි වෙනස: <video> ටැග් එකක් පාවිච්චි කරලා, #t=1.5 කියන එකෙන් වීඩියෝ එකේ තත්පර 1.5 දී තියෙන රූපය පෙන්වන්න හදලා තියෙනවා.
-                        thumbHtml = `
-                            <video src="${url}#t=1.5" class="w-full h-full object-cover opacity-80" preload="metadata" muted playsinline></video>
-                            <div class="absolute inset-0 flex items-center justify-center icon-container"><i class="fas fa-play-circle text-5xl text-white/80 drop-shadow-lg"></i></div>
-                        `;
-                    } 
-                    else {
-                        // Default to YouTube
-                        let vidMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([\w-]{11})/);
-                        let vidId = vidMatch ? vidMatch[1] : null;
-                        if (!vidId) return '';
-                        clickArgs = `'${vidId}', 'youtube'`;
-                        thumbHtml = `<img src="https://img.youtube.com/vi/${vidId}/hqdefault.jpg" class="w-full h-full object-cover opacity-70"><div class="absolute inset-0 flex items-center justify-center icon-container"><i class="fab fa-youtube text-5xl text-red-600 drop-shadow-2xl"></i></div>`;
-                    }
+        function itemCardHtml(item) {
+            if(item.type === 'photo') {
+                return `<div class="photo-card cursor-pointer rounded-2xl overflow-hidden relative aspect-square sm:aspect-[4/5] bg-dark shadow-xl border border-white/5" onclick="openLightbox('${item.url}', 'photo')"><img src="${item.url}" class="w-full h-full object-cover" loading="lazy" alt=""></div>`;
+            }
 
-                    return `<div class="photo-card cursor-pointer rounded-2xl overflow-hidden relative aspect-square sm:aspect-[4/5] bg-dark shadow-xl border border-white/5" onclick="openLightbox(${clickArgs})">${thumbHtml}</div>`;
-                }).join('');
+            let url = item.url;
+            let thumbHtml = '';
+            let clickArgs = '';
 
-                const projReviews = allReviews.filter(r => r.projectId === proj.id);
-                let reviewsHtml = projReviews.map(r => `
+            if (url.includes('vimeo.com')) {
+                let vId = url.match(/vimeo\.com\/(\d+)/)?.[1];
+                if(!vId) return '';
+                clickArgs = `'${vId}', 'vimeo'`;
+                thumbHtml = `<div class="w-full h-full bg-zinc-900 flex items-center justify-center icon-container"><i class="fab fa-vimeo-v text-5xl text-blue-400 drop-shadow-lg"></i></div>`;
+            }
+            else if (url.toLowerCase().endsWith('.mp4')) {
+                clickArgs = `'${url}', 'mp4'`;
+                thumbHtml = `
+                    <video src="${url}#t=1.5" class="w-full h-full object-cover opacity-80" preload="metadata" muted playsinline></video>
+                    <div class="absolute inset-0 flex items-center justify-center icon-container"><i class="fas fa-play-circle text-5xl text-white/80 drop-shadow-lg"></i></div>
+                `;
+            }
+            else {
+                let vidMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|live\/|watch\?v=|watch\?.+&v=|shorts\/))([\w-]{11})/);
+                let vidId = vidMatch ? vidMatch[1] : null;
+                if (!vidId) return '';
+                clickArgs = `'${vidId}', 'youtube'`;
+                thumbHtml = `<img src="https://img.youtube.com/vi/${vidId}/hqdefault.jpg" class="w-full h-full object-cover opacity-70" loading="lazy" alt=""><div class="absolute inset-0 flex items-center justify-center icon-container"><i class="fab fa-youtube text-5xl text-red-600 drop-shadow-2xl"></i></div>`;
+            }
+
+            return `<div class="photo-card cursor-pointer rounded-2xl overflow-hidden relative aspect-square sm:aspect-[4/5] bg-dark shadow-xl border border-white/5" onclick="openLightbox(${clickArgs})">${thumbHtml}</div>`;
+        }
+
+        const CAT_HOVER = { live: 'hover:border-red-500/60', weddings: 'hover:border-pink-400/60', events: 'hover:border-amber-400/60' };
+
+        function projectCardHtml(proj, cat) {
+            const items = proj.items || [];
+            const nPhotos = items.filter(i => i.type === 'photo').length;
+            const nVideos = items.length - nPhotos;
+            const projReviews = allReviews.filter(r => r.projectId === proj.id);
+            let meta = [];
+            if (nPhotos) meta.push(`${nPhotos} photo${nPhotos > 1 ? 's' : ''}`);
+            if (nVideos) meta.push(`${nVideos} video${nVideos > 1 ? 's' : ''}`);
+            if (projReviews.length) {
+                const avg = (projReviews.reduce((s, r) => s + (r.rating || 0), 0) / projReviews.length).toFixed(1);
+                meta.push(`★ ${avg}`);
+            }
+
+            const faces = '<b class="f1"></b><b class="f2"></b><b class="f3"></b><b class="f4"></b><b class="f5"></b><b class="f6"></b>';
+            return `
+                <button onclick="openProject('${proj.id}')" class="proj-card group text-left bg-white/[0.03] border border-white/10 ${CAT_HOVER[cat]} rounded-2xl px-5 py-5 transition-all transform hover:-translate-y-1 flex items-center gap-4 w-full">
+                    <span class="shape-wrap shrink-0"><span class="shape3d sh-${cat}">${faces}</span></span>
+                    <span class="flex-1 min-w-0">
+                        <span class="block text-white font-bold text-sm sm:text-base truncate">${proj.name}</span>
+                        <span class="block text-muted text-xs mt-1">${meta.join(' · ')}</span>
+                    </span>
+                    <i class="fas fa-arrow-right text-white/30 group-hover:text-white group-hover:translate-x-1 transition-all shrink-0"></i>
+                </button>
+            `;
+        }
+
+        /* live projects: big full-width bar style */
+        function projectBarHtml(proj) {
+            const items = proj.items || [];
+            const nPhotos = items.filter(i => i.type === 'photo').length;
+            const nVideos = items.length - nPhotos;
+            const projReviews = allReviews.filter(r => r.projectId === proj.id);
+            let meta = [];
+            if (nVideos) meta.push(`${nVideos} stream${nVideos > 1 ? 's' : ''} / video${nVideos > 1 ? 's' : ''}`);
+            if (nPhotos) meta.push(`${nPhotos} photo${nPhotos > 1 ? 's' : ''}`);
+            if (projReviews.length) {
+                const avg = (projReviews.reduce((s, r) => s + (r.rating || 0), 0) / projReviews.length).toFixed(1);
+                meta.push(`★ ${avg}`);
+            }
+
+            return `
+                <button onclick="openProject('${proj.id}')" class="proj-card group text-left w-full rounded-2xl border border-red-500/25 hover:border-red-500/70 bg-gradient-to-r from-red-500/10 via-white/[0.03] to-transparent px-5 sm:px-8 py-6 sm:py-8 flex items-center gap-5 sm:gap-8 transition-all transform hover:-translate-y-1">
+                    <span class="cam-wrap shrink-0">${videoCamHtml()}</span>
+                    <span class="flex-1 min-w-0">
+                        <span class="flex items-center gap-3 min-w-0">
+                            <span class="block text-white font-extrabold text-lg sm:text-2xl tracking-wide truncate">${proj.name}</span>
+                        </span>
+                        <span class="block text-muted text-xs sm:text-sm mt-1.5">${meta.join(' · ') || 'Live stream project'}</span>
+                    </span>
+                    <span class="hidden sm:inline-flex items-center gap-2.5 border border-white/20 group-hover:bg-white group-hover:text-black group-hover:border-white text-white text-xs font-bold uppercase tracking-[0.15em] px-6 py-3.5 rounded-full transition-all shrink-0">
+                        <i class="fas fa-play text-[10px] text-red-500 group-hover:text-black transition"></i> Watch
+                    </span>
+                    <i class="fas fa-arrow-right sm:hidden text-white/40 group-hover:text-white transition shrink-0"></i>
+                </button>
+            `;
+        }
+
+        /* ---- project viewer ---- */
+        let currentOpenProjectId = null;
+
+        function renderProjectViewer(pid) {
+            const proj = allProjects.find(p => p.id === pid);
+            if (!proj) { closeProject(); return; }
+            const items = proj.items || [];
+            const nPhotos = items.filter(i => i.type === 'photo').length;
+            const nVideos = items.length - nPhotos;
+            const cat = projectCategory(proj);
+            const CAT_NAME = { live: 'Live Streaming', weddings: 'Weddings', events: 'Events' };
+
+            document.getElementById('pv-title').innerText = proj.name;
+            document.getElementById('pv-meta').innerText =
+                `${CAT_NAME[cat]}${nPhotos ? ' · ' + nPhotos + ' photos' : ''}${nVideos ? ' · ' + nVideos + ' videos' : ''}`;
+            document.getElementById('pv-items').innerHTML = items.map(itemCardHtml).join('');
+            document.getElementById('pv-rate').onclick = () => openReviewModal(proj.id);
+
+            const projReviews = allReviews.filter(r => r.projectId === proj.id);
+            const wrap = document.getElementById('pv-reviews-wrap');
+            if (projReviews.length) {
+                document.getElementById('pv-reviews').innerHTML = projReviews.map(r => `
                     <div class="bg-white/5 p-5 rounded-2xl border border-white/5 backdrop-blur-sm relative">
                         <i class="fas fa-quote-left absolute top-4 right-4 text-white/5 text-3xl"></i>
                         <div class="flex justify-between items-start mb-3">
@@ -230,25 +781,107 @@
                         <p class="text-gray-400 text-sm italic leading-relaxed">"${r.comment}"</p>
                     </div>
                 `).join('');
+                wrap.classList.remove('hidden');
+            } else {
+                wrap.classList.add('hidden');
+            }
+        }
 
-                container.innerHTML += `
-                    <div class="mb-16">
-                        <div class="flex justify-between items-center mb-6">
-                            <h2 class="text-2xl font-bold text-white tracking-wide flex items-center gap-3"><span class="w-1 h-6 bg-white rounded-full"></span>${proj.name}</h2>
-                            <button onclick="openReviewModal('${proj.id}')" class="text-xs font-bold bg-white/10 hover:bg-white hover:text-black px-4 py-2 rounded-full transition uppercase tracking-wider flex items-center gap-2"><i class="fas fa-star text-yellow-500"></i> Rate</button>
-                        </div>
-                        
-                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-5 mb-8">${itemsHtml}</div>
-                        
-                        ${projReviews.length > 0 ? `<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">${reviewsHtml}</div>` : ''}
-                    </div>
-                `;
+        window.openProject = (pid) => {
+            currentOpenProjectId = pid;
+            renderProjectViewer(pid);
+            const v = document.getElementById('projectViewer');
+            v.classList.remove('hidden');
+            v.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        };
+
+        window.closeProject = () => {
+            currentOpenProjectId = null;
+            const v = document.getElementById('projectViewer');
+            v.classList.add('hidden');
+            v.classList.remove('flex');
+            document.body.style.overflow = '';
+        };
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key !== 'Escape') return;
+            if (!document.getElementById('lightboxModal').classList.contains('hidden')) { closeModal('lightboxModal'); return; }
+            if (!document.getElementById('reviewModal').classList.contains('hidden')) { closeReviewModal(); return; }
+            if (currentOpenProjectId) closeProject();
+        });
+
+        const EMPTY_MSG = {
+            live:     { icon: 'fa-tower-broadcast', text: 'Live stream projects coming soon — contact us to book yours.' },
+            weddings: { icon: 'fa-heart',           text: 'Wedding stories coming soon — contact us to book your date.' },
+            events:   { icon: 'fa-champagne-glasses', text: 'Event coverage coming soon — contact us to book yours.' }
+        };
+
+        function renderPortfolio() {
+            const counts = { live: 0, weddings: 0, events: 0 };
+            const html = { live: '', weddings: '', events: '' };
+
+            allProjects.forEach((proj) => {
+                if(!proj.items || proj.items.length === 0) return;
+                const cat = projectCategory(proj);
+                counts[cat]++;
+                html[cat] += (cat === 'live') ? projectBarHtml(proj) : projectCardHtml(proj, cat);
             });
+
+            CATEGORIES.forEach(cat => {
+                const box = document.getElementById('proj-' + cat);
+                if (html[cat]) {
+                    box.innerHTML = (cat === 'live')
+                        ? `<div class="space-y-4">${html[cat]}</div>`
+                        : `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">${html[cat]}</div>`;
+                } else {
+                    box.innerHTML = `
+                        <div class="border border-dashed border-white/15 rounded-2xl py-14 px-6 text-center text-muted">
+                            <i class="fas ${EMPTY_MSG[cat].icon} text-3xl mb-4 opacity-40"></i>
+                            <p class="text-sm">${EMPTY_MSG[cat].text}</p>
+                        </div>`;
+                }
+                document.getElementById('count-' + cat).innerText = counts[cat] ? `(${counts[cat]})` : '';
+            });
+
+            /* average rating badge (real data from reviews) */
+            const badge = document.getElementById('ui-rating');
+            if (allReviews.length > 0) {
+                const avg = (allReviews.reduce((s, r) => s + (r.rating || 0), 0) / allReviews.length).toFixed(1);
+                document.getElementById('ui-rating-txt').innerText = `${avg} · ${allReviews.length} review${allReviews.length > 1 ? 's' : ''}`;
+                badge.classList.remove('hidden');
+                badge.classList.add('inline-flex');
+            }
+
+            /* keep open project viewer fresh on data updates */
+            if (currentOpenProjectId) renderProjectViewer(currentOpenProjectId);
         }
 
         loadProfile();
         loadData();
 
+        /* ---- category nav: scroll + active state ---- */
+        const tabs = document.querySelectorAll('.cat-tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.getElementById(tab.dataset.target).scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+        const secObserver = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    tabs.forEach(t => t.classList.toggle('active', t.dataset.target === e.target.id));
+                }
+            });
+        }, { rootMargin: '-30% 0px -60% 0px' });
+        document.querySelectorAll('section[id^="sec-"]').forEach(s => secObserver.observe(s));
+
+        const revObserver = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); revObserver.unobserve(e.target); } });
+        }, { threshold: 0.05 });
+        document.querySelectorAll('.reveal').forEach(el => revObserver.observe(el));
+
+        /* ---- reviews ---- */
         let currentReviewProjectId = null;
         let currentRating = 5;
 
@@ -291,6 +924,7 @@
             closeReviewModal();
         };
 
+        /* ---- lightbox ---- */
         window.openLightbox = (src, type) => {
             const modal = document.getElementById('lightboxModal');
             const img = document.getElementById('lightboxImage');
@@ -299,25 +933,24 @@
             const nativeWrapper = document.getElementById('lightboxNativeWrapper');
             const nativeVideo = document.getElementById('lightboxNativeVideo');
 
-            // Hide all first
             img.classList.add('hidden');
             iframeWrapper.classList.add('hidden');
             nativeWrapper.classList.add('hidden');
             iframe.src = '';
             nativeVideo.src = '';
 
-            if(type === 'photo') { 
-                img.src = src; 
-                img.classList.remove('hidden'); 
+            if(type === 'photo') {
+                img.src = src;
+                img.classList.remove('hidden');
                 img.classList.remove('scale-95');
-            } 
-            else if (type === 'youtube') { 
-                iframe.src = `https://www.youtube.com/embed/${src}?autoplay=1&rel=0`; 
-                iframeWrapper.classList.remove('hidden'); 
+            }
+            else if (type === 'youtube') {
+                iframe.src = `https://www.youtube.com/embed/${src}?autoplay=1&rel=0`;
+                iframeWrapper.classList.remove('hidden');
             }
             else if (type === 'vimeo') {
-                iframe.src = `https://player.vimeo.com/video/${src}?autoplay=1&color=ffffff&title=0&byline=0&portrait=0`; 
-                iframeWrapper.classList.remove('hidden'); 
+                iframe.src = `https://player.vimeo.com/video/${src}?autoplay=1&color=ffffff&title=0&byline=0&portrait=0`;
+                iframeWrapper.classList.remove('hidden');
             }
             else if (type === 'mp4') {
                 nativeVideo.src = src;
@@ -325,20 +958,20 @@
                 nativeVideo.play();
             }
 
-            modal.classList.remove('hidden'); 
-            void modal.offsetWidth; 
-            modal.classList.remove('opacity-0'); 
+            modal.classList.remove('hidden');
+            void modal.offsetWidth;
+            modal.classList.remove('opacity-0');
         };
 
         window.closeModal = (id) => {
-            const m = document.getElementById(id); 
+            const m = document.getElementById(id);
             m.classList.add('opacity-0');
             document.getElementById('lightboxImage').classList.add('scale-95');
-            
-            setTimeout(() => { 
-                m.classList.add('hidden'); 
-                document.getElementById('lightboxIframe').src = ''; 
-                
+
+            setTimeout(() => {
+                m.classList.add('hidden');
+                document.getElementById('lightboxIframe').src = '';
+
                 const nativeVideo = document.getElementById('lightboxNativeVideo');
                 nativeVideo.pause();
                 nativeVideo.src = '';
