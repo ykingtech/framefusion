@@ -7,9 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
-    <script>
+<script>
         tailwind.config = {
             theme: {
                 extend: {
@@ -20,478 +18,734 @@
         }
     </script>
     <style>
-        body { background-color: #0a0a0a; color: #f5f5f5; }
+        :root {
+            --bg: #0b0b0b;
+            --panel: #111111;
+            --panel-2: #151515;
+            --ink: #f4f4f0;
+            --muted: #8e8e88;
+            --line: rgba(255,255,255,.11);
+            --line-strong: rgba(255,255,255,.22);
+            --accent: #d8c7a0;
+        }
+        * { box-sizing: border-box; }
+        html { background: var(--bg); }
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--ink);
+            font-family: 'Outfit', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+        ::selection { background: var(--ink); color: #0b0b0b; }
         ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #0a0a0a; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
-
-        .photo-card img, .photo-card video, .photo-card .icon-container { transition: all 0.5s ease; }
-        .photo-card:hover img, .photo-card:hover video, .photo-card:hover .icon-container { transform: scale(1.05); }
-
-        .video-container { position: relative; padding-bottom: 56.25%; height: 0; width: 100%; border-radius: 12px; overflow:hidden;}
-        .video-container iframe, .video-container video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-        .star-rating i { cursor: pointer; transition: color 0.2s; }
-        .star-rating i:hover, .star-rating i.active { color: #eab308; }
-
-        /* LIVE pulse */
-        .live-dot { animation: livepulse 1.4s ease-in-out infinite; }
-        @keyframes livepulse { 0%,100%{ opacity:1; transform:scale(1);} 50%{ opacity:.4; transform:scale(.8);} }
-
-        /* loader */
-        #loader { transition: opacity .7s ease; }
-        .loader-bar { animation: shimmer 1.4s ease-in-out infinite; }
-        @keyframes shimmer { 0%{ transform:translateX(-110%);} 100%{ transform:translateX(320%);} }
-        .loader-ring { animation: spin 1.1s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* scroll cue */
-        .scroll-cue { animation: cue 1.8s ease-in-out infinite; }
-        @keyframes cue { 0%,100%{ transform:translateY(0); opacity:.5;} 50%{ transform:translateY(8px); opacity:1;} }
-
-        /* section reveal */
-        .reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
-        .reveal.in { opacity: 1; transform: none; }
-        @media (prefers-reduced-motion: reduce) {
-            .reveal { opacity: 1; transform: none; transition: none; }
-            .live-dot, .scroll-cue, .loader-bar { animation: none; }
-        }
-
-        .cat-tab.active { background: #f5f5f5; color: #0a0a0a; border-color: #f5f5f5; }
-
-        /* 3D project shapes */
-        .shape-wrap { perspective: 300px; width: 44px; height: 44px; display: grid; place-items: center; }
-        .shape3d { width: 34px; height: 34px; position: relative; transform-style: preserve-3d;
-            animation: spin3d 9s linear infinite; }
-        .shape3d > b { position: absolute; inset: 0; border-radius: 6px; border: 1.5px solid; }
-        .shape3d .f1 { transform: translateZ(17px); }
-        .shape3d .f2 { transform: rotateY(180deg) translateZ(17px); }
-        .shape3d .f3 { transform: rotateY(90deg) translateZ(17px); }
-        .shape3d .f4 { transform: rotateY(-90deg) translateZ(17px); }
-        .shape3d .f5 { transform: rotateX(90deg) translateZ(17px); }
-        .shape3d .f6 { transform: rotateX(-90deg) translateZ(17px); }
-        @keyframes spin3d { from { transform: rotateX(-22deg) rotateY(0deg); } to { transform: rotateX(-22deg) rotateY(360deg); } }
-        /* 3D video camera (live bars) */
-        .cam-wrap { perspective: 340px; width: 82px; height: 64px; display: grid; place-items: center; }
-        .cam3d { width: 66px; height: 48px; position: relative; transform-style: preserve-3d;
-            animation: spin3d 10s linear infinite; }
-        .proj-card:hover .cam3d { animation-duration: 3s; }
-        .cam3d span { position: absolute; transform-style: preserve-3d; }
-        .cam3d b { position: absolute; border: 1.5px solid rgba(239,68,68,.75); background: rgba(239,68,68,.08); border-radius: 3px; }
-
-        .cam-body { width: 42px; height: 26px; left: 12px; top: 16px; }
-        .cam-body .cbf { width: 42px; height: 26px; transform: translateZ(10px); }
-        .cam-body .cbb { width: 42px; height: 26px; transform: rotateY(180deg) translateZ(10px); }
-        .cam-body .cbl { width: 20px; height: 26px; left: 11px; transform: rotateY(-90deg) translateZ(21px); }
-        .cam-body .cbr { width: 20px; height: 26px; left: 11px; transform: rotateY(90deg) translateZ(21px); }
-        .cam-body .cbt { width: 42px; height: 20px; top: 3px; transform: rotateX(90deg) translateZ(13px); }
-        .cam-body .cbd { width: 42px; height: 20px; top: 3px; transform: rotateX(-90deg) translateZ(13px); }
-
-        .cam-lens { width: 16px; height: 16px; left: 25px; top: 21px; transform: translateZ(18px); }
-        .cam-lens b { width: 16px; height: 16px; }
-        .cam-lens .clf { transform: translateZ(8px); background: rgba(59,89,152,.45); border-radius: 50%; }
-        .cam-lens .clb { transform: rotateY(180deg) translateZ(8px); }
-        .cam-lens .cll { transform: rotateY(-90deg) translateZ(8px); }
-        .cam-lens .clr { transform: rotateY(90deg) translateZ(8px); }
-        .cam-lens .clt { transform: rotateX(90deg) translateZ(8px); }
-        .cam-lens .cld { transform: rotateX(-90deg) translateZ(8px); }
-
-        .cam-handle { width: 30px; height: 8px; left: 18px; top: 3px; }
-        .cam-handle .chf { width: 30px; height: 8px; transform: translateZ(6px); }
-        .cam-handle .chb { width: 30px; height: 8px; transform: rotateY(180deg) translateZ(6px); }
-        .cam-handle .chl { width: 12px; height: 8px; left: 9px; transform: rotateY(-90deg) translateZ(15px); }
-        .cam-handle .chr { width: 12px; height: 8px; left: 9px; transform: rotateY(90deg) translateZ(15px); }
-        .cam-handle .cht { width: 30px; height: 12px; top: -2px; transform: rotateX(90deg) translateZ(4px); }
-        .cam-handle .chd { width: 30px; height: 12px; top: -2px; transform: rotateX(-90deg) translateZ(4px); }
-
-        .cam-rec { width: 6px; height: 6px; border-radius: 50% !important; background: #ff2244 !important;
-            border: none !important; right: 3px; top: 3px; transform: translateZ(11px);
-            box-shadow: 0 0 8px #ff2244; animation: livepulse 1.4s ease-in-out infinite; }
-
-        @media (prefers-reduced-motion: reduce) {
-            .cam3d { animation: none; transform: rotateX(-22deg) rotateY(35deg); }
-            .cam-rec { animation: none; }
-        }
-        .proj-card:hover .shape3d { animation-duration: 2.5s; }
-        .sh-live > b     { border-color: rgba(239,68,68,.75);  background: rgba(239,68,68,.08); }
-        .sh-weddings > b { border-color: rgba(244,114,182,.75); background: rgba(244,114,182,.08); }
-        .sh-events > b   { border-color: rgba(251,191,36,.75); background: rgba(251,191,36,.08); }
-        @media (prefers-reduced-motion: reduce) { .shape3d { animation: none; transform: rotateX(-22deg) rotateY(35deg); } }
-        section { scroll-margin-top: 80px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: #393936; border-radius: 999px; }
+        button, a { -webkit-tap-highlight-color: transparent; }
+        section { scroll-margin-top: 86px; }
         #home { scroll-margin-top: 0; }
-        #cam3d { touch-action: pan-y; }
 
-        /* Professional admin-controlled hero CTA buttons near the 3D camera */
-        #camera-quicklinks {
+        /* Minimal loader */
+        #loader { transition: opacity .55s ease; background: var(--bg); }
+        .loader-mark {
+            width: 54px; height: 54px; border: 1px solid var(--line-strong);
+            display: grid; place-items: center; border-radius: 50%;
+            font-size: 11px; font-weight: 800; letter-spacing: .16em;
+        }
+        .loader-bar { animation: minimalLoad 1.25s ease-in-out infinite; }
+        @keyframes minimalLoad { 0%{transform:translateX(-105%)} 100%{transform:translateX(305%)} }
+
+        /* Hero */
+        .hero-minimal {
+            min-height: 100svh;
+            display: flex;
+            align-items: stretch;
+            border-bottom: 1px solid var(--line);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-minimal::before {
+            content: '';
             position: absolute;
-            z-index: 24;
-            right: max(24px, calc((100vw - 1180px) / 2));
-            top: 48%;
-            transform: translateY(-50%);
-            width: min(300px, 28vw);
-            display: grid;
-            gap: 10px;
+            top: 0; left: clamp(22px, 5vw, 72px);
+            width: 1px; height: 100%; background: var(--line);
             pointer-events: none;
         }
-        #camera-quicklinks.hidden { display: none; }
-
-        .camera-3d-link {
-            pointer-events: auto;
+        .hero-minimal::after {
+            content: '';
+            position: absolute;
+            top: 0; right: clamp(22px, 5vw, 72px);
+            width: 1px; height: 100%; background: var(--line);
+            pointer-events: none;
+        }
+        .hero-inner {
+            width: min(1240px, 100%);
+            margin: 0 auto;
+            padding: clamp(34px, 6vw, 76px) clamp(28px, 7vw, 94px) 30px;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
             position: relative;
+            z-index: 2;
+        }
+        .hero-topline {
+            display: flex; align-items: center; justify-content: space-between; gap: 20px;
+            font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--muted);
+        }
+        .hero-status { display: inline-flex; align-items: center; gap: 8px; }
+        .hero-status::before { content:''; width:6px; height:6px; background:var(--accent); border-radius:50%; }
+        .hero-main {
+            display: grid;
+            grid-template-columns: minmax(0, 1.25fr) minmax(260px, .75fr);
+            gap: clamp(36px, 7vw, 110px);
+            align-items: center;
+            padding: clamp(70px, 11vh, 130px) 0 56px;
+        }
+        .hero-kicker {
+            color: var(--muted); text-transform: uppercase; letter-spacing: .25em;
+            font-size: 10px; font-weight: 600; margin-bottom: 22px;
+        }
+        .hero-title {
+            margin: 0;
+            font-size: clamp(54px, 9.4vw, 132px);
+            line-height: .84;
+            letter-spacing: -.065em;
+            font-weight: 500;
+            text-transform: uppercase;
+            max-width: 900px;
+        }
+        .hero-title .outline-word {
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(244,244,240,.42);
+            text-stroke: 1px rgba(244,244,240,.42);
+        }
+        .hero-desc {
+            margin: 28px 0 0;
+            max-width: 560px;
+            color: #b4b4ae;
+            font-size: clamp(14px, 1.4vw, 17px);
+            line-height: 1.7;
+            font-weight: 300;
+        }
+        .hero-side {
+            align-self: stretch;
             display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-left: 1px solid var(--line);
+            padding-left: clamp(24px, 4vw, 54px);
+        }
+        .hero-side-label { font-size: 9px; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); margin-bottom: 18px; }
+
+        /* Admin-controlled hero buttons - same Firebase data, new visual */
+        #camera-quicklinks { display: grid; gap: 8px; width: 100%; }
+        #camera-quicklinks.hidden { display: none; }
+        .camera-3d-link {
+            display: grid;
+            grid-template-columns: 36px minmax(0,1fr) 28px;
             align-items: center;
             gap: 12px;
-            width: 100%;
-            min-height: 64px;
-            padding: 11px 12px 11px 13px;
-            border: 1px solid rgba(255,255,255,.18);
-            border-radius: 18px;
-            color: #fff;
-            background:
-                linear-gradient(135deg, rgba(255,255,255,.13), rgba(255,255,255,.045) 58%, rgba(212,162,78,.08));
-            box-shadow:
-                0 18px 45px rgba(0,0,0,.38),
-                0 6px 0 rgba(0,0,0,.18),
-                inset 0 1px 0 rgba(255,255,255,.20);
-            backdrop-filter: blur(18px) saturate(125%);
-            -webkit-backdrop-filter: blur(18px) saturate(125%);
-            transform: translateZ(0);
-            transition: transform .22s ease, border-color .22s ease, background .22s ease, box-shadow .22s ease;
-            overflow: hidden;
-            isolation: isolate;
+            min-height: 58px;
+            padding: 10px 10px 10px 12px;
+            color: var(--ink);
+            text-decoration: none;
+            border-top: 1px solid var(--line-strong);
+            border-bottom: 1px solid transparent;
+            transition: border-color .18s ease, padding-left .18s ease, background .18s ease;
         }
-        .camera-3d-link::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            z-index: -1;
-            background: radial-gradient(circle at 0% 0%, rgba(212,162,78,.18), transparent 46%);
-            opacity: .7;
-            pointer-events: none;
-        }
-        .camera-3d-link::after {
-            content: '';
-            position: absolute;
-            inset: 1px;
-            border-radius: 16px;
-            border: 1px solid rgba(255,255,255,.04);
-            pointer-events: none;
-        }
-        .camera-3d-link:hover {
-            transform: translateY(-3px) scale(1.015);
-            border-color: rgba(212,162,78,.58);
-            background: linear-gradient(135deg, rgba(255,255,255,.16), rgba(255,255,255,.06) 55%, rgba(212,162,78,.14));
-            box-shadow: 0 24px 52px rgba(0,0,0,.46), 0 7px 0 rgba(0,0,0,.16), inset 0 1px 0 rgba(255,255,255,.25);
-        }
-        .camera-3d-link:active {
-            transform: translateY(1px) scale(.99);
-            box-shadow: 0 12px 28px rgba(0,0,0,.34), 0 3px 0 rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.18);
-        }
+        .camera-3d-link:hover { border-bottom-color: var(--line-strong); padding-left: 17px; background: rgba(255,255,255,.025); }
         .camera-3d-emoji {
-            width: 42px;
-            height: 42px;
-            flex: 0 0 42px;
-            display: grid;
-            place-items: center;
-            border-radius: 13px;
-            font-size: 20px;
-            background: linear-gradient(145deg, rgba(212,162,78,.20), rgba(212,162,78,.08));
-            border: 1px solid rgba(212,162,78,.34);
-            box-shadow: inset 0 1px 0 rgba(255,255,255,.16), 0 8px 18px rgba(0,0,0,.16);
+            width: 36px; height: 36px; border: 1px solid var(--line);
+            border-radius: 50%; display: grid; place-items: center;
+            font-size: 16px; background: transparent;
         }
-        .camera-3d-copy { min-width: 0; flex: 1; }
-        .camera-3d-title {
-            display: block;
-            color: #fff;
-            font-weight: 800;
-            font-size: 13px;
-            letter-spacing: .035em;
-            line-height: 1.2;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        .camera-3d-copy { min-width: 0; }
+        .camera-3d-title { display:block; font-size:13px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .camera-3d-sub { display:block; margin-top:3px; color:var(--muted); font-size:8px; letter-spacing:.16em; text-transform:uppercase; }
+        .camera-3d-arrow { width:28px; height:28px; display:grid; place-items:center; font-size:10px; border:1px solid var(--line); border-radius:50%; }
+        .camera-3d-link:hover .camera-3d-arrow { border-color: var(--ink); }
+        .hero-side-empty { color: var(--muted); font-size: 12px; line-height: 1.65; border-top: 1px solid var(--line); padding-top: 18px; }
+        .hero-jumps { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+        .hero-jump {
+            appearance:none; border:1px solid var(--line); background:transparent; color:#b8b8b2;
+            min-height:42px; padding:0 16px; border-radius:999px; cursor:pointer;
+            font: inherit; font-size:11px; font-weight:600; letter-spacing:.04em;
+            transition: background .18s ease, color .18s ease, border-color .18s ease;
         }
-        .camera-3d-sub {
-            display: block;
-            margin-top: 4px;
-            color: rgba(255,255,255,.48);
-            font-size: 9px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: .16em;
-        }
-        .camera-3d-arrow {
-            width: 32px;
-            height: 32px;
-            flex: 0 0 32px;
-            display: grid;
-            place-items: center;
-            border-radius: 50%;
-            color: #111;
-            background: #f5f5f5;
-            box-shadow: 0 7px 16px rgba(0,0,0,.22);
-            transition: transform .22s ease, background .22s ease;
-        }
-        .camera-3d-link:hover .camera-3d-arrow { transform: translateX(2px) rotate(-6deg); background: #fff; }
+        .hero-jump:hover { background:var(--ink); color:#0b0b0b; border-color:var(--ink); }
+        .hero-foot { display:flex; align-items:flex-end; justify-content:space-between; gap:20px; border-top:1px solid var(--line); padding-top:18px; }
+        .hero-scroll { color:var(--muted); font-size:9px; letter-spacing:.18em; text-transform:uppercase; }
+        .hero-index { color:#5f5f5b; font-size:9px; letter-spacing:.18em; }
 
-        /* Tablet: keep the CTA visible without covering the camera */
-        @media (max-width: 900px) and (min-width: 640px) {
-            #camera-quicklinks {
-                right: 22px;
-                top: 50%;
-                width: 250px;
-            }
-            .camera-3d-link { min-height: 58px; }
+        /* Profile */
+        .profile-wrap { max-width: 1180px; margin: 0 auto; padding: 104px 28px 58px; }
+        .profile-grid { display:grid; grid-template-columns: 220px minmax(0,1fr); gap: clamp(34px, 7vw, 90px); align-items:start; }
+        .profile-image { width:100%; aspect-ratio:1; overflow:hidden; background:#151515; border:1px solid var(--line); }
+        .profile-image img { width:100%; height:100%; object-fit:cover; filter: grayscale(100%); transition: filter .35s ease; }
+        .profile-image:hover img { filter: grayscale(0%); }
+        .eyebrow { font-size:9px; color:var(--muted); text-transform:uppercase; letter-spacing:.22em; }
+        .profile-name-row { display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-top:14px; }
+        .profile-name { font-size:clamp(30px,4vw,54px); line-height:1; font-weight:500; letter-spacing:-.035em; text-transform:uppercase; margin:0; }
+        #ui-rating { border:1px solid var(--line)!important; background:transparent!important; color:#c9b77f!important; border-radius:999px!important; }
+        #ui-bio { color:#a8a8a2!important; font-size:15px!important; line-height:1.8!important; font-weight:300!important; max-width:680px!important; margin-top:22px!important; }
+        .profile-actions { display:flex; align-items:center; gap:9px; flex-wrap:wrap; margin-top:30px; }
+        .minimal-btn {
+            min-height:46px; display:inline-flex; align-items:center; justify-content:center; gap:9px;
+            border:1px solid var(--line-strong); background:transparent; color:var(--ink);
+            padding:0 18px; border-radius:999px; font-size:12px; font-weight:600; transition:.18s ease;
+        }
+        .minimal-btn.primary { background:var(--ink); color:#0b0b0b; border-color:var(--ink); }
+        .minimal-btn:hover { border-color:var(--ink); }
+        .minimal-btn.primary:hover { opacity:.86; }
+        #social-links-container a { border:1px solid var(--line)!important; background:transparent!important; color:var(--ink)!important; box-shadow:none!important; border-radius:50%!important; }
+        .service-line { margin-top:48px; display:grid; grid-template-columns:repeat(4,1fr); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+        .service-item { min-height:74px; display:flex; align-items:center; gap:10px; padding:0 16px; color:#b2b2ac; font-size:12px; border-right:1px solid var(--line); }
+        .service-item:last-child { border-right:0; }
+        .service-item i { color:#6f6f69; font-size:12px; }
+
+        /* Navigation */
+        #cat-nav { position:sticky; top:0; z-index:40; background:rgba(11,11,11,.92); backdrop-filter:blur(16px); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+        .cat-nav-inner { max-width:1180px; margin:0 auto; padding:12px 28px; display:flex; align-items:center; gap:6px; overflow-x:auto; scrollbar-width:none; }
+        .cat-nav-inner::-webkit-scrollbar { display:none; }
+        .cat-tab, .cat-home {
+            flex:0 0 auto; min-height:38px; padding:0 14px; border:0; background:transparent; color:#7e7e78;
+            border-radius:999px; font:inherit; font-size:11px; font-weight:600; cursor:pointer; transition:.18s ease;
+        }
+        .cat-home { width:38px; padding:0; border:1px solid var(--line); }
+        .cat-tab.active, .cat-tab:hover, .cat-home:hover { background:#1a1a1a; color:var(--ink); }
+        .cat-tab i { display:none; }
+
+        /* Work sections */
+        .work-wrap { max-width:1180px; margin:0 auto; padding:0 28px 90px; }
+        .work-section { padding:86px 0 18px; }
+        .section-heading { display:grid; grid-template-columns:100px minmax(0,1fr); gap:24px; align-items:start; margin-bottom:36px; }
+        .section-number { color:#5f5f5b; font-size:10px; letter-spacing:.18em; padding-top:9px; }
+        .section-title { font-size:clamp(34px,5vw,66px); line-height:.95; font-weight:500; letter-spacing:-.045em; margin:0; }
+        .section-copy { color:var(--muted); font-size:13px; line-height:1.65; max-width:600px; margin-top:15px; }
+        .section-divider { border:0; border-top:1px solid var(--line); margin:74px 0 0; }
+        #proj-live, #proj-weddings, #proj-events { margin-top:0!important; }
+        #proj-weddings > div, #proj-events > div { gap:8px!important; }
+
+        /* Project cards */
+        .proj-card { box-shadow:none!important; transform:none!important; }
+        .project-min-card {
+            width:100%; display:grid; grid-template-columns:46px minmax(0,1fr) 32px; align-items:center; gap:14px;
+            min-height:86px; padding:14px 14px 14px 0; background:transparent; color:var(--ink); text-align:left;
+            border:0; border-top:1px solid var(--line); cursor:pointer; transition:background .18s ease, padding-left .18s ease;
+        }
+        .project-min-card:hover { background:rgba(255,255,255,.025); padding-left:10px; }
+        .project-mark { width:36px; height:36px; border:1px solid var(--line); border-radius:50%; display:grid; place-items:center; color:#9d9d97; font-size:11px; }
+        .project-title { display:block; font-size:14px; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+        .project-meta { display:block; color:var(--muted); font-size:10px; margin-top:5px; letter-spacing:.03em; }
+        .project-arrow { width:30px; height:30px; border:1px solid var(--line); border-radius:50%; display:grid; place-items:center; color:#7c7c76; font-size:9px; }
+        .project-min-card:hover .project-arrow { color:var(--ink); border-color:var(--line-strong); }
+        .live-project-row {
+            width:100%; display:grid; grid-template-columns:52px minmax(0,1fr) auto; align-items:center; gap:18px;
+            padding:22px 0; border:0; border-top:1px solid var(--line); background:transparent; color:var(--ink); text-align:left; cursor:pointer;
+        }
+        .minimal-live-icon { width:44px; height:44px; border:1px solid var(--line-strong); border-radius:50%; display:grid; place-items:center; position:relative; }
+        .minimal-live-icon::after { content:''; position:absolute; width:6px; height:6px; background:#ef4444; border-radius:50%; top:4px; right:3px; }
+        .live-watch { min-height:38px; padding:0 15px; border:1px solid var(--line); border-radius:999px; display:inline-flex; align-items:center; gap:8px; font-size:10px; letter-spacing:.08em; text-transform:uppercase; }
+        .live-project-row:hover .live-watch { border-color:var(--ink); }
+
+        /* Live banner */
+        #live-banner > a { border:1px solid rgba(239,68,68,.35)!important; background:transparent!important; border-radius:0!important; padding:22px 0!important; box-shadow:none!important; }
+        #live-banner > a:hover { border-color:rgba(239,68,68,.75)!important; }
+
+        /* Media + link cards */
+        .photo-card { border-radius:2px!important; border:1px solid var(--line)!important; box-shadow:none!important; background:#111!important; }
+        .photo-card img, .photo-card video, .photo-card .icon-container { transition: transform .35s ease, opacity .35s ease; }
+        .photo-card:hover img, .photo-card:hover video { transform:scale(1.015); }
+        .event-link-card {
+            min-height:92px; border:1px solid var(--line); border-radius:2px; padding:16px; display:flex; align-items:center; gap:13px;
+            color:var(--ink); background:transparent; transition:background .18s ease,border-color .18s ease;
+        }
+        .event-link-card:hover { background:#121212; border-color:var(--line-strong); }
+        .event-link-icon { width:38px; height:38px; border:1px solid var(--line); border-radius:50%; display:grid; place-items:center; color:#bdbdb7; flex:0 0 38px; }
+        .event-link-title { display:block; font-size:12px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .event-link-sub { display:block; margin-top:4px; color:var(--muted); font-size:9px; letter-spacing:.12em; text-transform:uppercase; }
+
+        /* Viewer + modals */
+        #projectViewer { background:var(--bg)!important; }
+        #projectViewer > div:first-child { background:rgba(11,11,11,.95)!important; border-color:var(--line)!important; box-shadow:none!important; }
+        #projectViewer button { box-shadow:none!important; }
+        #pv-items { gap:8px!important; }
+        #reviewModal > div { background:#111!important; border:1px solid var(--line)!important; border-radius:2px!important; box-shadow:none!important; }
+        #reviewModal input, #reviewModal textarea { background:#0d0d0d!important; border:1px solid var(--line)!important; border-radius:2px!important; }
+        #btn-submit-rev { border-radius:2px!important; box-shadow:none!important; }
+        .video-container { position:relative; padding-bottom:56.25%; height:0; width:100%; border-radius:2px; overflow:hidden; }
+        .video-container iframe, .video-container video { position:absolute; inset:0; width:100%; height:100%; }
+        .star-rating i { cursor:pointer; transition:color .18s ease; }
+        .star-rating i:hover, .star-rating i.active { color:#d9bd68; }
+        .live-dot { animation:livepulse 1.4s ease-in-out infinite; }
+        @keyframes livepulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+
+        /* Reveal */
+        .reveal { opacity:0; transform:translateY(14px); transition:opacity .55s ease, transform .55s ease; }
+        .reveal.in { opacity:1; transform:none; }
+
+        /* Empty states */
+        .empty-state { border:1px solid var(--line)!important; background:transparent!important; border-radius:2px!important; color:var(--muted)!important; }
+
+        /* Floating WhatsApp */
+        #ui-whatsapp-fab { width:50px!important; height:50px!important; background:#111!important; border:1px solid var(--line-strong)!important; color:#fff!important; box-shadow:none!important; }
+
+        @media (max-width: 760px) {
+            .hero-inner { padding:28px 22px 22px; }
+            .hero-minimal::before { left:14px; }
+            .hero-minimal::after { right:14px; }
+            .hero-topline span:last-child { display:none; }
+            .hero-main { grid-template-columns:1fr; gap:44px; padding:64px 0 38px; align-items:start; }
+            .hero-title { font-size:clamp(52px,17vw,92px); }
+            .hero-side { border-left:0; border-top:1px solid var(--line); padding:22px 0 0; }
+            #camera-quicklinks { grid-template-columns:1fr; gap:0; }
+            .camera-3d-link { min-height:58px; }
+            .hero-foot { align-items:center; }
+            .hero-jumps { gap:6px; }
+            .hero-jump { min-height:38px; padding:0 12px; font-size:10px; }
+            .hero-scroll { display:none; }
+            .profile-wrap { padding:74px 22px 44px; }
+            .profile-grid { grid-template-columns:82px minmax(0,1fr); gap:20px; }
+            .profile-name { font-size:32px; }
+            #ui-bio { grid-column:1/-1; }
+            .profile-actions { grid-column:1/-1; }
+            .service-line { grid-template-columns:1fr 1fr; }
+            .service-item { border-bottom:1px solid var(--line); min-height:60px; padding:0 10px; font-size:10px; }
+            .service-item:nth-child(2) { border-right:0; }
+            .service-item:nth-child(3), .service-item:nth-child(4) { border-bottom:0; }
+            .cat-nav-inner { padding:10px 22px; }
+            .work-wrap { padding:0 22px 70px; }
+            .work-section { padding-top:62px; }
+            .section-heading { grid-template-columns:1fr; gap:8px; margin-bottom:28px; }
+            .section-number { padding-top:0; }
+            .section-title { font-size:42px; }
+            .section-copy { font-size:12px; }
+            .live-project-row { grid-template-columns:46px minmax(0,1fr) 28px; gap:12px; padding:18px 0; }
+            .live-watch { width:28px; height:28px; min-height:28px; padding:0; border-radius:50%; justify-content:center; }
+            .live-watch span { display:none; }
+            #proj-weddings > div, #proj-events > div { grid-template-columns:1fr!important; }
         }
 
-        /* Phone: prominent, immediate and touch-friendly CTA area */
-        @media (max-width: 639px) {
-            #camera-quicklinks {
-                left: 50%;
-                right: auto;
-                top: 27%;
-                transform: translateX(-50%);
-                width: min(92vw, 430px);
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 8px;
-            }
-            #camera-quicklinks .camera-3d-link:only-child {
-                grid-column: 1 / -1;
-                width: min(88vw, 360px);
-                justify-self: center;
-            }
-            .camera-3d-link {
-                min-height: 56px;
-                padding: 8px 9px;
-                border-radius: 15px;
-                gap: 9px;
-                box-shadow: 0 13px 28px rgba(0,0,0,.32), 0 4px 0 rgba(0,0,0,.17), inset 0 1px 0 rgba(255,255,255,.18);
-            }
-            .camera-3d-link::after { border-radius: 13px; }
-            .camera-3d-emoji {
-                width: 34px;
-                height: 34px;
-                flex-basis: 34px;
-                border-radius: 10px;
-                font-size: 17px;
-            }
-            .camera-3d-title { font-size: 11px; letter-spacing: .02em; }
-            .camera-3d-sub { margin-top: 2px; font-size: 7px; letter-spacing: .10em; }
-            .camera-3d-arrow {
-                width: 26px;
-                height: 26px;
-                flex-basis: 26px;
-                font-size: 10px;
-            }
-        }
-
-        /* Very small phones: stack to keep labels readable */
-        @media (max-width: 380px) {
-            #camera-quicklinks {
-                top: 26%;
-                width: 88vw;
-                grid-template-columns: 1fr;
-                gap: 6px;
-            }
-            #camera-quicklinks .camera-3d-link { grid-column: auto; width: 100%; }
-            .camera-3d-link { min-height: 50px; }
-            .camera-3d-sub { display: none; }
+        @media (max-width: 390px) {
+            .hero-title { font-size:49px; }
+            .hero-jump { padding:0 10px; }
+            .profile-grid { grid-template-columns:68px minmax(0,1fr); }
+            .profile-name { font-size:28px; }
+            .minimal-btn { flex:1 1 100%; }
         }
 
         @media (prefers-reduced-motion: reduce) {
-            .camera-3d-link, .camera-3d-arrow { transition: none; }
+            *, *::before, *::after { animation:none!important; scroll-behavior:auto!important; transition:none!important; }
+            .reveal { opacity:1; transform:none; }
         }
+
+
+        /* =========================================================
+           WHITE MODERN REDESIGN — functionality intentionally unchanged
+           ========================================================= */
+        :root {
+            --bg: #ffffff;
+            --panel: #ffffff;
+            --panel-2: #f7f7f8;
+            --ink: #111214;
+            --muted: #6f737a;
+            --line: #e9eaec;
+            --line-strong: #dfe1e5;
+            --accent: #111214;
+            --soft: #f7f7f8;
+            --soft-2: #f2f3f5;
+            --shadow: 0 12px 34px rgba(17,18,20,.07);
+            --shadow-hover: 0 18px 48px rgba(17,18,20,.11);
+        }
+        html, body { background:#fff !important; color:var(--ink) !important; }
+        body { overflow-x:hidden; }
+        ::selection { background:#111214; color:#fff; }
+        ::-webkit-scrollbar-track { background:#fff; }
+        ::-webkit-scrollbar-thumb { background:#cfd2d7; }
+
+        /* Loader */
+        #loader { background:#fff !important; color:#111214 !important; }
+        .loader-mark { border-color:#dfe1e5; background:#fff; box-shadow:0 8px 30px rgba(17,18,20,.06); }
+        #loader .text-muted { color:#8b8f96 !important; }
+        #loader > div:nth-child(3) { background:#eceef1 !important; }
+        .loader-bar { background:#111214 !important; }
+
+        /* Hero — modern, clean, no retro lines/outlines */
+        .hero-minimal {
+            min-height:100svh;
+            background:
+                radial-gradient(circle at 82% 13%, rgba(17,18,20,.035), transparent 28%),
+                #fff;
+            border-bottom:1px solid var(--line);
+        }
+        .hero-minimal::before, .hero-minimal::after { display:none !important; }
+        .hero-inner {
+            width:min(1180px,100%);
+            padding:clamp(28px,4.5vw,54px) clamp(22px,5vw,58px) 28px;
+        }
+        .hero-topline { color:#8a8e95; font-size:10px; letter-spacing:.14em; }
+        .hero-status::before { background:#19a35b; box-shadow:0 0 0 5px rgba(25,163,91,.08); }
+        .hero-main {
+            grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr);
+            gap:clamp(40px,6vw,86px);
+            padding:clamp(68px,10vh,116px) 0 46px;
+        }
+        .hero-kicker { color:#7a7e85; letter-spacing:.12em; font-size:11px; font-weight:600; margin-bottom:18px; }
+        .hero-title {
+            color:#101114;
+            font-size:clamp(62px,8vw,118px);
+            line-height:.92;
+            letter-spacing:-.065em;
+            font-weight:700;
+            text-transform:none;
+            max-width:760px;
+        }
+        .hero-title .outline-word { color:inherit !important; -webkit-text-stroke:0 !important; text-stroke:0 !important; }
+        .hero-desc { color:#666b73; max-width:620px; font-size:clamp(15px,1.35vw,18px); line-height:1.72; font-weight:400; margin-top:24px; }
+        .hero-side {
+            border:1px solid var(--line);
+            border-radius:28px;
+            padding:26px;
+            background:rgba(255,255,255,.92);
+            box-shadow:var(--shadow);
+            align-self:center;
+        }
+        .hero-side-label { color:#8a8e95; font-size:10px; letter-spacing:.12em; margin-bottom:14px; }
+        .hero-side-empty { border-top:0; color:#777c84; background:var(--soft); border-radius:18px; padding:18px; }
+        #camera-quicklinks { gap:10px; }
+        .camera-3d-link {
+            grid-template-columns:42px minmax(0,1fr) 34px;
+            min-height:66px;
+            padding:10px 11px;
+            border:1px solid var(--line);
+            border-radius:18px;
+            color:#15171a;
+            background:#fff;
+            box-shadow:0 4px 16px rgba(17,18,20,.035);
+        }
+        .camera-3d-link:hover { border-color:#d5d8dd; padding-left:11px; transform:translateY(-2px); box-shadow:0 12px 26px rgba(17,18,20,.08); background:#fff; }
+        .camera-3d-emoji { width:42px; height:42px; border:0; background:var(--soft); border-radius:14px; }
+        .camera-3d-title { font-size:13px; font-weight:700; }
+        .camera-3d-sub { color:#8a8e95; letter-spacing:.1em; }
+        .camera-3d-arrow { width:34px; height:34px; border:1px solid var(--line); color:#44484f; background:#fff; }
+        .camera-3d-link:hover .camera-3d-arrow { border-color:#cfd2d7; background:#111214; color:#fff; }
+        .hero-foot { border-top:1px solid var(--line); padding-top:18px; }
+        .hero-jump { border:1px solid var(--line); background:#fff; color:#3f4349; box-shadow:0 2px 8px rgba(17,18,20,.025); }
+        .hero-jump:hover { background:#111214; color:#fff; border-color:#111214; }
+        .hero-scroll, .hero-index { color:#969aa1; }
+
+        /* Profile */
+        .profile-wrap { padding-top:92px; }
+        .profile-grid { grid-template-columns:210px minmax(0,1fr); }
+        .profile-image { border:1px solid var(--line); border-radius:30px; background:var(--soft); box-shadow:var(--shadow); }
+        .profile-image img { filter:none !important; }
+        .eyebrow { color:#8b8f96; letter-spacing:.12em; }
+        .profile-name { color:#111214; font-weight:700; text-transform:none; letter-spacing:-.045em; }
+        #ui-rating { border:1px solid #ece3bc !important; background:#fffaf0 !important; color:#9a7416 !important; }
+        #ui-bio { color:#666b73 !important; font-weight:400 !important; }
+        .minimal-btn { border:1px solid var(--line-strong); background:#fff; color:#17181b; min-height:48px; border-radius:14px; }
+        .minimal-btn.primary { background:#111214; color:#fff; border-color:#111214; }
+        .minimal-btn:hover { border-color:#c8cbd0; box-shadow:0 8px 20px rgba(17,18,20,.06); }
+        #social-links-container a { border-color:var(--line)!important; background:#fff!important; color:#111214!important; }
+        .service-line { border:0; gap:12px; margin-top:46px; }
+        .service-item {
+            min-height:76px; border:1px solid var(--line) !important; border-radius:18px; background:var(--soft); color:#4e535a;
+            padding:0 18px; font-size:12px;
+        }
+        .service-item i { color:#22252a; }
+
+        /* Sticky navigation */
+        #cat-nav { background:rgba(255,255,255,.88); border-color:var(--line); box-shadow:0 8px 24px rgba(17,18,20,.04); }
+        .cat-tab, .cat-home { color:#777c84; }
+        .cat-home { border-color:var(--line); background:#fff; }
+        .cat-tab.active, .cat-tab:hover, .cat-home:hover { background:#111214; color:#fff; }
+
+        /* Work sections */
+        .work-wrap { padding-bottom:100px; }
+        .section-heading { grid-template-columns:1fr; gap:8px; }
+        .section-number { display:none; }
+        .section-title { color:#111214; font-weight:700; text-transform:none; letter-spacing:-.045em; }
+        .section-copy { color:#767b82; font-size:14px; }
+        .section-divider { border-color:var(--line); margin-top:66px; }
+        #proj-weddings > div, #proj-events > div { gap:14px !important; }
+
+        /* Project cards */
+        .project-min-card {
+            min-height:88px; padding:14px 16px; border:1px solid var(--line); border-radius:20px; background:#fff; color:#17181b;
+            box-shadow:0 5px 18px rgba(17,18,20,.035); transition:.2s ease;
+        }
+        .project-min-card:hover { padding-left:16px; background:#fff; transform:translateY(-2px); border-color:#d9dce0; box-shadow:var(--shadow-hover); }
+        .project-mark { border:0; border-radius:14px; background:var(--soft); color:#5f646b; }
+        .project-meta { color:#92969c; }
+        .project-arrow { border-color:var(--line); color:#60656c; background:#fff; }
+        .project-min-card:hover .project-arrow { background:#111214; color:#fff; border-color:#111214; }
+        .live-project-row {
+            padding:17px; border:1px solid var(--line); border-radius:20px; background:#fff; margin-bottom:12px; box-shadow:0 5px 18px rgba(17,18,20,.035);
+        }
+        .minimal-live-icon { border:0; background:#fff2f2; color:#d83b3b; border-radius:14px; }
+        .live-watch { border-color:var(--line); background:#fff; color:#3d4147; }
+        .live-project-row:hover .live-watch { background:#111214; color:#fff; border-color:#111214; }
+        #live-banner > a { border:1px solid #ffdede !important; background:#fff7f7 !important; border-radius:20px !important; padding:20px !important; color:#17181b !important; }
+
+        /* Media / event links */
+        .photo-card { border-radius:18px !important; border-color:var(--line) !important; background:#f4f5f6 !important; box-shadow:0 5px 18px rgba(17,18,20,.04) !important; overflow:hidden; }
+        .event-link-card { min-height:94px; border-color:var(--line); border-radius:20px; background:#fff; color:#17181b; box-shadow:0 5px 18px rgba(17,18,20,.035); }
+        .event-link-card:hover { background:#fff; border-color:#d4d7dc; transform:translateY(-2px); box-shadow:var(--shadow-hover); }
+        .event-link-icon { border:0; border-radius:14px; background:var(--soft); color:#24272b; }
+        .event-link-sub { color:#989ca2; letter-spacing:.08em; }
+
+        /* Project viewer — white UI; media lightbox remains dark */
+        #projectViewer { background:#fff !important; color:#111214 !important; }
+        #projectViewer > div:first-child { background:rgba(255,255,255,.94)!important; border-color:var(--line)!important; box-shadow:0 8px 24px rgba(17,18,20,.05)!important; }
+        #projectViewer #pv-title { color:#111214 !important; }
+        #projectViewer #pv-meta { color:#8a8e95 !important; }
+        #projectViewer > div:first-child button { background:#f5f6f7 !important; color:#111214 !important; border:1px solid var(--line) !important; }
+        #projectViewer > div:first-child button:hover { background:#111214 !important; color:#fff !important; }
+        #pv-reviews-wrap h4 { color:#111214 !important; }
+        #pv-reviews-wrap h4 span { background:#111214 !important; }
+
+        /* Reviews modal */
+        #reviewModal { background:rgba(17,18,20,.34) !important; }
+        #reviewModal > div { background:#fff !important; border:1px solid var(--line) !important; border-radius:24px !important; box-shadow:0 28px 80px rgba(17,18,20,.18) !important; }
+        #reviewModal h3 { color:#111214 !important; }
+        #reviewModal input, #reviewModal textarea { background:#f7f7f8 !important; color:#111214 !important; border:1px solid var(--line) !important; border-radius:14px !important; }
+        #reviewModal input::placeholder, #reviewModal textarea::placeholder { color:#9ca0a6; }
+        #reviewModal button[onclick="closeReviewModal()"] { background:#f4f5f6 !important; color:#666b73 !important; }
+        #btn-submit-rev { background:#111214 !important; color:#fff !important; border-radius:14px !important; }
+        .empty-state { border-color:var(--line)!important; background:var(--soft)!important; border-radius:20px!important; color:#8a8e95!important; }
+
+        /* Footer */
+        footer { border-color:var(--line) !important; background:#fff; }
+        footer .text-white { color:#111214 !important; }
+        footer .text-muted { color:#8a8e95 !important; }
+        footer a:hover { color:#111214 !important; }
+
+        /* Floating WhatsApp */
+        #ui-whatsapp-fab { background:#20b15a !important; border:0 !important; color:#fff !important; box-shadow:0 12px 28px rgba(32,177,90,.22)!important; }
+
+
+        .live-banner-title { color:#17181b !important; }
+        .review-card { background:#fff; border:1px solid var(--line); box-shadow:0 5px 18px rgba(17,18,20,.035); }
+        .review-quote { color:#eceef1; }
+        .review-name { color:#17181b; }
+        .review-comment { color:#6f747b; }
+        .review-star-empty { color:#d7dade; }
+
+        /* Responsive — phone-first fit */
+        @media (max-width: 900px) {
+            .hero-main { grid-template-columns:1fr; gap:28px; padding:54px 0 34px; }
+            .hero-side { width:min(100%,640px); padding:20px; }
+            .profile-grid { grid-template-columns:170px minmax(0,1fr); gap:32px; }
+        }
+        @media (max-width: 760px) {
+            .hero-minimal { min-height:100svh; }
+            .hero-inner { padding:22px 18px 18px; }
+            .hero-topline { font-size:9px; letter-spacing:.1em; }
+            .hero-main { gap:22px; padding:34px 0 22px; }
+            .hero-kicker { margin-bottom:12px; font-size:9px; }
+            .hero-title { font-size:clamp(48px,14vw,72px); line-height:.94; letter-spacing:-.055em; max-width:100%; overflow-wrap:anywhere; }
+            .hero-desc { margin-top:16px; font-size:14px; line-height:1.6; max-width:95%; }
+            .hero-side { padding:14px; border-radius:20px; box-shadow:0 8px 26px rgba(17,18,20,.055); }
+            .hero-side-label { margin-bottom:10px; }
+            #camera-quicklinks { gap:8px; }
+            .camera-3d-link { min-height:58px; border-radius:15px; grid-template-columns:38px minmax(0,1fr) 30px; gap:10px; padding:8px; }
+            .camera-3d-emoji { width:38px; height:38px; border-radius:12px; }
+            .camera-3d-arrow { width:30px; height:30px; }
+            .hero-side-empty { padding:14px; border-radius:15px; font-size:11px; }
+            .hero-foot { padding-top:13px; gap:10px; }
+            .hero-jumps { gap:6px; flex-wrap:nowrap; width:100%; overflow-x:auto; scrollbar-width:none; }
+            .hero-jumps::-webkit-scrollbar { display:none; }
+            .hero-jump { flex:0 0 auto; min-height:36px; padding:0 11px; font-size:9px; }
+            .hero-index { display:none; }
+            .profile-wrap { padding:64px 18px 40px; }
+            .profile-grid { grid-template-columns:84px minmax(0,1fr); gap:18px; }
+            .profile-image { border-radius:20px; }
+            .profile-name { font-size:clamp(26px,8vw,34px); overflow-wrap:anywhere; }
+            #ui-bio { grid-column:1/-1; font-size:14px !important; line-height:1.7 !important; }
+            .profile-actions { grid-column:1/-1; display:grid; grid-template-columns:1fr 1fr; width:100%; }
+            .profile-actions #social-links-container { grid-column:1/-1; }
+            .minimal-btn { min-width:0; width:100%; padding:0 12px; }
+            .service-line { grid-template-columns:1fr 1fr; gap:8px; }
+            .service-item { min-height:62px; border-radius:14px; padding:0 11px; font-size:10px; }
+            .cat-nav-inner { padding:9px 18px; }
+            .cat-tab { min-height:36px; padding:0 12px; font-size:10px; }
+            .cat-home { min-height:36px; width:36px; }
+            .work-wrap { padding:0 18px 72px; }
+            .work-section { padding-top:58px; }
+            .section-title { font-size:clamp(36px,11vw,48px); }
+            .section-copy { font-size:12px; margin-top:10px; }
+            .project-min-card { min-height:78px; border-radius:16px; padding:12px; grid-template-columns:42px minmax(0,1fr) 30px; gap:10px; }
+            .project-min-card:hover { padding-left:12px; transform:none; }
+            .project-mark { width:38px; height:38px; border-radius:12px; }
+            .project-title { font-size:13px; }
+            .project-arrow { width:30px; height:30px; }
+            .live-project-row { grid-template-columns:42px minmax(0,1fr) 30px; gap:10px; padding:12px; border-radius:16px; }
+            .minimal-live-icon { width:38px; height:38px; border-radius:12px; }
+            .event-link-card { min-height:82px; border-radius:16px; padding:12px; }
+            .photo-card { border-radius:14px !important; }
+            #projectViewer > div:first-child > div { padding:12px 14px !important; gap:10px !important; }
+            #projectViewer #pv-title { font-size:15px !important; }
+            #projectViewer #pv-meta { font-size:9px !important; }
+            #projectViewer #pv-rate { padding:8px 10px !important; font-size:9px !important; }
+            #projectViewer .flex-1.overflow-y-auto > div { padding:18px 14px 26px !important; }
+            #pv-items { grid-template-columns:repeat(2,minmax(0,1fr)) !important; gap:8px !important; }
+            #reviewModal > div { margin:14px !important; padding:22px !important; border-radius:20px !important; max-height:calc(100svh - 28px); overflow-y:auto; }
+            #reviewModal h3 { font-size:20px !important; }
+            #ui-whatsapp-fab { width:48px!important; height:48px!important; right:16px!important; bottom:max(16px, env(safe-area-inset-bottom))!important; }
+            footer { margin-top:36px !important; padding:34px 0 !important; }
+            footer > div { padding-left:18px !important; padding-right:18px !important; }
+        }
+        @media (max-width: 420px) {
+            .hero-inner { padding-left:16px; padding-right:16px; }
+            .hero-topline span:last-child { display:none; }
+            .hero-title { font-size:clamp(44px,13.8vw,60px); }
+            .hero-desc { font-size:13px; }
+            .hero-main { padding-top:28px; }
+            .camera-3d-sub { display:none; }
+            .camera-3d-link { min-height:54px; }
+            .profile-grid { grid-template-columns:72px minmax(0,1fr); gap:14px; }
+            .profile-name { font-size:26px; }
+            .profile-actions { grid-template-columns:1fr; }
+            .profile-actions #social-links-container { grid-column:1; }
+            .service-line { grid-template-columns:1fr; }
+            .service-item { min-height:54px; }
+            #pv-items { grid-template-columns:1fr !important; }
+        }
+        @media (max-width: 350px) {
+            .hero-title { font-size:42px; }
+            .hero-jump { padding:0 9px; font-size:8px; }
+            .cat-nav-inner { padding-left:12px; padding-right:12px; }
+            .work-wrap, .profile-wrap { padding-left:14px; padding-right:14px; }
+        }
+
     </style>
 </head>
 <body class="min-h-screen selection:bg-white selection:text-black">
-
     <!-- ================= LOADING SCREEN ================= -->
-    <div id="loader" class="fixed inset-0 z-[100] bg-dark flex flex-col items-center justify-center gap-7">
-        <div class="relative w-24 h-24">
-            <div class="absolute inset-0 rounded-full border-2 border-white/10"></div>
-            <div class="loader-ring absolute inset-0 rounded-full border-2 border-transparent border-t-white"></div>
-            <div class="absolute inset-3 rounded-full border border-white/10"></div>
-            <div class="absolute inset-0 flex items-center justify-center"><i class="fas fa-camera text-2xl text-white/90"></i></div>
-        </div>
+    <div id="loader" class="fixed inset-0 z-[100] flex flex-col items-center justify-center gap-6">
+        <div class="loader-mark">FF</div>
         <div class="text-center">
-            <div class="text-white font-extrabold tracking-[0.35em] uppercase text-base sm:text-lg">FrameFusion</div>
-            <div class="text-muted tracking-[0.3em] uppercase text-[10px] mt-2">Live Streaming · Weddings · Events</div>
+            <div class="font-semibold tracking-[0.22em] uppercase text-xs">FrameFusion</div>
+            <div class="text-muted tracking-[0.22em] uppercase text-[8px] mt-2">Visual Production Studio</div>
         </div>
-        <div class="w-44 h-[3px] bg-white/10 overflow-hidden rounded-full">
-            <div class="loader-bar h-full w-1/3 bg-white rounded-full"></div>
+        <div class="w-32 h-px overflow-hidden">
+            <div class="loader-bar h-full w-1/3"></div>
         </div>
     </div>
 
     <main id="main-content" class="w-full">
 
-        <!-- ================= HOME — 3D CAMERA ================= -->
-        <section id="home" class="relative h-[100svh] min-h-[600px] overflow-hidden">
-            <div class="absolute inset-0 pointer-events-none" style="background:
-                radial-gradient(60% 45% at 50% 42%, rgba(212,162,78,0.10), transparent 70%),
-                radial-gradient(40% 30% at 20% 10%, rgba(99,102,241,0.07), transparent 70%),
-                #0a0a0a;"></div>
-
-            <canvas id="cam3d" class="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing"></canvas>
-
-            <!-- Optional admin-controlled 3D quick-link buttons. Hidden = original clean camera view. -->
-            <div id="camera-quicklinks" class="hidden" aria-label="Quick links"></div>
-
-            <div class="relative z-10 h-full max-w-6xl mx-auto px-5 sm:px-8 flex flex-col items-center justify-between text-center pointer-events-none pt-12 sm:pt-16 pb-7">
-                <div>
-                    <p class="text-muted tracking-[0.4em] uppercase text-[10px] sm:text-xs mb-3">Professional Studio</p>
-                    <h1 id="ui-name" class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white uppercase drop-shadow-2xl">FrameFusion</h1>
-                    <p class="text-white/60 tracking-[0.3em] text-[10px] sm:text-sm uppercase mt-3 font-semibold">Live Streaming · Weddings · Events</p>
+        <!-- ================= HOME — MINIMAL EDITORIAL ================= -->
+        <section id="home" class="hero-minimal">
+            <div class="hero-inner">
+                <div class="hero-topline">
+                    <span class="hero-status">Independent Production Studio</span>
+                    <span>Live · Weddings · Events</span>
                 </div>
 
-                <div class="w-full max-w-3xl pointer-events-auto">
-                    <div class="scroll-cue text-white/50 text-xs tracking-[0.3em] uppercase mb-5"><i class="fas fa-chevron-down"></i></div>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-                        <button onclick="goSec('sec-live')" class="group bg-white/[0.04] border border-white/10 hover:border-red-500/60 hover:bg-red-500/5 backdrop-blur-md rounded-2xl px-5 py-4 sm:py-5 text-left transition-all transform hover:-translate-y-1">
-                            <div class="flex items-center gap-3">
-                                <span class="w-10 h-10 rounded-xl bg-red-500/10 border border-red-500/30 flex items-center justify-center shrink-0"><i class="fas fa-tower-broadcast text-red-500"></i></span>
-                                <div>
-                                    <div class="text-white font-bold text-sm sm:text-base">Live Streams</div>
-                                    <div class="text-muted text-[11px] group-hover:text-red-400 transition">Watch live <i class="fas fa-arrow-right text-[9px]"></i></div>
-                                </div>
-                            </div>
-                        </button>
-                        <button onclick="goSec('sec-weddings')" class="group bg-white/[0.04] border border-white/10 hover:border-pink-400/60 hover:bg-pink-500/5 backdrop-blur-md rounded-2xl px-5 py-4 sm:py-5 text-left transition-all transform hover:-translate-y-1">
-                            <div class="flex items-center gap-3">
-                                <span class="w-10 h-10 rounded-xl bg-pink-500/10 border border-pink-500/30 flex items-center justify-center shrink-0"><i class="fas fa-heart text-pink-400"></i></span>
-                                <div>
-                                    <div class="text-white font-bold text-sm sm:text-base">Weddings</div>
-                                    <div class="text-muted text-[11px] group-hover:text-pink-300 transition">View stories <i class="fas fa-arrow-right text-[9px]"></i></div>
-                                </div>
-                            </div>
-                        </button>
-                        <button onclick="goSec('sec-events')" class="group bg-white/[0.04] border border-white/10 hover:border-amber-400/60 hover:bg-amber-500/5 backdrop-blur-md rounded-2xl px-5 py-4 sm:py-5 text-left transition-all transform hover:-translate-y-1">
-                            <div class="flex items-center gap-3">
-                                <span class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center shrink-0"><i class="fas fa-champagne-glasses text-amber-400"></i></span>
-                                <div>
-                                    <div class="text-white font-bold text-sm sm:text-base">Events</div>
-                                    <div class="text-muted text-[11px] group-hover:text-amber-300 transition">See coverage <i class="fas fa-arrow-right text-[9px]"></i></div>
-                                </div>
-                            </div>
-                        </button>
+                <div class="hero-main">
+                    <div>
+                        <p class="hero-kicker">Creative Production Studio</p>
+                        <h1 id="ui-name" class="hero-title">FrameFusion</h1>
+                        <p class="hero-desc">Live streaming, wedding films and event coverage — crafted with a modern visual approach and attention to every detail.</p>
                     </div>
+
+                    <aside class="hero-side">
+                        <p class="hero-side-label">Quick access</p>
+                        <div id="camera-quicklinks" class="hidden" aria-label="Quick links"></div>
+                        <div id="hero-quicklinks-empty" class="hero-side-empty">Selected work, live broadcasts and event access — all in one place.</div>
+                    </aside>
+                </div>
+
+                <div class="hero-foot">
+                    <div class="hero-jumps">
+                        <button onclick="goSec('sec-live')" class="hero-jump">Live Streaming</button>
+                        <button onclick="goSec('sec-weddings')" class="hero-jump">Weddings</button>
+                        <button onclick="goSec('sec-events')" class="hero-jump">Events</button>
+                    </div>
+                    <div class="hero-scroll">Scroll to explore ↓</div>
+                    <div class="hero-index">Creative Production</div>
                 </div>
             </div>
         </section>
 
         <!-- ================= ABOUT / PROFILE ================= -->
-        <section id="about" class="max-w-6xl mx-auto px-5 sm:px-8 pt-16 reveal">
-            <div class="bg-white/[0.03] border border-white/10 rounded-3xl p-6 sm:p-12 backdrop-blur-md shadow-2xl relative overflow-hidden">
-                <div class="absolute -top-28 -right-28 w-80 h-80 rounded-full bg-[#d4a24e]/10 blur-3xl pointer-events-none"></div>
-                <div class="absolute -bottom-28 -left-28 w-80 h-80 rounded-full bg-indigo-500/5 blur-3xl pointer-events-none"></div>
-
-                <div class="flex flex-col sm:flex-row items-center gap-7 sm:gap-12 relative">
-                    <div class="relative shrink-0">
-                        <div class="absolute -inset-2 rounded-full bg-gradient-to-tr from-[#d4a24e]/40 via-transparent to-white/20 blur-md pointer-events-none"></div>
-                        <div class="w-32 h-32 sm:w-44 sm:h-44 rounded-full border-2 border-white/20 bg-card shadow-2xl relative overflow-hidden group flex items-center justify-center">
-                            <img id="ui-logo" src="https://images.unsplash.com/photo-1554048612-b6a09faf798b?q=80&w=400&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="Logo">
-                        </div>
+        <section id="about" class="profile-wrap reveal">
+            <div class="profile-grid">
+                <div class="profile-image">
+                    <img id="ui-logo" src="https://images.unsplash.com/photo-1554048612-b6a09faf798b?q=80&w=400&auto=format&fit=crop" alt="FrameFusion Studio">
+                </div>
+                <div>
+                    <p class="eyebrow">The studio</p>
+                    <div class="profile-name-row">
+                        <h2 id="ui-name-2" class="profile-name">FrameFusion</h2>
+                        <span id="ui-rating" class="hidden items-center gap-1.5 text-xs font-bold px-3 py-1.5"><i class="fas fa-star"></i> <span id="ui-rating-txt"></span></span>
                     </div>
-
-                    <div class="flex-1 text-center sm:text-left">
-                        <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 justify-center sm:justify-start">
-                            <h2 id="ui-name-2" class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white uppercase">FrameFusion</h2>
-                            <span id="ui-rating" class="hidden items-center gap-1.5 bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 text-xs font-bold px-3 py-1.5 rounded-full"><i class="fas fa-star"></i> <span id="ui-rating-txt"></span></span>
-                        </div>
-                        <p class="text-muted tracking-[0.2em] text-[10px] sm:text-xs uppercase mt-2 font-semibold">Live Streaming · Weddings · Events</p>
-                        <p id="ui-bio" class="text-light/80 text-sm sm:text-base leading-relaxed font-light max-w-2xl mt-5 mx-auto sm:mx-0"></p>
-
-                        <div class="flex flex-col sm:flex-row items-center gap-4 mt-8">
-                            <button onclick="saveContact()" class="w-full sm:w-auto bg-white hover:bg-gray-200 text-black py-4 px-8 rounded-xl font-bold tracking-wide transition-all shadow-[0_0_30px_rgba(255,255,255,0.15)] flex items-center justify-center gap-2 transform hover:-translate-y-1">
-                                <i class="fas fa-bookmark"></i> Save Contact
-                            </button>
-                            <a id="ui-whatsapp-btn" href="#" target="_blank" class="w-full sm:w-auto border border-white/20 hover:bg-white hover:text-black text-white py-4 px-8 rounded-xl font-bold tracking-wide transition-all flex items-center justify-center gap-2 transform hover:-translate-y-1">
-                                <i class="fab fa-whatsapp text-lg"></i> WhatsApp
-                            </a>
-                            <div class="flex gap-3" id="social-links-container"></div>
-                        </div>
+                    <p id="ui-bio"></p>
+                    <div class="profile-actions">
+                        <button onclick="saveContact()" class="minimal-btn primary"><i class="fas fa-bookmark"></i> Save Contact</button>
+                        <a id="ui-whatsapp-btn" href="#" target="_blank" class="minimal-btn"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                        <div class="flex gap-2" id="social-links-container"></div>
                     </div>
                 </div>
+            </div>
 
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-10 relative">
-                    <div class="bg-white/[0.03] border border-white/10 rounded-2xl px-4 py-4 flex items-center gap-3">
-                        <i class="fas fa-camera text-white/70"></i>
-                        <span class="text-xs sm:text-sm font-semibold text-white/80">Photography</span>
-                    </div>
-                    <div class="bg-white/[0.03] border border-white/10 rounded-2xl px-4 py-4 flex items-center gap-3">
-                        <i class="fas fa-film text-white/70"></i>
-                        <span class="text-xs sm:text-sm font-semibold text-white/80">Cinematography</span>
-                    </div>
-                    <div class="bg-white/[0.03] border border-white/10 rounded-2xl px-4 py-4 flex items-center gap-3">
-                        <i class="fas fa-tower-broadcast text-red-500/80"></i>
-                        <span class="text-xs sm:text-sm font-semibold text-white/80">Live Streaming</span>
-                    </div>
-                    <div class="bg-white/[0.03] border border-white/10 rounded-2xl px-4 py-4 flex items-center gap-3">
-                        <i class="fas fa-paper-plane text-white/70"></i>
-                        <span class="text-xs sm:text-sm font-semibold text-white/80">Drone Coverage</span>
-                    </div>
-                </div>
+            <div class="service-line">
+                <div class="service-item"><i class="fas fa-camera"></i><span>Photography</span></div>
+                <div class="service-item"><i class="fas fa-film"></i><span>Cinematography</span></div>
+                <div class="service-item"><i class="fas fa-tower-broadcast"></i><span>Live Streaming</span></div>
+                <div class="service-item"><i class="fas fa-paper-plane"></i><span>Drone Coverage</span></div>
             </div>
         </section>
 
         <!-- ================= CATEGORY NAV ================= -->
-        <div id="cat-nav" class="sticky top-0 z-40 mt-12 bg-dark/85 backdrop-blur-md border-y border-white/10">
-            <div class="max-w-6xl mx-auto px-4 sm:px-8 py-3 flex gap-2 sm:gap-3 overflow-x-auto no-scrollbar">
-                <button onclick="goSec('home')" aria-label="Home" class="whitespace-nowrap border border-white/15 text-white/80 hover:bg-white hover:text-black px-4 py-2.5 rounded-full text-xs sm:text-sm font-bold transition shrink-0">
-                    <i class="fas fa-house"></i>
-                </button>
-                <button data-target="sec-live" class="cat-tab whitespace-nowrap border border-white/15 text-white/80 px-4 sm:px-6 py-2.5 rounded-full text-xs sm:text-sm font-bold tracking-wide transition flex items-center gap-2">
-                    <i class="fas fa-tower-broadcast text-red-500"></i> Live Streaming <span id="count-live" class="opacity-60"></span>
-                </button>
-                <button data-target="sec-weddings" class="cat-tab whitespace-nowrap border border-white/15 text-white/80 px-4 sm:px-6 py-2.5 rounded-full text-xs sm:text-sm font-bold tracking-wide transition flex items-center gap-2">
-                    <i class="fas fa-heart text-pink-400"></i> Weddings <span id="count-weddings" class="opacity-60"></span>
-                </button>
-                <button data-target="sec-events" class="cat-tab whitespace-nowrap border border-white/15 text-white/80 px-4 sm:px-6 py-2.5 rounded-full text-xs sm:text-sm font-bold tracking-wide transition flex items-center gap-2">
-                    <i class="fas fa-champagne-glasses text-amber-400"></i> Events <span id="count-events" class="opacity-60"></span>
-                </button>
+        <div id="cat-nav">
+            <div class="cat-nav-inner">
+                <button onclick="goSec('home')" aria-label="Home" class="cat-home"><i class="fas fa-arrow-up text-[10px]"></i></button>
+                <button data-target="sec-live" class="cat-tab">Live Streaming <span id="count-live" class="opacity-50"></span></button>
+                <button data-target="sec-weddings" class="cat-tab">Weddings <span id="count-weddings" class="opacity-50"></span></button>
+                <button data-target="sec-events" class="cat-tab">Events <span id="count-events" class="opacity-50"></span></button>
             </div>
         </div>
 
         <!-- ================= SECTIONS ================= -->
-        <div class="max-w-6xl mx-auto px-5 sm:px-8">
-
-            <!-- LIVE STREAMING -->
-            <section id="sec-live" class="pt-14 pb-4 reveal">
-                <div class="flex items-center gap-4 mb-2">
-                    <span class="w-12 h-12 rounded-2xl bg-red-500/10 border border-red-500/30 flex items-center justify-center"><i class="fas fa-tower-broadcast text-red-500 text-xl"></i></span>
+        <div class="work-wrap">
+            <section id="sec-live" class="work-section reveal">
+                <div class="section-heading">
+                    <div class="section-number">01 / LIVE</div>
                     <div>
-                        <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-white">Live Streaming</h2>
-                        <p class="text-muted text-xs sm:text-sm mt-0.5">Multi-cam HD live streams — family anywhere in the world can watch your day live.</p>
+                        <h2 class="section-title">Live Streaming</h2>
+                        <p class="section-copy">Multi-camera HD live coverage that keeps your audience connected wherever they are.</p>
                     </div>
                 </div>
-                <div id="live-banner" class="hidden mt-6"></div>
-                <div id="proj-live" class="mt-8"></div>
+                <div id="live-banner" class="hidden mb-8"></div>
+                <div id="proj-live"></div>
             </section>
 
-            <hr class="border-white/10 my-10">
+            <hr class="section-divider">
 
-            <!-- WEDDINGS -->
-            <section id="sec-weddings" class="pt-4 pb-4 reveal">
-                <div class="flex items-center gap-4 mb-2">
-                    <span class="w-12 h-12 rounded-2xl bg-pink-500/10 border border-pink-500/30 flex items-center justify-center"><i class="fas fa-heart text-pink-400 text-xl"></i></span>
+            <section id="sec-weddings" class="work-section reveal">
+                <div class="section-heading">
+                    <div class="section-number">02 / STORIES</div>
                     <div>
-                        <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-white">Weddings</h2>
-                        <p class="text-muted text-xs sm:text-sm mt-0.5">Cinematic wedding photography &amp; films — your story, told frame by frame.</p>
+                        <h2 class="section-title">Weddings</h2>
+                        <p class="section-copy">Cinematic photography and films built around real emotion, quiet details and timeless frames.</p>
                     </div>
                 </div>
-                <div id="proj-weddings" class="mt-8"></div>
+                <div id="proj-weddings"></div>
             </section>
 
-            <hr class="border-white/10 my-10">
+            <hr class="section-divider">
 
-            <!-- EVENTS -->
-            <section id="sec-events" class="pt-4 pb-10 reveal">
-                <div class="flex items-center gap-4 mb-2">
-                    <span class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center"><i class="fas fa-champagne-glasses text-amber-400 text-xl"></i></span>
+            <section id="sec-events" class="work-section reveal">
+                <div class="section-heading">
+                    <div class="section-number">03 / EVENTS</div>
                     <div>
-                        <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-white">Events</h2>
-                        <p class="text-muted text-xs sm:text-sm mt-0.5">Concerts, birthdays, corporate events &amp; more — covered end to end.</p>
+                        <h2 class="section-title">Events</h2>
+                        <p class="section-copy">Concerts, celebrations, corporate productions and ticketed events — covered from start to finish.</p>
                     </div>
                 </div>
-                <div id="proj-events" class="mt-8"></div>
+                <div id="proj-events"></div>
             </section>
         </div>
 
@@ -602,127 +856,6 @@
         window.goSec = (id) => document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
     </script>
 
-    <!-- ================= 3D CAMERA ================= -->
-    <script>
-    (function(){
-        if (!window.THREE) return;
-        const canvas = document.getElementById('cam3d');
-        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-        const scene = new THREE.Scene();
-        const cam = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
-
-        /* lights */
-        scene.add(new THREE.AmbientLight(0xffffff, 0.35));
-        const key = new THREE.DirectionalLight(0xffffff, 1.1); key.position.set(5, 7, 6); scene.add(key);
-        const rim = new THREE.PointLight(0xd4a24e, 1.8, 40); rim.position.set(-7, 3, -4); scene.add(rim);
-        const fill = new THREE.PointLight(0x6a7cff, 0.6, 40); fill.position.set(6, -3, 5); scene.add(fill);
-
-        /* materials */
-        const bodyMat = new THREE.MeshStandardMaterial({ color: 0x1d1d21, roughness: 0.45, metalness: 0.6 });
-        const darkMat = new THREE.MeshStandardMaterial({ color: 0x0d0d10, roughness: 0.3, metalness: 0.7 });
-        const goldMat = new THREE.MeshStandardMaterial({ color: 0xd4a24e, roughness: 0.25, metalness: 0.9 });
-
-        /* camera model */
-        const g = new THREE.Group();
-        g.add(new THREE.Mesh(new THREE.BoxGeometry(3.4, 2.1, 1.1), bodyMat));                        // body
-
-        const grip = new THREE.Mesh(new THREE.BoxGeometry(0.75, 1.95, 1.3), darkMat);
-        grip.position.set(-1.55, -0.05, 0.08); g.add(grip);                                          // grip
-
-        const top = new THREE.Mesh(new THREE.BoxGeometry(3.4, 0.28, 1.0), darkMat);
-        top.position.y = 1.18; g.add(top);                                                           // top plate
-
-        const hump = new THREE.Mesh(new THREE.BoxGeometry(1.15, 0.55, 0.92), bodyMat);
-        hump.position.y = 1.45; g.add(hump);                                                         // prism hump
-
-        const shutter = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 0.13, 24), goldMat);
-        shutter.position.set(-1.35, 1.38, 0.15); g.add(shutter);                                     // shutter button
-
-        const dial = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.14, 24), darkMat);
-        dial.position.set(1.25, 1.38, -0.15); g.add(dial);                                           // mode dial
-
-        const lens = new THREE.Mesh(new THREE.CylinderGeometry(0.85, 0.92, 1.55, 48), new THREE.MeshStandardMaterial({ color: 0x232327, roughness: 0.35, metalness: 0.7 }));
-        lens.rotation.x = Math.PI / 2; lens.position.z = 1.25; g.add(lens);                          // lens barrel
-
-        const focusRing = new THREE.Mesh(new THREE.TorusGeometry(0.9, 0.08, 16, 64), darkMat);
-        focusRing.position.z = 1.0; g.add(focusRing);                                                // focus ring
-
-        const goldRing = new THREE.Mesh(new THREE.TorusGeometry(0.87, 0.045, 16, 64), goldMat);
-        goldRing.position.z = 1.62; g.add(goldRing);                                                 // brand ring
-
-        const glass = new THREE.Mesh(new THREE.CylinderGeometry(0.68, 0.68, 0.07, 48),
-            new THREE.MeshStandardMaterial({ color: 0x101828, roughness: 0.05, metalness: 1, emissive: 0x1c2f57, emissiveIntensity: 0.7 }));
-        glass.rotation.x = Math.PI / 2; glass.position.z = 2.02; g.add(glass);                       // front glass
-
-        const innerGlass = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.35, 0.03, 32),
-            new THREE.MeshStandardMaterial({ color: 0x2a3f6e, roughness: 0, metalness: 1, emissive: 0x3b5998, emissiveIntensity: 0.9 }));
-        innerGlass.rotation.x = Math.PI / 2; innerGlass.position.z = 2.06; g.add(innerGlass);        // inner element
-
-        const recMat = new THREE.MeshStandardMaterial({ color: 0xff2244, emissive: 0xff2244, emissiveIntensity: 2 });
-        const rec = new THREE.Mesh(new THREE.SphereGeometry(0.07, 16, 16), recMat);
-        rec.position.set(1.42, 1.38, 0.25); g.add(rec);                                              // REC light
-
-        const shoe = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.1, 0.5), goldMat);
-        shoe.position.y = 1.78; g.add(shoe);                                                         // hot shoe
-
-        g.rotation.y = -0.45;
-        scene.add(g);
-
-        /* floating dust */
-        const N = 160;
-        const pos = new Float32Array(N * 3);
-        for (let i = 0; i < N * 3; i++) pos[i] = (Math.random() - 0.5) * 26;
-        const pGeo = new THREE.BufferGeometry();
-        pGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-        const pts = new THREE.Points(pGeo, new THREE.PointsMaterial({ color: 0xd4a24e, size: 0.055, transparent: true, opacity: 0.45 }));
-        scene.add(pts);
-
-        /* interaction: hover parallax + drag rotate */
-        let hoverX = 0, hoverY = 0, userX = 0, userY = 0, dragging = false, px = 0, py = 0;
-        window.addEventListener('pointermove', (e) => {
-            if (dragging) {
-                userY += (e.clientX - px) * 0.006;
-                userX += (e.clientY - py) * 0.006;
-                userX = Math.max(-0.6, Math.min(0.7, userX));
-                px = e.clientX; py = e.clientY;
-                return;
-            }
-            hoverY = (e.clientX / innerWidth * 2 - 1) * 0.35;
-            hoverX = (e.clientY / innerHeight * 2 - 1) * 0.18;
-        });
-        canvas.addEventListener('pointerdown', (e) => { dragging = true; px = e.clientX; py = e.clientY; });
-        window.addEventListener('pointerup', () => { dragging = false; });
-
-        const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-        function resize() {
-            const w = canvas.clientWidth || innerWidth, h = canvas.clientHeight || innerHeight;
-            renderer.setSize(w, h, false);
-            renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-            cam.aspect = w / h;
-            cam.position.set(0, 0.45, w < 640 ? 11.5 : 9);
-            cam.updateProjectionMatrix();
-        }
-        resize();
-        window.addEventListener('resize', resize);
-
-        let t = 0;
-        function loop() {
-            requestAnimationFrame(loop);
-            t += 0.01;
-            if (!reduced) {
-                const sway = Math.sin(t * 0.5) * 0.35;
-                g.rotation.y += ((sway + hoverY + userY - 0.45) - g.rotation.y) * 0.05;
-                g.rotation.x += ((Math.sin(t * 0.33) * 0.06 + hoverX + userX) - g.rotation.x) * 0.05;
-                g.position.y = Math.sin(t * 0.8) * 0.14 - 0.1;
-                recMat.emissiveIntensity = 1.6 + Math.sin(t * 4.5) * 1.3;
-                pts.rotation.y = t * 0.02;
-            }
-            renderer.render(scene, cam);
-        }
-        loop();
-    })();
-    </script>
 
     <!-- ================= FIREBASE ================= -->
     <script type="module">
@@ -799,6 +932,7 @@
 
         function renderCameraButtons() {
             const box = document.getElementById('camera-quicklinks');
+            const empty = document.getElementById('hero-quicklinks-empty');
             if (!box) return;
             box.replaceChildren();
 
@@ -806,6 +940,7 @@
             const buttons = Array.isArray(profileData?.cameraButtons) ? profileData.cameraButtons.slice(0, 4) : [];
             if (!enabled || !buttons.length) {
                 box.classList.add('hidden');
+                if (empty) empty.classList.remove('hidden');
                 return;
             }
 
@@ -818,7 +953,6 @@
                 a.href = href;
                 a.target = '_blank';
                 a.rel = 'noopener noreferrer';
-                a.style.setProperty('--float-delay', `${index * -0.45}s`);
 
                 const icon = document.createElement('span');
                 icon.className = 'camera-3d-emoji';
@@ -845,24 +979,13 @@
                 box.appendChild(a);
             });
 
-            box.classList.toggle('hidden', box.children.length === 0);
+            const hasButtons = box.children.length > 0;
+            box.classList.toggle('hidden', !hasButtons);
+            if (empty) empty.classList.toggle('hidden', hasButtons);
         }
-
-        /* ---- 3D video camera markup (shared) ---- */
+        /* ---- Minimal live icon markup (shared) ---- */
         function videoCamHtml() {
-            return `
-                <span class="cam3d">
-                    <span class="cam-body">
-                        <b class="cbf"></b><b class="cbb"></b><b class="cbl"></b><b class="cbr"></b><b class="cbt"></b><b class="cbd"></b>
-                        <b class="cam-rec"></b>
-                    </span>
-                    <span class="cam-lens">
-                        <b class="clb"></b><b class="cll"></b><b class="clr"></b><b class="clt"></b><b class="cld"></b><b class="clf"></b>
-                    </span>
-                    <span class="cam-handle">
-                        <b class="chf"></b><b class="chb"></b><b class="chl"></b><b class="chr"></b><b class="cht"></b><b class="chd"></b>
-                    </span>
-                </span>`;
+            return `<span class="minimal-live-icon"><i class="fas fa-play text-[11px]"></i></span>`;
         }
 
         /* ---- LIVE NOW banner (set liveUrl in admin) — opens YouTube directly ---- */
@@ -872,14 +995,14 @@
             if (!url) { box.classList.add('hidden'); box.innerHTML = ''; return; }
 
             box.innerHTML = `
-                <a href="${url}" target="_blank" rel="noopener" class="proj-card group block rounded-2xl border border-red-500/40 hover:border-red-500/90 bg-gradient-to-r from-red-500/15 via-white/[0.03] to-transparent p-5 sm:p-8 shadow-[0_0_60px_rgba(239,68,68,0.15)] transition-all transform hover:-translate-y-1">
+                <a href="${url}" target="_blank" rel="noopener" class="proj-card group block">
                     <div class="flex items-center gap-5 sm:gap-8">
                         <span class="cam-wrap shrink-0">${videoCamHtml()}</span>
                         <div class="flex-1 min-w-0">
                             <span class="inline-flex items-center gap-2 bg-red-600 text-white text-[10px] sm:text-[11px] font-extrabold tracking-[0.2em] uppercase px-3 py-1.5 rounded-full">
                                 <span class="live-dot w-2 h-2 rounded-full bg-white inline-block"></span> Live Now
                             </span>
-                            <div class="text-white font-extrabold text-base sm:text-2xl tracking-wide mt-2.5 truncate">${profileData.liveTitle || 'We are live right now'}</div>
+                            <div class="live-banner-title font-extrabold text-base sm:text-2xl tracking-wide mt-2.5 truncate">${profileData.liveTitle || 'We are live right now'}</div>
                             <div class="text-muted text-xs sm:text-sm mt-1">Tap to watch live on YouTube</div>
                         </div>
                         <span class="hidden sm:inline-flex items-center gap-2.5 bg-red-600 group-hover:bg-red-500 text-white text-xs font-bold uppercase tracking-[0.15em] px-6 py-3.5 rounded-full transition-all shrink-0">
@@ -926,11 +1049,11 @@
                 const href = safeUrl.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
 
                 return `
-                    <a href="${href}" target="_blank" rel="noopener noreferrer" class="group rounded-2xl border border-amber-400/25 hover:border-amber-400/70 bg-amber-400/[0.06] hover:bg-amber-400/[0.10] min-h-[92px] px-4 py-4 flex items-center gap-3 transition-all transform hover:-translate-y-1">
-                        <span class="w-11 h-11 rounded-xl bg-amber-400/10 border border-amber-400/30 flex items-center justify-center shrink-0"><i class="fas fa-link text-amber-400"></i></span>
+                    <a href="${href}" target="_blank" rel="noopener noreferrer" class="event-link-card">
+                        <span class="event-link-icon"><i class="fas fa-arrow-up-right-from-square text-[10px]"></i></span>
                         <span class="flex-1 min-w-0">
-                            <span class="block text-white font-bold text-sm truncate">${label}</span>
-                            <span class="block text-muted text-[11px] mt-1">Open link <i class="fas fa-arrow-up-right-from-square text-[9px]"></i></span>
+                            <span class="event-link-title">${label}</span>
+                            <span class="event-link-sub">Open link</span>
                         </span>
                     </a>`;
             }
@@ -980,15 +1103,15 @@
                 meta.push(`★ ${avg}`);
             }
 
-            const faces = '<b class="f1"></b><b class="f2"></b><b class="f3"></b><b class="f4"></b><b class="f5"></b><b class="f6"></b>';
+            const catIcon = cat === 'live' ? 'fa-play' : (cat === 'weddings' ? 'fa-heart' : 'fa-calendar');
             return `
-                <button onclick="openProject('${proj.id}')" class="proj-card group text-left bg-white/[0.03] border border-white/10 ${CAT_HOVER[cat]} rounded-2xl px-5 py-5 transition-all transform hover:-translate-y-1 flex items-center gap-4 w-full">
-                    <span class="shape-wrap shrink-0"><span class="shape3d sh-${cat}">${faces}</span></span>
-                    <span class="flex-1 min-w-0">
-                        <span class="block text-white font-bold text-sm sm:text-base truncate">${proj.name}</span>
-                        <span class="block text-muted text-xs mt-1">${meta.join(' · ')}</span>
+                <button onclick="openProject('${proj.id}')" class="project-min-card">
+                    <span class="project-mark"><i class="fas ${catIcon}"></i></span>
+                    <span class="min-w-0">
+                        <span class="project-title">${proj.name}</span>
+                        <span class="project-meta">${meta.join(' · ')}</span>
                     </span>
-                    <i class="fas fa-arrow-right text-white/30 group-hover:text-white group-hover:translate-x-1 transition-all shrink-0"></i>
+                    <span class="project-arrow"><i class="fas fa-arrow-right"></i></span>
                 </button>
             `;
         }
@@ -1008,18 +1131,13 @@
             }
 
             return `
-                <button onclick="openProject('${proj.id}')" class="proj-card group text-left w-full rounded-2xl border border-red-500/25 hover:border-red-500/70 bg-gradient-to-r from-red-500/10 via-white/[0.03] to-transparent px-5 sm:px-8 py-6 sm:py-8 flex items-center gap-5 sm:gap-8 transition-all transform hover:-translate-y-1">
-                    <span class="cam-wrap shrink-0">${videoCamHtml()}</span>
-                    <span class="flex-1 min-w-0">
-                        <span class="flex items-center gap-3 min-w-0">
-                            <span class="block text-white font-extrabold text-lg sm:text-2xl tracking-wide truncate">${proj.name}</span>
-                        </span>
-                        <span class="block text-muted text-xs sm:text-sm mt-1.5">${meta.join(' · ') || 'Live stream project'}</span>
+                <button onclick="openProject('${proj.id}')" class="live-project-row">
+                    ${videoCamHtml()}
+                    <span class="min-w-0">
+                        <span class="project-title text-base sm:text-xl">${proj.name}</span>
+                        <span class="project-meta">${meta.join(' · ') || 'Live stream project'}</span>
                     </span>
-                    <span class="hidden sm:inline-flex items-center gap-2.5 border border-white/20 group-hover:bg-white group-hover:text-black group-hover:border-white text-white text-xs font-bold uppercase tracking-[0.15em] px-6 py-3.5 rounded-full transition-all shrink-0">
-                        <i class="fas fa-play text-[10px] text-red-500 group-hover:text-black transition"></i> Watch
-                    </span>
-                    <i class="fas fa-arrow-right sm:hidden text-white/40 group-hover:text-white transition shrink-0"></i>
+                    <span class="live-watch"><i class="fas fa-play text-[8px]"></i><span>Watch</span></span>
                 </button>
             `;
         }
@@ -1047,13 +1165,13 @@
             const wrap = document.getElementById('pv-reviews-wrap');
             if (projReviews.length) {
                 document.getElementById('pv-reviews').innerHTML = projReviews.map(r => `
-                    <div class="bg-white/5 p-5 rounded-2xl border border-white/5 backdrop-blur-sm relative">
-                        <i class="fas fa-quote-left absolute top-4 right-4 text-white/5 text-3xl"></i>
-                        <div class="flex justify-between items-start mb-3">
-                            <h4 class="font-bold text-white text-base">${r.name}</h4>
-                            <div class="text-yellow-500 text-sm tracking-widest">${'★'.repeat(r.rating)}${'<span class="text-gray-600">★</span>'.repeat(5-r.rating)}</div>
+                    <div class="review-card p-5 rounded-2xl relative">
+                        <i class="fas fa-quote-left review-quote absolute top-4 right-4 text-3xl"></i>
+                        <div class="flex justify-between items-start mb-3 gap-3">
+                            <h4 class="review-name font-bold text-base">${r.name}</h4>
+                            <div class="text-yellow-500 text-sm tracking-widest shrink-0">${'★'.repeat(r.rating)}${'<span class="review-star-empty">★</span>'.repeat(5-r.rating)}</div>
                         </div>
-                        <p class="text-gray-400 text-sm italic leading-relaxed">"${r.comment}"</p>
+                        <p class="review-comment text-sm italic leading-relaxed">"${r.comment}"</p>
                     </div>
                 `).join('');
                 wrap.classList.remove('hidden');
@@ -1111,7 +1229,7 @@
                         : `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">${html[cat]}</div>`;
                 } else {
                     box.innerHTML = `
-                        <div class="border border-dashed border-white/15 rounded-2xl py-14 px-6 text-center text-muted">
+                        <div class="empty-state py-14 px-6 text-center">
                             <i class="fas ${EMPTY_MSG[cat].icon} text-3xl mb-4 opacity-40"></i>
                             <p class="text-sm">${EMPTY_MSG[cat].text}</p>
                         </div>`;
