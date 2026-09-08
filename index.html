@@ -663,6 +663,30 @@
                 return `<div class="photo-card cursor-pointer rounded-2xl overflow-hidden relative aspect-square sm:aspect-[4/5] bg-dark shadow-xl border border-white/5" onclick="openLightbox('${item.url}', 'photo')"><img src="${item.url}" class="w-full h-full object-cover" loading="lazy" alt=""></div>`;
             }
 
+            if(item.type === 'link') {
+                const rawUrl = String(item.url || '').trim();
+                let safeUrl = '';
+                try {
+                    const parsed = new URL(rawUrl);
+                    if (parsed.protocol === 'http:' || parsed.protocol === 'https:') safeUrl = parsed.href;
+                } catch (_) {}
+                if (!safeUrl) return '';
+
+                const label = String(item.label || 'Open Link')
+                    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+                const href = safeUrl.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+
+                return `
+                    <a href="${href}" target="_blank" rel="noopener noreferrer" class="group rounded-2xl border border-amber-400/25 hover:border-amber-400/70 bg-amber-400/[0.06] hover:bg-amber-400/[0.10] min-h-[92px] px-4 py-4 flex items-center gap-3 transition-all transform hover:-translate-y-1">
+                        <span class="w-11 h-11 rounded-xl bg-amber-400/10 border border-amber-400/30 flex items-center justify-center shrink-0"><i class="fas fa-link text-amber-400"></i></span>
+                        <span class="flex-1 min-w-0">
+                            <span class="block text-white font-bold text-sm truncate">${label}</span>
+                            <span class="block text-muted text-[11px] mt-1">Open link <i class="fas fa-arrow-up-right-from-square text-[9px]"></i></span>
+                        </span>
+                    </a>`;
+            }
+
             let url = item.url;
             let thumbHtml = '';
             let clickArgs = '';
@@ -696,11 +720,13 @@
         function projectCardHtml(proj, cat) {
             const items = proj.items || [];
             const nPhotos = items.filter(i => i.type === 'photo').length;
-            const nVideos = items.length - nPhotos;
+            const nLinks = items.filter(i => i.type === 'link').length;
+            const nVideos = items.filter(i => i.type !== 'photo' && i.type !== 'link').length;
             const projReviews = allReviews.filter(r => r.projectId === proj.id);
             let meta = [];
             if (nPhotos) meta.push(`${nPhotos} photo${nPhotos > 1 ? 's' : ''}`);
             if (nVideos) meta.push(`${nVideos} video${nVideos > 1 ? 's' : ''}`);
+            if (nLinks) meta.push(`${nLinks} link${nLinks > 1 ? 's' : ''}`);
             if (projReviews.length) {
                 const avg = (projReviews.reduce((s, r) => s + (r.rating || 0), 0) / projReviews.length).toFixed(1);
                 meta.push(`★ ${avg}`);
@@ -723,7 +749,7 @@
         function projectBarHtml(proj) {
             const items = proj.items || [];
             const nPhotos = items.filter(i => i.type === 'photo').length;
-            const nVideos = items.length - nPhotos;
+            const nVideos = items.filter(i => i.type !== 'photo' && i.type !== 'link').length;
             const projReviews = allReviews.filter(r => r.projectId === proj.id);
             let meta = [];
             if (nVideos) meta.push(`${nVideos} stream${nVideos > 1 ? 's' : ''} / video${nVideos > 1 ? 's' : ''}`);
@@ -758,13 +784,14 @@
             if (!proj) { closeProject(); return; }
             const items = proj.items || [];
             const nPhotos = items.filter(i => i.type === 'photo').length;
-            const nVideos = items.length - nPhotos;
+            const nLinks = items.filter(i => i.type === 'link').length;
+            const nVideos = items.filter(i => i.type !== 'photo' && i.type !== 'link').length;
             const cat = projectCategory(proj);
             const CAT_NAME = { live: 'Live Streaming', weddings: 'Weddings', events: 'Events' };
 
             document.getElementById('pv-title').innerText = proj.name;
             document.getElementById('pv-meta').innerText =
-                `${CAT_NAME[cat]}${nPhotos ? ' · ' + nPhotos + ' photos' : ''}${nVideos ? ' · ' + nVideos + ' videos' : ''}`;
+                `${CAT_NAME[cat]}${nPhotos ? ' · ' + nPhotos + ' photos' : ''}${nVideos ? ' · ' + nVideos + ' videos' : ''}${nLinks ? ' · ' + nLinks + ' links' : ''}`;
             document.getElementById('pv-items').innerHTML = items.map(itemCardHtml).join('');
             document.getElementById('pv-rate').onclick = () => openReviewModal(proj.id);
 
