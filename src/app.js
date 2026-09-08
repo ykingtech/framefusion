@@ -701,8 +701,9 @@ async function downloadTicketPdf(reg, qrData, used = false) {
   ctx.strokeStyle = 'rgba(253,224,71,.52)';
   ctx.lineWidth = 3;
   ctx.stroke();
+  // Keep the ticket number centered inside its badge.
   ctx.textAlign = 'center';
-  drawPdfText(ctx, reg.ticketNumber, 1685, 1017, 485, 64, 900, '#fde68a');
+  drawPdfText(ctx, reg.ticketNumber, 1927.5, 1017, 470, 64, 900, '#fde68a');
 
   // --- Details rail -------------------------------------------------------
   const detailsY = 1250;
@@ -741,7 +742,7 @@ async function downloadTicketPdf(reg, qrData, used = false) {
   ctx.restore();
 
   // --- QR vault -----------------------------------------------------------
-  roundRectPath(ctx, 150, 1660, 2180, 1480, 52);
+  roundRectPath(ctx, 150, 1660, 2180, 1440, 52);
   ctx.fillStyle = 'rgba(4,13,24,.78)';
   ctx.fill();
   ctx.strokeStyle = 'rgba(125,211,252,.20)';
@@ -759,9 +760,10 @@ async function downloadTicketPdf(reg, qrData, used = false) {
   const qrImage = await loadCanvasImage(qrData);
 
   // White QR plate + subtle holographic outer halo.
-  const qrOuter = 1260;
+  // Slightly smaller QR plate so the full code and white quiet-zone stay inside the vault.
+  const qrOuter = 1080;
   const qrX = (W - qrOuter) / 2;
-  const qrY = 1900;
+  const qrY = 1910;
 
   ctx.save();
   ctx.shadowColor = 'rgba(56,189,248,.26)';
@@ -782,19 +784,19 @@ async function downloadTicketPdf(reg, qrData, used = false) {
   ctx.stroke();
 
   // Generous quiet zone around the QR itself.
-  ctx.drawImage(qrImage, qrX + 95, qrY + 95, qrOuter - 190, qrOuter - 190);
+  ctx.drawImage(qrImage, qrX + 88, qrY + 88, qrOuter - 176, qrOuter - 176);
 
   // Bottom scan/status info inside QR vault.
   ctx.font = '900 35px Inter, Arial, sans-serif';
   ctx.fillStyle = '#fde68a';
-  ctx.fillText(String(reg.ticketNumber || '-'), W / 2, 3250);
+  ctx.fillText(String(reg.ticketNumber || '-'), W / 2, 3055);
 
   // --- Footer security bar -----------------------------------------------
   const footGrad = ctx.createLinearGradient(150, 0, W - 150, 0);
   footGrad.addColorStop(0, 'rgba(56,189,248,.13)');
   footGrad.addColorStop(0.5, 'rgba(74,222,128,.10)');
   footGrad.addColorStop(1, 'rgba(253,224,71,.11)');
-  roundRectPath(ctx, 150, 3300, 2180, 120, 34);
+  roundRectPath(ctx, 150, 3160, 2180, 130, 34);
   ctx.fillStyle = footGrad;
   ctx.fill();
   ctx.strokeStyle = 'rgba(148,163,184,.16)';
@@ -804,21 +806,21 @@ async function downloadTicketPdf(reg, qrData, used = false) {
   ctx.textAlign = 'left';
   ctx.font = '800 24px Inter, Arial, sans-serif';
   ctx.fillStyle = '#7dd3fc';
-  ctx.fillText('SECURE QR ADMISSION', 210, 3375);
+  ctx.fillText('SECURE QR ADMISSION', 210, 3240);
 
   ctx.textAlign = 'center';
   ctx.fillStyle = '#94a3b8';
-  ctx.fillText('SINGLE ENTRY • NON-TRANSFERABLE', W / 2, 3375);
+  ctx.fillText('SINGLE ENTRY • NON-TRANSFERABLE', W / 2, 3240);
 
   ctx.textAlign = 'right';
   ctx.fillStyle = '#fde68a';
-  ctx.fillText('THE AURELIA 2K26', W - 210, 3375);
+  ctx.fillText('THE AURELIA 2K26', W - 210, 3240);
 
   // Final small-print note.
   ctx.textAlign = 'center';
   ctx.font = '600 19px Inter, Arial, sans-serif';
   ctx.fillStyle = '#475569';
-  ctx.fillText('The first successful scan permanently marks this pass as USED.', W / 2, 3460);
+  ctx.fillText('The first successful scan permanently marks this pass as USED.', W / 2, 3385);
 
   // Create a true ISO A4 portrait PDF (210 x 297 mm).
   // PNG is used so the QR remains crisp and high contrast.
