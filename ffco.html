@@ -224,10 +224,12 @@
                 const cat = CAT_LABEL[proj.category] ? proj.category : 'weddings';
                 const projReviews = allReviews.filter(r => r.projectId === proj.id);
                 let itemsHtml = (proj.items || []).map((item, i) => `
-                    <div class="relative w-16 h-16 bg-gray-200 rounded overflow-hidden">
+                    <div class="relative w-16 h-16 bg-gray-200 rounded overflow-hidden" title="${item.type === 'link' ? (item.label || 'Link') : ''}">
                         ${item.type==='photo'
                             ? `<img src="${item.url}" class="w-full h-full object-cover">`
-                            : `<div class="w-full h-full bg-gray-800 text-white flex items-center justify-center"><i class="fas fa-video"></i></div>`}
+                            : item.type==='link'
+                                ? `<div class="w-full h-full bg-amber-100 text-amber-700 flex flex-col items-center justify-center px-1"><i class="fas fa-link mb-1"></i><span class="text-[9px] leading-tight text-center w-full truncate">${item.label || 'Link'}</span></div>`
+                                : `<div class="w-full h-full bg-gray-800 text-white flex items-center justify-center"><i class="fas fa-video"></i></div>`}
                         <button onclick="deleteItem('${proj.id}', ${i})" class="absolute top-0 right-0 bg-red-600 text-white w-5 h-5 flex items-center justify-center"><i class="fas fa-times text-xs"></i></button>
                     </div>`).join('');
 
@@ -261,6 +263,7 @@
                         <div class="flex gap-2 mb-4">
                             <label class="bg-gray-200 px-3 py-1 cursor-pointer text-sm rounded"><input type="file" multiple accept="image/*" onchange="uploadProjectPhotos(this, '${proj.id}')" class="hidden"> + Photos</label>
                             <button onclick="addYoutube('${proj.id}')" class="bg-red-100 text-red-700 px-3 py-1 rounded text-sm">+ YouTube</button>
+                            ${cat === 'events' ? `<button onclick="addLink('${proj.id}')" class="bg-amber-100 text-amber-700 px-3 py-1 rounded text-sm"><i class="fas fa-link"></i> + Link</button>` : ''}
                             <span id="up-${proj.id}" class="hidden text-blue-500 text-sm">Uploading...</span>
                         </div>
                         <div class="bg-gray-100 p-3 rounded-lg border">
@@ -302,6 +305,31 @@
             const url = prompt("YouTube URL:");
             if(url) await updateDoc(doc(db, "projects", pid), { items: arrayUnion({ type: 'youtube', url, addedAt: Date.now() }) });
         };
+
+        window.addLink = async (pid) => {
+            const labelInput = prompt("Button name (example: Open Registration):");
+            if (labelInput === null) return;
+            const label = labelInput.trim() || 'Open Link';
+
+            let url = prompt("Link URL (example: https://example.com):");
+            if (!url) return;
+            url = url.trim();
+            if (!/^[a-zA-Z][a-zA-Z\d+\-.]*:/.test(url)) url = 'https://' + url;
+
+            try {
+                const parsed = new URL(url);
+                if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') throw new Error('Invalid protocol');
+                url = parsed.href;
+            } catch (_) {
+                alert("Please enter a valid website link.");
+                return;
+            }
+
+            await updateDoc(doc(db, "projects", pid), {
+                items: arrayUnion({ type: 'link', label, url, addedAt: Date.now() })
+            });
+        };
+
         window.deleteItem = async (pid, idx) => {
             let snap = await getDoc(doc(db, "projects", pid));
             let items = snap.data().items; items.splice(idx, 1);
