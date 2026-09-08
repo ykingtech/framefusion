@@ -119,6 +119,93 @@
         section { scroll-margin-top: 80px; }
         #home { scroll-margin-top: 0; }
         #cam3d { touch-action: pan-y; }
+
+        /* Optional floating 3D quick-link buttons around the home camera */
+        #camera-quicklinks {
+            position: absolute;
+            left: 50%;
+            top: 58%;
+            transform: translate(-50%, -50%);
+            z-index: 18;
+            width: min(92vw, 860px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            pointer-events: none;
+            perspective: 900px;
+        }
+        #camera-quicklinks.hidden { display: none; }
+        .camera-3d-link {
+            --float-delay: 0s;
+            pointer-events: auto;
+            position: relative;
+            min-width: 150px;
+            max-width: 220px;
+            min-height: 58px;
+            padding: 10px 16px 12px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,.20);
+            background: linear-gradient(145deg, rgba(255,255,255,.12), rgba(255,255,255,.035));
+            box-shadow: 0 16px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.18), 0 0 30px rgba(212,162,78,.06);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            color: #fff;
+            transform-style: preserve-3d;
+            transform: perspective(700px) rotateX(8deg) translateZ(0);
+            transition: transform .28s ease, border-color .28s ease, background .28s ease, box-shadow .28s ease;
+            animation: cameraBtnFloat 3.6s ease-in-out infinite var(--float-delay);
+            overflow: hidden;
+        }
+        .camera-3d-link::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg, transparent 18%, rgba(255,255,255,.12) 48%, transparent 70%);
+            transform: translateX(-120%);
+            transition: transform .55s ease;
+            pointer-events: none;
+        }
+        .camera-3d-link::after {
+            content: '';
+            position: absolute;
+            left: 10px; right: 10px; bottom: -7px; height: 10px;
+            border-radius: 0 0 12px 12px;
+            background: rgba(212,162,78,.18);
+            filter: blur(3px);
+            transform: translateZ(-10px);
+            pointer-events: none;
+        }
+        .camera-3d-link:hover {
+            transform: perspective(700px) rotateX(0deg) translateY(-5px) translateZ(18px) scale(1.035);
+            border-color: rgba(212,162,78,.70);
+            background: linear-gradient(145deg, rgba(212,162,78,.16), rgba(255,255,255,.055));
+            box-shadow: 0 22px 38px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.24), 0 0 34px rgba(212,162,78,.14);
+        }
+        .camera-3d-link:hover::before { transform: translateX(120%); }
+        .camera-3d-emoji {
+            width: 34px; height: 34px; flex: 0 0 34px;
+            border-radius: 11px;
+            display: grid; place-items: center;
+            background: rgba(212,162,78,.12);
+            border: 1px solid rgba(212,162,78,.28);
+            font-size: 18px;
+            transform: translateZ(18px);
+        }
+        .camera-3d-copy { transform: translateZ(12px); min-width: 0; }
+        @keyframes cameraBtnFloat {
+            0%,100% { margin-top: 0; }
+            50% { margin-top: -6px; }
+        }
+        @media (max-width: 639px) {
+            #camera-quicklinks { top: 58%; width: 94vw; gap: 8px; }
+            .camera-3d-link { min-width: min(43vw, 158px); max-width: 46vw; min-height: 52px; padding: 8px 11px 10px; border-radius: 14px; }
+            .camera-3d-emoji { width: 30px; height: 30px; flex-basis: 30px; font-size: 16px; border-radius: 9px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .camera-3d-link { animation: none; }
+        }
     </style>
 </head>
 <body class="min-h-screen selection:bg-white selection:text-black">
@@ -150,6 +237,9 @@
                 #0a0a0a;"></div>
 
             <canvas id="cam3d" class="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing"></canvas>
+
+            <!-- Optional admin-controlled 3D quick-link buttons. Hidden = original clean camera view. -->
+            <div id="camera-quicklinks" class="hidden" aria-label="Quick links"></div>
 
             <div class="relative z-10 h-full max-w-6xl mx-auto px-5 sm:px-8 flex flex-col items-center justify-between text-center pointer-events-none pt-12 sm:pt-16 pb-7">
                 <div>
@@ -592,12 +682,71 @@
                     if(profileData.fb) socialsHTML += `<a href="${profileData.fb}" target="_blank" class="w-12 h-12 rounded-full bg-white/5 border border-white/10 hover:bg-white hover:text-black flex items-center justify-center transition-all shadow-lg backdrop-blur-sm"><i class="fab fa-facebook-f text-lg"></i></a>`;
                     document.getElementById('social-links-container').innerHTML = socialsHTML;
 
+                    renderCameraButtons();
                     renderLiveBanner();
                 }
             } catch (e) {
                 console.error("Profile load failed:", e);
             }
+            if (!profileData || !Object.keys(profileData).length) renderCameraButtons();
             window.hideLoader();
+        }
+
+        /* ---- Optional 3D quick-link buttons beside the home camera ---- */
+        function safeQuickLink(raw) {
+            const value = String(raw || '').trim();
+            if (!value) return '';
+            if (/^(#|\/|\.\.?\/)/.test(value)) return value;
+            try {
+                const parsed = new URL(value);
+                return (parsed.protocol === 'http:' || parsed.protocol === 'https:') ? parsed.href : '';
+            } catch (_) { return ''; }
+        }
+
+        function renderCameraButtons() {
+            const box = document.getElementById('camera-quicklinks');
+            if (!box) return;
+            box.replaceChildren();
+
+            const enabled = profileData?.cameraButtonsEnabled === true;
+            const buttons = Array.isArray(profileData?.cameraButtons) ? profileData.cameraButtons.slice(0, 4) : [];
+            if (!enabled || !buttons.length) {
+                box.classList.add('hidden');
+                return;
+            }
+
+            buttons.forEach((item, index) => {
+                const href = safeQuickLink(item?.url);
+                if (!href) return;
+
+                const a = document.createElement('a');
+                a.className = 'camera-3d-link flex items-center gap-3 text-left';
+                a.href = href;
+                a.target = '_blank';
+                a.rel = 'noopener noreferrer';
+                a.style.setProperty('--float-delay', `${index * -0.45}s`);
+
+                const icon = document.createElement('span');
+                icon.className = 'camera-3d-emoji';
+                icon.textContent = String(item?.emoji || '✨').slice(0, 4);
+
+                const copy = document.createElement('span');
+                copy.className = 'camera-3d-copy block flex-1';
+
+                const title = document.createElement('span');
+                title.className = 'block text-white font-extrabold text-xs sm:text-sm tracking-wide truncate';
+                title.textContent = String(item?.label || 'Open Link');
+
+                const sub = document.createElement('span');
+                sub.className = 'block text-white/45 text-[9px] sm:text-[10px] uppercase tracking-[0.18em] mt-0.5';
+                sub.textContent = 'Open link ↗';
+
+                copy.append(title, sub);
+                a.append(icon, copy);
+                box.appendChild(a);
+            });
+
+            box.classList.toggle('hidden', box.children.length === 0);
         }
 
         /* ---- 3D video camera markup (shared) ---- */
