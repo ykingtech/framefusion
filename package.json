@@ -1,0 +1,24 @@
+{
+  "name": "aurelia-2k26-ticketing",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "deploy": "npm run build && firebase deploy",
+    "build:pages": "vite build"
+  },
+  "dependencies": {
+    "firebase": "latest",
+    "html5-qrcode": "latest",
+    "qrcode": "latest",
+    "three": "latest"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "latest",
+    "tailwindcss": "latest",
+    "vite": "latest"
+  }
+}

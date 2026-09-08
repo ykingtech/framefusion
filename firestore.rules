@@ -1,0 +1,114 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isPrimaryAdmin() {
+      return signedIn()
+        && request.auth.token.email == 'lankaknot@gmail.com'
+        && request.auth.token.email_verified == true;
+    }
+
+    function isStoredAdmin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true;
+    }
+
+    function isAdmin() {
+      return isPrimaryAdmin() || isStoredAdmin();
+    }
+
+    function isOwner(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    match /users/{uid} {
+      allow create: if isOwner(uid)
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.email == request.auth.token.email
+        && (!('admin' in request.resource.data) || request.resource.data.admin == false);
+
+      allow read: if isOwner(uid) || isAdmin();
+
+      allow update: if (
+          isOwner(uid)
+          && request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['displayName', 'photoURL', 'email', 'lastLoginAt'])
+        ) || isAdmin();
+
+      allow delete: if false;
+    }
+
+    // Bank slip metadata. Image bytes are compressed and split into Firestore byte chunks.
+    match /paymentSlips/{slipId} {
+      allow create: if signedIn()
+        && !exists(/databases/$(database)/documents/registrations/$(request.auth.uid))
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.byteLength > 0
+        && request.resource.data.byteLength <= 4 * 1024 * 1024
+        && request.resource.data.chunkCount >= 1
+        && request.resource.data.chunkCount <= 8;
+
+      allow read: if isAdmin() || (signedIn() && resource.data.ownerUid == request.auth.uid);
+      allow update, delete: if false;
+
+      match /chunks/{chunkId} {
+        allow create: if signedIn()
+          && get(/databases/$(database)/documents/paymentSlips/$(slipId)).data.ownerUid == request.auth.uid
+          && request.resource.data.index is int
+          && request.resource.data.bytes is bytes
+          && request.resource.data.bytes.size() <= 720 * 1024;
+
+        allow read: if isAdmin()
+          || (signedIn() && get(/databases/$(database)/documents/paymentSlips/$(slipId)).data.ownerUid == request.auth.uid);
+
+        allow update, delete: if false;
+      }
+    }
+
+    match /registrations/{uid} {
+      allow create: if isOwner(uid)
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.status == 'pending'
+        && request.resource.data.ticketNumber == null
+        && request.resource.data.ticketToken == null
+        && request.resource.data.fullName is string
+        && request.resource.data.fullName.size() >= 3
+        && request.resource.data.fullName.size() <= 100
+        && request.resource.data.className is string
+        && request.resource.data.className.size() >= 1
+        && request.resource.data.className.size() <= 50
+        && request.resource.data.idNumber is string
+        && request.resource.data.idNumber.size() >= 3
+        && request.resource.data.idNumber.size() <= 40
+        && request.resource.data.batch in ['OL2023', 'AL2026']
+        && request.resource.data.paymentAmount == 5500
+        && request.resource.data.paymentSlipId is string
+        && get(/databases/$(database)/documents/paymentSlips/$(request.resource.data.paymentSlipId)).data.ownerUid == request.auth.uid;
+
+      allow read: if isOwner(uid) || isAdmin();
+      allow update: if isAdmin();
+      allow delete: if false;
+    }
+
+    match /tickets/{token} {
+      allow read: if isAdmin() || (signedIn() && resource.data.uid == request.auth.uid);
+      allow create, update: if isAdmin();
+      allow delete: if false;
+    }
+
+    match /ticketNumbers/{ticketNumber} {
+      allow read, create: if isAdmin();
+      allow update, delete: if false;
+    }
+
+    match /checkins/{id} {
+      allow read, create: if isAdmin();
+      allow update, delete: if false;
+    }
+  }
+}
