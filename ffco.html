@@ -48,6 +48,42 @@
                     </div>
                 </div>
 
+                <!-- Optional 3D camera quick-link buttons -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-amber-200">
+                    <h2 class="text-lg font-bold mb-1 border-b pb-2 text-amber-700"><i class="fas fa-cube mr-1"></i> Home 3D Buttons</h2>
+                    <p class="text-xs text-gray-500 mt-2 mb-4">Camera එක ලඟ floating 3D link buttons පෙන්නන්න. Maximum 4. Disable කරලා හෝ Clean View දුන්නම public site එක දැන් තියෙන original camera view එකටම යනවා.</p>
+
+                    <label class="flex items-center gap-2 text-sm font-semibold mb-4 cursor-pointer select-none">
+                        <input type="checkbox" id="cam-btn-enabled" class="w-4 h-4 accent-amber-600">
+                        Show 3D buttons near camera
+                    </label>
+
+                    <div class="space-y-2 border-t pt-3">
+                        <div class="grid grid-cols-[72px_1fr] gap-2">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">Emoji</label>
+                                <input type="text" id="cam-btn-emoji" maxlength="4" placeholder="🎟️" class="w-full border p-2 rounded text-sm text-center">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">Button Name</label>
+                                <input type="text" id="cam-btn-label" maxlength="40" placeholder="GET TICKET" class="w-full border p-2 rounded text-sm">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Link URL</label>
+                            <input type="text" id="cam-btn-url" placeholder="https://example.com" class="w-full border p-2 rounded text-sm">
+                        </div>
+                        <button onclick="addCameraButton()" class="w-full bg-amber-100 hover:bg-amber-200 text-amber-800 font-bold py-2 rounded transition text-sm"><i class="fas fa-plus"></i> Add 3D Button</button>
+                    </div>
+
+                    <div id="cam-btn-list" class="space-y-2 mt-4"></div>
+
+                    <div class="grid grid-cols-2 gap-2 mt-4">
+                        <button onclick="saveCameraButtons()" id="btn-save-cam" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 rounded shadow transition text-sm"><i class="fas fa-save"></i> Save Buttons</button>
+                        <button onclick="clearCameraButtons()" class="bg-gray-800 hover:bg-black text-white font-bold py-2 rounded transition text-sm"><i class="fas fa-eye-slash"></i> Clean View</button>
+                    </div>
+                </div>
+
                 <!-- Live stream -->
                 <div class="bg-white p-5 rounded-xl shadow-sm border border-red-200">
                     <h2 class="text-lg font-bold mb-1 border-b pb-2 text-red-600"><i class="fas fa-tower-broadcast mr-1"></i> Live Now Banner</h2>
@@ -142,6 +178,7 @@
         };
 
         let currentProfileData = {};
+        let cameraButtonsDraft = [];
         let allProjects = [];
         let allReviews = [];
         let listenersStarted = false;
@@ -158,8 +195,124 @@
                 document.getElementById('prof-insta').value = currentProfileData.insta || '';
                 document.getElementById('prof-livetitle').value = currentProfileData.liveTitle || '';
                 document.getElementById('prof-liveurl').value = currentProfileData.liveUrl || '';
+                document.getElementById('cam-btn-enabled').checked = currentProfileData.cameraButtonsEnabled === true;
+                cameraButtonsDraft = Array.isArray(currentProfileData.cameraButtons)
+                    ? currentProfileData.cameraButtons.slice(0, 4).map(x => ({
+                        emoji: String(x?.emoji || '✨').slice(0, 4),
+                        label: String(x?.label || 'Open Link').slice(0, 40),
+                        url: String(x?.url || '')
+                    }))
+                    : [];
+                renderCameraButtonsAdmin();
+            } else {
+                document.getElementById('cam-btn-enabled').checked = false;
+                cameraButtonsDraft = [];
+                renderCameraButtonsAdmin();
             }
         }
+
+        function escapeAdminHtml(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+        }
+
+        function normalizeCameraButtonUrl(raw) {
+            let url = String(raw || '').trim();
+            if (!url) return '';
+            if (/^(#|\/|\.\.?\/)/.test(url)) return url;
+            if (!/^[a-zA-Z][a-zA-Z\d+\-.]*:/.test(url)) url = 'https://' + url;
+            try {
+                const parsed = new URL(url);
+                if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return '';
+                return parsed.href;
+            } catch (_) { return ''; }
+        }
+
+        function renderCameraButtonsAdmin() {
+            const box = document.getElementById('cam-btn-list');
+            if (!box) return;
+            if (!cameraButtonsDraft.length) {
+                box.innerHTML = '<div class="text-xs text-gray-500 bg-gray-50 border rounded p-3 text-center">No 3D buttons added. Public site stays clean.</div>';
+                return;
+            }
+
+            box.innerHTML = cameraButtonsDraft.map((item, i) => `
+                <div class="border rounded-lg p-2 bg-amber-50/60 flex items-center gap-2">
+                    <span class="w-9 h-9 rounded-lg bg-white border flex items-center justify-center text-lg shrink-0">${escapeAdminHtml(item.emoji || '✨')}</span>
+                    <div class="flex-1 min-w-0">
+                        <div class="font-bold text-sm truncate">${escapeAdminHtml(item.label || 'Open Link')}</div>
+                        <div class="text-[10px] text-gray-500 truncate">${escapeAdminHtml(item.url || '')}</div>
+                    </div>
+                    <button onclick="moveCameraButton(${i}, -1)" ${i === 0 ? 'disabled' : ''} class="w-7 h-7 rounded border bg-white text-gray-600 disabled:opacity-30" title="Move up"><i class="fas fa-arrow-up text-[10px]"></i></button>
+                    <button onclick="moveCameraButton(${i}, 1)" ${i === cameraButtonsDraft.length - 1 ? 'disabled' : ''} class="w-7 h-7 rounded border bg-white text-gray-600 disabled:opacity-30" title="Move down"><i class="fas fa-arrow-down text-[10px]"></i></button>
+                    <button onclick="deleteCameraButton(${i})" class="w-7 h-7 rounded bg-red-600 text-white" title="Delete"><i class="fas fa-times text-[10px]"></i></button>
+                </div>`).join('');
+        }
+
+        window.addCameraButton = () => {
+            if (cameraButtonsDraft.length >= 4) return alert('Maximum 4 camera buttons.');
+            const emoji = document.getElementById('cam-btn-emoji').value.trim() || '✨';
+            const label = document.getElementById('cam-btn-label').value.trim();
+            const url = normalizeCameraButtonUrl(document.getElementById('cam-btn-url').value);
+            if (!label) return alert('Please enter a button name.');
+            if (!url) return alert('Please enter a valid link URL.');
+
+            cameraButtonsDraft.push({ emoji: emoji.slice(0, 4), label: label.slice(0, 40), url });
+            document.getElementById('cam-btn-emoji').value = '';
+            document.getElementById('cam-btn-label').value = '';
+            document.getElementById('cam-btn-url').value = '';
+            document.getElementById('cam-btn-enabled').checked = true;
+            renderCameraButtonsAdmin();
+        };
+
+        window.deleteCameraButton = (index) => {
+            cameraButtonsDraft.splice(index, 1);
+            if (!cameraButtonsDraft.length) document.getElementById('cam-btn-enabled').checked = false;
+            renderCameraButtonsAdmin();
+        };
+
+        window.moveCameraButton = (index, direction) => {
+            const target = index + direction;
+            if (target < 0 || target >= cameraButtonsDraft.length) return;
+            [cameraButtonsDraft[index], cameraButtonsDraft[target]] = [cameraButtonsDraft[target], cameraButtonsDraft[index]];
+            renderCameraButtonsAdmin();
+        };
+
+        window.saveCameraButtons = async () => {
+            const btn = document.getElementById('btn-save-cam');
+            btn.disabled = true;
+            btn.innerHTML = 'Saving...';
+            const data = {
+                ...currentProfileData,
+                cameraButtonsEnabled: document.getElementById('cam-btn-enabled').checked && cameraButtonsDraft.length > 0,
+                cameraButtons: cameraButtonsDraft.slice(0, 4)
+            };
+            try {
+                await setDoc(doc(db, 'settings', 'profile'), data);
+                currentProfileData = data;
+                alert(data.cameraButtonsEnabled ? '3D camera buttons are now live!' : '3D buttons saved but hidden.');
+            } catch (e) {
+                alert('Save failed: ' + e.message);
+            }
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-save"></i> Save Buttons';
+        };
+
+        window.clearCameraButtons = async () => {
+            if (!confirm('Remove all 3D camera buttons and return to the original clean camera view?')) return;
+            cameraButtonsDraft = [];
+            document.getElementById('cam-btn-enabled').checked = false;
+            renderCameraButtonsAdmin();
+            const data = { ...currentProfileData, cameraButtonsEnabled: false, cameraButtons: [] };
+            try {
+                await setDoc(doc(db, 'settings', 'profile'), data);
+                currentProfileData = data;
+                alert('Clean View enabled. Public site is back to the original camera view.');
+            } catch (e) {
+                alert('Save failed: ' + e.message);
+            }
+        };
 
         window.saveProfile = async () => {
             const btn = document.getElementById('btn-save-prof');
