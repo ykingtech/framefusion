@@ -5,7 +5,7 @@ This package is already configured with:
 - Service ID: `service_n7vufh1`
 - Template ID: `template_x20qk9h`
 - Public Key: `tcmdF1MKhr-uXACWd`
-- Ticket portal: `https://lankaknot-source.github.io/Theaurelia/#ticket`
+- Ticket portal: automatically uses the current `Auraliya.html#ticket` URL on whatever server hosts the project.
 
 ## Template dashboard settings
 

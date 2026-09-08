@@ -1,15 +1,17 @@
 import { defineConfig } from 'vite';
 import tailwindcss from '@tailwindcss/vite';
-
-// GitHub Pages project sites are served from /<repository-name>/.
-// In GitHub Actions we can derive that path automatically from GITHUB_REPOSITORY.
-// Local development and Firebase Hosting continue to use '/'.
-const githubRepo = process.env.GITHUB_REPOSITORY?.split('/')[1];
-const isGitHubActions = process.env.GITHUB_ACTIONS === 'true' && githubRepo;
+import { resolve } from 'node:path';
 
 export default defineConfig({
-  base: isGitHubActions ? `/${githubRepo}/` : '/',
+  // Relative paths make the build portable whether Auraliya.html is at the server root
+  // or inside a subfolder alongside another website's index.html.
+  base: './',
   plugins: [tailwindcss()],
+  build: {
+    rollupOptions: {
+      input: resolve(process.cwd(), 'Auraliya.html'),
+    },
+  },
   server: {
     host: true,
     port: 5173,

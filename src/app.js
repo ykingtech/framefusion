@@ -643,17 +643,33 @@ async function downloadTicketPdf(reg, qrData, used = false) {
   ctx.beginPath(); ctx.arc(1435, 64, 28, 0, Math.PI * 2); ctx.fill();
   ctx.beginPath(); ctx.arc(1435, 838, 28, 0, Math.PI * 2); ctx.fill();
 
-  // Brand header.
+  // Brand header. Keep THE AURELIA + 2K26 on one clean line without overlap.
   ctx.font = '800 28px Inter, Arial, sans-serif';
   ctx.fillStyle = '#7dd3fc';
-  ctx.letterSpacing = '6px';
+  if ('letterSpacing' in ctx) ctx.letterSpacing = '6px';
   ctx.fillText('OFFICIAL ADMISSION TICKET', 120, 150);
-  ctx.letterSpacing = '0px';
-  ctx.font = '900 82px Inter, Arial, sans-serif';
+  if ('letterSpacing' in ctx) ctx.letterSpacing = '0px';
+
+  const brandMain = 'THE AURELIA';
+  const brandYear = '2K26';
+  const brandX = 120;
+  const brandMaxWidth = 1210;
+  const brandGap = 34;
+  let brandSize = 78;
+  let mainWidth = 0;
+  let yearWidth = 0;
+  while (brandSize >= 54) {
+    ctx.font = `900 ${brandSize}px Inter, Arial, sans-serif`;
+    mainWidth = ctx.measureText(brandMain).width;
+    yearWidth = ctx.measureText(brandYear).width;
+    if (mainWidth + brandGap + yearWidth <= brandMaxWidth) break;
+    brandSize -= 2;
+  }
+  ctx.font = `900 ${brandSize}px Inter, Arial, sans-serif`;
   ctx.fillStyle = '#ffffff';
-  ctx.fillText('THE AURELIA', 120, 245);
+  ctx.fillText(brandMain, brandX, 245);
   ctx.fillStyle = '#fde047';
-  ctx.fillText('2K26', 635, 245);
+  ctx.fillText(brandYear, brandX + mainWidth + brandGap, 245);
 
   // Status badge.
   roundRectPath(ctx, 1155, 126, 190, 62, 31);
