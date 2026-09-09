@@ -2071,6 +2071,271 @@
             .hero-quick-access-note { display: none; }
         }
 
+
+        /* Featured ticket portal — automatically uses the newest Events link */
+        .featured-ticket-portal {
+            position: relative;
+            width: min(100%, 590px);
+            min-height: 126px;
+            margin-top: 14px;
+            display: grid;
+            grid-template-columns: minmax(0,1fr) 126px;
+            overflow: hidden;
+            border-radius: 25px;
+            background: #0b0c0f;
+            color: #fff;
+            text-decoration: none;
+            box-shadow: 0 18px 42px rgba(11,12,15,.16);
+            isolation: isolate;
+            transition: transform .22s ease, box-shadow .22s ease;
+        }
+        .featured-ticket-portal.hidden { display: none !important; }
+        .featured-ticket-portal:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 24px 52px rgba(11,12,15,.22);
+        }
+        .featured-ticket-portal::before,
+        .featured-ticket-portal::after {
+            content: '';
+            position: absolute;
+            left: calc(100% - 126px);
+            width: 24px;
+            height: 24px;
+            margin-left: -12px;
+            border-radius: 50%;
+            background: #fff;
+            z-index: 5;
+        }
+        .featured-ticket-portal::before { top: -12px; }
+        .featured-ticket-portal::after { bottom: -12px; }
+        .featured-ticket-main {
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 22px 24px;
+            background:
+                radial-gradient(circle at 10% 10%, rgba(185,255,56,.12), transparent 34%),
+                #0b0c0f;
+        }
+        .featured-ticket-icon {
+            width: 54px;
+            height: 54px;
+            flex: 0 0 54px;
+            display: grid;
+            place-items: center;
+            border-radius: 17px;
+            background: var(--ff-accent, #b9ff38);
+            color: #0b0c0f;
+            font-size: 21px;
+            transform: rotate(-8deg);
+            box-shadow: 0 10px 24px rgba(185,255,56,.16);
+        }
+        .featured-ticket-copy { min-width: 0; }
+        .featured-ticket-eyebrow {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            margin-bottom: 7px;
+            color: #b9bdc4;
+            font-size: 8px;
+            font-weight: 800;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+        }
+        .featured-ticket-live-dot {
+            width: 6px;
+            height: 6px;
+            flex: 0 0 6px;
+            border-radius: 50%;
+            background: var(--ff-accent, #b9ff38);
+            box-shadow: 0 0 0 5px rgba(185,255,56,.10);
+        }
+        .featured-ticket-copy strong {
+            display: block;
+            max-width: 100%;
+            color: #fff;
+            font-size: 19px;
+            line-height: 1.08;
+            font-weight: 800;
+            letter-spacing: -.025em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .featured-ticket-copy small {
+            display: block;
+            margin-top: 6px;
+            color: #8f949c;
+            font-size: 10px;
+        }
+        .featured-ticket-perf {
+            position: absolute;
+            top: 19px;
+            bottom: 19px;
+            right: 126px;
+            border-left: 1px dashed rgba(255,255,255,.24);
+            z-index: 4;
+        }
+        .featured-ticket-stub {
+            position: relative;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            padding: 15px 13px;
+            background: var(--ff-accent, #b9ff38);
+            color: #0b0c0f;
+        }
+        .featured-ticket-code {
+            font-size: 7px;
+            font-weight: 900;
+            letter-spacing: .20em;
+            opacity: .55;
+        }
+        .featured-ticket-stub strong {
+            font-size: 16px;
+            line-height: .95;
+            text-align: center;
+            letter-spacing: -.02em;
+        }
+        .featured-ticket-arrow {
+            width: 30px;
+            height: 30px;
+            margin-top: 4px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: #0b0c0f;
+            color: #fff;
+            font-size: 10px;
+            transition: transform .2s ease;
+        }
+        .featured-ticket-portal:hover .featured-ticket-arrow { transform: rotate(8deg) scale(1.06); }
+
+        /* Event links inside a project become mini tickets */
+        .event-link-card {
+            position: relative !important;
+            min-height: 112px !important;
+            display: grid !important;
+            grid-template-columns: 58px minmax(0,1fr) 82px !important;
+            gap: 13px !important;
+            align-items: center !important;
+            padding: 14px 14px 14px 15px !important;
+            overflow: hidden !important;
+            border: 1px solid #e5e7eb !important;
+            border-radius: 22px !important;
+            background: #fff !important;
+            color: #111317 !important;
+            box-shadow: 0 8px 24px rgba(11,12,15,.055) !important;
+        }
+        .event-link-card::before,
+        .event-link-card::after {
+            content: '';
+            position: absolute;
+            right: 72px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            z-index: 3;
+        }
+        .event-link-card::before { top: -10px; }
+        .event-link-card::after { bottom: -10px; }
+        .event-link-card:hover {
+            transform: translateY(-3px) !important;
+            border-color: #d7dade !important;
+            box-shadow: 0 16px 36px rgba(11,12,15,.10) !important;
+        }
+        .event-link-icon {
+            width: 58px !important;
+            height: 58px !important;
+            flex: none !important;
+            border: 0 !important;
+            border-radius: 17px !important;
+            background: #0b0c0f !important;
+            color: var(--ff-accent, #b9ff38) !important;
+            font-size: 18px !important;
+            transform: rotate(-7deg);
+        }
+        .event-link-title { font-size: 14px !important; font-weight: 800 !important; }
+        .event-link-sub {
+            margin-top: 6px !important;
+            color: #878c93 !important;
+            font-size: 8px !important;
+            font-weight: 800;
+            letter-spacing: .12em !important;
+        }
+        .event-ticket-action {
+            align-self: stretch;
+            margin: -14px -14px -14px 0;
+            padding: 12px 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            background: var(--ff-accent, #b9ff38);
+            color: #0b0c0f;
+            border-left: 1px dashed rgba(11,12,15,.22);
+            text-align: center;
+        }
+        .event-ticket-action span {
+            font-size: 8px;
+            font-weight: 900;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+        }
+        .event-ticket-action strong { font-size: 11px; line-height: 1; }
+        .event-ticket-action i { margin-top: 4px; font-size: 11px; }
+
+        @media (max-width: 760px) {
+            .featured-ticket-portal {
+                width: 100%;
+                min-height: 108px;
+                grid-template-columns: minmax(0,1fr) 104px;
+                margin-top: 11px;
+                border-radius: 21px;
+            }
+            .featured-ticket-portal::before,
+            .featured-ticket-portal::after { left: calc(100% - 104px); width: 20px; height: 20px; margin-left: -10px; }
+            .featured-ticket-portal::before { top: -10px; }
+            .featured-ticket-portal::after { bottom: -10px; }
+            .featured-ticket-main { padding: 16px 15px; gap: 11px; }
+            .featured-ticket-icon { width: 44px; height: 44px; flex-basis: 44px; border-radius: 14px; font-size: 17px; }
+            .featured-ticket-copy strong { font-size: 15px; }
+            .featured-ticket-copy small { font-size: 9px; }
+            .featured-ticket-eyebrow { font-size: 7px; margin-bottom: 5px; }
+            .featured-ticket-perf { right: 104px; top: 15px; bottom: 15px; }
+            .featured-ticket-stub { padding: 12px 8px; }
+            .featured-ticket-stub strong { font-size: 13px; }
+            .featured-ticket-arrow { width: 27px; height: 27px; }
+
+            .event-link-card {
+                min-height: 96px !important;
+                grid-template-columns: 48px minmax(0,1fr) 68px !important;
+                gap: 10px !important;
+                padding: 11px 10px 11px 11px !important;
+                border-radius: 18px !important;
+            }
+            .event-link-icon { width: 48px !important; height: 48px !important; border-radius: 14px !important; font-size: 15px !important; }
+            .event-link-card::before,
+            .event-link-card::after { right: 59px; width: 16px; height: 16px; }
+            .event-ticket-action { margin: -11px -10px -11px 0; }
+            .event-link-title { font-size: 12px !important; }
+        }
+        @media (max-width: 420px) {
+            .featured-ticket-copy small { display: none; }
+            .featured-ticket-copy strong { font-size: 14px; }
+            .featured-ticket-stub strong { font-size: 12px; }
+        }
+
+        /* Quick Access is fully removable from the hero when disabled in Admin */
+        #hero-quick-access.hidden { display: none !important; }
+
     </style>
 </head>
 <body class="min-h-screen selection:bg-white selection:text-black">
@@ -2102,7 +2367,7 @@
                         <h1 id="ui-name" class="hero-title">FrameFusion</h1>
                         <p class="hero-desc">Live streaming, wedding films and event coverage — crafted with a modern visual approach and attention to every detail.</p>
 
-                        <aside class="hero-side hero-quick-access-dock">
+                        <aside id="hero-quick-access" class="hero-side hero-quick-access-dock hidden">
                             <div class="hero-quick-access-head">
                                 <p class="hero-side-label">Quick access</p>
                                 <span class="hero-quick-access-note">Instant links</span>
@@ -2110,6 +2375,23 @@
                             <div id="camera-quicklinks" class="hidden" aria-label="Quick links"></div>
                             <div id="hero-quicklinks-empty" class="hero-side-empty">Selected work, live broadcasts and event access — all in one place.</div>
                         </aside>
+
+                        <a id="featured-ticket-portal" href="#" target="_blank" rel="noopener noreferrer" class="featured-ticket-portal hidden" aria-label="Open ticketing portal">
+                            <span class="featured-ticket-main">
+                                <span class="featured-ticket-icon"><i class="fas fa-ticket"></i></span>
+                                <span class="featured-ticket-copy">
+                                    <span class="featured-ticket-eyebrow"><span class="featured-ticket-live-dot"></span> Official Ticketing Portal</span>
+                                    <strong id="featured-ticket-title">Event Tickets</strong>
+                                    <small id="featured-ticket-label">Secure your tickets online</small>
+                                </span>
+                            </span>
+                            <span class="featured-ticket-perf" aria-hidden="true"></span>
+                            <span class="featured-ticket-stub">
+                                <span class="featured-ticket-code">TICKET</span>
+                                <strong>GET<br>TICKETS</strong>
+                                <span class="featured-ticket-arrow"><i class="fas fa-arrow-up-right-from-square"></i></span>
+                            </span>
+                        </a>
                     </div>
 
                     <div class="hero-showcase">
@@ -2431,6 +2713,7 @@
                     document.getElementById('social-links-container').innerHTML = socialsHTML;
 
                     renderCameraButtons();
+                    renderFeaturedTicketPortal();
                     renderLiveBanner();
                     renderHeroBackground();
                 }
@@ -2439,6 +2722,7 @@
             }
             if (!profileData || !Object.keys(profileData).length) {
                 renderCameraButtons();
+                renderFeaturedTicketPortal();
                 renderHeroBackground();
             }
             window.hideLoader();
@@ -2578,20 +2862,22 @@
         }
 
         function renderCameraButtons() {
+            const dock = document.getElementById('hero-quick-access');
             const box = document.getElementById('camera-quicklinks');
             const empty = document.getElementById('hero-quicklinks-empty');
-            if (!box) return;
+            if (!box || !dock) return;
             box.replaceChildren();
 
             const enabled = profileData?.cameraButtonsEnabled === true;
             const buttons = Array.isArray(profileData?.cameraButtons) ? profileData.cameraButtons.slice(0, 4) : [];
             if (!enabled || !buttons.length) {
+                dock.classList.add('hidden');
                 box.classList.add('hidden');
-                if (empty) empty.classList.remove('hidden');
+                if (empty) empty.classList.add('hidden');
                 return;
             }
 
-            buttons.forEach((item, index) => {
+            buttons.forEach((item) => {
                 const href = safeQuickLink(item?.url);
                 if (!href) return;
 
@@ -2627,8 +2913,9 @@
             });
 
             const hasButtons = box.children.length > 0;
+            dock.classList.toggle('hidden', !hasButtons);
             box.classList.toggle('hidden', !hasButtons);
-            if (empty) empty.classList.toggle('hidden', hasButtons);
+            if (empty) empty.classList.add('hidden');
         }
         /* ---- Minimal live icon markup (shared) ---- */
         function videoCamHtml() {
@@ -2679,6 +2966,49 @@
             return CATEGORIES.includes(proj.category) ? proj.category : 'weddings';
         }
 
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function getFeaturedTicket() {
+            if (profileData?.ticketsEnabled !== true) return null;
+            const tickets = Array.isArray(profileData?.tickets) ? profileData.tickets : [];
+            for (const ticket of tickets) {
+                const href = safeQuickLink(ticket?.url);
+                if (!href) continue;
+                return {
+                    href,
+                    title: String(ticket?.title || 'Event Tickets'),
+                    label: String(ticket?.label || 'GET TICKETS')
+                };
+            }
+            return null;
+        }
+
+        function renderFeaturedTicketPortal() {
+            const card = document.getElementById('featured-ticket-portal');
+            if (!card) return;
+
+            const featured = getFeaturedTicket();
+            if (!featured) {
+                card.classList.add('hidden');
+                card.removeAttribute('href');
+                return;
+            }
+
+            card.href = featured.href;
+            const title = document.getElementById('featured-ticket-title');
+            const label = document.getElementById('featured-ticket-label');
+            if (title) title.textContent = featured.title;
+            if (label) label.textContent = featured.label;
+            card.classList.remove('hidden');
+        }
+
         function itemCardHtml(item) {
             if(item.type === 'photo') {
                 return `<div class="photo-card cursor-pointer rounded-2xl overflow-hidden relative aspect-square sm:aspect-[4/5] bg-dark shadow-xl border border-white/5" onclick="openLightbox('${item.url}', 'photo')"><img src="${item.url}" class="w-full h-full object-cover" loading="lazy" alt=""></div>`;
@@ -2700,10 +3030,15 @@
 
                 return `
                     <a href="${href}" target="_blank" rel="noopener noreferrer" class="event-link-card">
-                        <span class="event-link-icon"><i class="fas fa-arrow-up-right-from-square text-[10px]"></i></span>
+                        <span class="event-link-icon"><i class="fas fa-ticket"></i></span>
                         <span class="flex-1 min-w-0">
                             <span class="event-link-title">${label}</span>
-                            <span class="event-link-sub">Open link</span>
+                            <span class="event-link-sub">Official Ticketing Portal</span>
+                        </span>
+                        <span class="event-ticket-action">
+                            <span>Secure Entry</span>
+                            <strong>GET TICKET</strong>
+                            <i class="fas fa-arrow-up-right-from-square"></i>
                         </span>
                     </a>`;
             }
