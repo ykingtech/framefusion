@@ -1926,6 +1926,151 @@
             .hero-slide { transition: opacity .2s linear !important; transform:none !important; filter:none !important; }
         }
 
+
+        /* Quick Access dock — visible immediately on page load, camera screen unchanged */
+        .hero-quick-access-dock.hero-side {
+            position: relative !important;
+            inset: auto !important;
+            left: auto !important;
+            right: auto !important;
+            bottom: auto !important;
+            top: auto !important;
+            z-index: 8 !important;
+            width: min(100%, 590px) !important;
+            margin: 28px 0 0 !important;
+            padding: 12px !important;
+            border: 1px solid rgba(222,225,230,.95) !important;
+            border-radius: 24px !important;
+            background: rgba(255,255,255,.92) !important;
+            box-shadow: 0 16px 38px rgba(11,12,15,.08), inset 0 1px 0 rgba(255,255,255,.95) !important;
+            backdrop-filter: blur(18px) saturate(1.08) !important;
+            -webkit-backdrop-filter: blur(18px) saturate(1.08) !important;
+        }
+        .hero-quick-access-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 2px 7px 10px;
+        }
+        .hero-quick-access-dock .hero-side-label {
+            margin: 0 !important;
+            color: #6f747b !important;
+            font-size: 9px !important;
+            font-weight: 700 !important;
+            letter-spacing: .13em !important;
+            text-transform: uppercase;
+        }
+        .hero-quick-access-note {
+            color: #a0a4aa;
+            font-size: 8px;
+            font-weight: 700;
+            letter-spacing: .10em;
+            text-transform: uppercase;
+        }
+        .hero-quick-access-dock #camera-quicklinks {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0,1fr));
+            gap: 8px !important;
+        }
+        .hero-quick-access-dock #camera-quicklinks.hidden { display: none !important; }
+        .hero-quick-access-dock .camera-3d-link {
+            min-height: 58px !important;
+            grid-template-columns: 38px minmax(0,1fr) 30px !important;
+            gap: 9px !important;
+            padding: 8px 9px !important;
+            border: 1px solid #eceef1 !important;
+            border-radius: 17px !important;
+            background: #fff !important;
+            box-shadow: 0 5px 16px rgba(11,12,15,.045) !important;
+            color: #111317 !important;
+            transform: none !important;
+        }
+        .hero-quick-access-dock .camera-3d-link:hover {
+            transform: translateY(-2px) !important;
+            padding-left: 9px !important;
+            border-color: #dfe2e6 !important;
+            box-shadow: 0 12px 24px rgba(11,12,15,.085) !important;
+        }
+        .hero-quick-access-dock .camera-3d-emoji {
+            width: 38px !important;
+            height: 38px !important;
+            border-radius: 12px !important;
+            background: #f4f5f7 !important;
+        }
+        .hero-quick-access-dock .camera-3d-title {
+            font-size: 12px !important;
+            font-weight: 800 !important;
+        }
+        .hero-quick-access-dock .camera-3d-sub {
+            margin-top: 2px !important;
+            color: #959aa1 !important;
+            font-size: 7px !important;
+            letter-spacing: .09em !important;
+        }
+        .hero-quick-access-dock .camera-3d-arrow {
+            width: 30px !important;
+            height: 30px !important;
+            background: #0b0c0f !important;
+            color: #fff !important;
+            border: 0 !important;
+        }
+        .hero-quick-access-dock .hero-side-empty {
+            margin: 0 !important;
+            padding: 13px 14px !important;
+            border: 0 !important;
+            border-radius: 15px !important;
+            background: #f6f7f8 !important;
+            color: #777c83 !important;
+            font-size: 11px !important;
+            line-height: 1.5 !important;
+        }
+
+        /* The camera display no longer reserves/uses space for Quick Access. */
+        .camera-screen .hero-side { display: none !important; }
+
+        @media (max-width: 900px) {
+            .hero-quick-access-dock.hero-side {
+                width: min(100%, 680px) !important;
+                margin-top: 22px !important;
+            }
+        }
+        @media (max-width: 760px) {
+            .hero-main { gap: 18px !important; }
+            .hero-quick-access-dock.hero-side {
+                width: 100% !important;
+                margin-top: 18px !important;
+                padding: 10px !important;
+                border-radius: 20px !important;
+                box-shadow: 0 10px 28px rgba(11,12,15,.07), inset 0 1px 0 rgba(255,255,255,.94) !important;
+            }
+            .hero-quick-access-head { padding: 1px 5px 8px; }
+            .hero-quick-access-dock #camera-quicklinks {
+                grid-template-columns: repeat(2, minmax(0,1fr));
+                gap: 7px !important;
+            }
+            .hero-quick-access-dock .camera-3d-link {
+                min-height: 54px !important;
+                grid-template-columns: 34px minmax(0,1fr) 28px !important;
+                gap: 7px !important;
+                padding: 7px !important;
+                border-radius: 15px !important;
+            }
+            .hero-quick-access-dock .camera-3d-emoji { width: 34px !important; height: 34px !important; border-radius: 10px !important; }
+            .hero-quick-access-dock .camera-3d-arrow { width: 28px !important; height: 28px !important; }
+            .hero-quick-access-dock .camera-3d-title { font-size: 11px !important; }
+            .hero-quick-access-dock .camera-3d-sub { display: none !important; }
+        }
+        @media (max-width: 420px) {
+            .hero-quick-access-dock #camera-quicklinks {
+                grid-template-columns: 1fr !important;
+            }
+            .hero-quick-access-dock .camera-3d-link {
+                min-height: 52px !important;
+            }
+            .hero-quick-access-note { display: none; }
+        }
+
     </style>
 </head>
 <body class="min-h-screen selection:bg-white selection:text-black">
@@ -1956,6 +2101,15 @@
                         <p class="hero-kicker">Creative Production Studio</p>
                         <h1 id="ui-name" class="hero-title">FrameFusion</h1>
                         <p class="hero-desc">Live streaming, wedding films and event coverage — crafted with a modern visual approach and attention to every detail.</p>
+
+                        <aside class="hero-side hero-quick-access-dock">
+                            <div class="hero-quick-access-head">
+                                <p class="hero-side-label">Quick access</p>
+                                <span class="hero-quick-access-note">Instant links</span>
+                            </div>
+                            <div id="camera-quicklinks" class="hidden" aria-label="Quick links"></div>
+                            <div id="hero-quicklinks-empty" class="hero-side-empty">Selected work, live broadcasts and event access — all in one place.</div>
+                        </aside>
                     </div>
 
                     <div class="hero-showcase">
@@ -2007,11 +2161,7 @@
                                 <div class="camera-capture-flash" aria-hidden="true"></div>
                                 <div class="camera-capture-scan" aria-hidden="true"></div>
 
-                                <aside class="hero-side">
-                                    <p class="hero-side-label">Quick access</p>
-                                    <div id="camera-quicklinks" class="hidden" aria-label="Quick links"></div>
-                                    <div id="hero-quicklinks-empty" class="hero-side-empty">Selected work, live broadcasts and event access — all in one place.</div>
-                                </aside>
+
                             </div>
 
                             <div class="camera-hud-bottom" aria-hidden="true">
