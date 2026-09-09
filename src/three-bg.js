@@ -7,49 +7,60 @@ export function initThreeBackground() {
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.6));
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(52, 1, 0.1, 100);
+  const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
   camera.position.z = 8;
 
-  const group = new THREE.Group();
-  scene.add(group);
+  const root = new THREE.Group();
+  scene.add(root);
 
-  const geo = new THREE.IcosahedronGeometry(0.7, 1);
-  const palette = [0x38bdf8, 0x4ade80, 0xfde047];
-  const meshes = [];
-
-  for (let i = 0; i < 16; i++) {
-    const material = new THREE.MeshBasicMaterial({
-      color: palette[i % palette.length],
-      transparent: true,
-      opacity: 0.065 + (i % 4) * 0.012,
-      wireframe: true,
-    });
-    const mesh = new THREE.Mesh(geo, material);
-    mesh.position.set(
-      (Math.random() - 0.5) * 13,
-      (Math.random() - 0.5) * 9,
-      (Math.random() - 0.5) * 4
-    );
-    const s = 0.45 + Math.random() * 1.4;
-    mesh.scale.setScalar(s);
-    mesh.userData.speed = 0.001 + Math.random() * 0.0025;
-    group.add(mesh);
-    meshes.push(mesh);
+  // Warm metallic particle field.
+  const pGeo = new THREE.BufferGeometry();
+  const count = 520;
+  const positions = new Float32Array(count * 3);
+  for (let i = 0; i < count; i++) {
+    positions[i * 3] = (Math.random() - 0.5) * 18;
+    positions[i * 3 + 1] = (Math.random() - 0.5) * 12;
+    positions[i * 3 + 2] = (Math.random() - 0.5) * 7;
   }
-
-  const particles = new THREE.BufferGeometry();
-  const positions = new Float32Array(300 * 3);
-  for (let i = 0; i < positions.length; i += 3) {
-    positions[i] = (Math.random() - 0.5) * 18;
-    positions[i + 1] = (Math.random() - 0.5) * 12;
-    positions[i + 2] = (Math.random() - 0.5) * 7;
-  }
-  particles.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  const points = new THREE.Points(
-    particles,
-    new THREE.PointsMaterial({ size: 0.026, color: 0x93c5fd, transparent: true, opacity: 0.36 })
-  );
+  pGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  const points = new THREE.Points(pGeo, new THREE.PointsMaterial({
+    size: 0.026,
+    color: 0xe3b75e,
+    transparent: true,
+    opacity: 0.42,
+    depthWrite: false,
+  }));
   scene.add(points);
+
+  // Floating thin gold rings for a luxury event feel.
+  const rings = [];
+  for (let i = 0; i < 9; i++) {
+    const radius = 0.75 + Math.random() * 1.25;
+    const tube = 0.006 + Math.random() * 0.012;
+    const geo = new THREE.TorusGeometry(radius, tube, 8, 110);
+    const mat = new THREE.MeshBasicMaterial({
+      color: i % 3 === 0 ? 0xf4d27a : (i % 3 === 1 ? 0xb76f2a : 0xe5b653),
+      transparent: true,
+      opacity: 0.06 + Math.random() * 0.06,
+    });
+    const ring = new THREE.Mesh(geo, mat);
+    ring.position.set((Math.random() - 0.5) * 12, (Math.random() - 0.5) * 8, (Math.random() - 0.5) * 4);
+    ring.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+    ring.userData.speed = 0.00025 + Math.random() * 0.00045;
+    root.add(ring);
+    rings.push(ring);
+  }
+
+  // A pair of large ribbon-like arcs near the edges.
+  const arcMaterial = new THREE.MeshBasicMaterial({ color: 0xd99e3f, transparent: true, opacity: 0.045, wireframe: true });
+  const knot1 = new THREE.Mesh(new THREE.TorusKnotGeometry(1.45, 0.018, 180, 12, 2, 5), arcMaterial.clone());
+  knot1.position.set(-4.6, 1.7, -1.8);
+  knot1.scale.setScalar(1.45);
+  root.add(knot1);
+  const knot2 = new THREE.Mesh(new THREE.TorusKnotGeometry(1.15, 0.016, 160, 10, 3, 7), arcMaterial.clone());
+  knot2.position.set(4.7, -2.0, -2.2);
+  knot2.scale.setScalar(1.3);
+  root.add(knot2);
 
   let raf = 0;
   const resize = () => {
@@ -63,12 +74,15 @@ export function initThreeBackground() {
   window.addEventListener('resize', resize);
 
   const animate = (t) => {
-    group.rotation.y = t * 0.000025;
-    points.rotation.z = t * 0.00001;
-    meshes.forEach((m, i) => {
-      m.rotation.x += m.userData.speed;
-      m.rotation.y += m.userData.speed * 1.3;
-      m.position.y += Math.sin(t * 0.00035 + i) * 0.00045;
+    points.rotation.z = t * 0.000008;
+    root.rotation.y = Math.sin(t * 0.00006) * 0.035;
+    knot1.rotation.z = t * 0.000035;
+    knot1.rotation.x = 0.45 + Math.sin(t * 0.00008) * 0.08;
+    knot2.rotation.z = -t * 0.00003;
+    rings.forEach((ring, i) => {
+      ring.rotation.x += ring.userData.speed;
+      ring.rotation.y += ring.userData.speed * (i % 2 ? -1 : 1.2);
+      ring.position.y += Math.sin(t * 0.00025 + i) * 0.00025;
     });
     renderer.render(scene, camera);
     raf = requestAnimationFrame(animate);

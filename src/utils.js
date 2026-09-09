@@ -1,5 +1,5 @@
 export const EVENT_NAME = 'The Aurelia 2K26';
-export const EVENT_PRICE = 5500;
+export const EVENT_PRICE = 6000;
 
 export function escapeHtml(value = '') {
   return String(value)

@@ -268,15 +268,15 @@ function pageShell(content, { nav = true } = {}) {
       ${nav ? `
       <header class="no-print mb-5 flex items-center justify-between gap-4 rounded-2xl px-1 py-2 sm:mb-8">
         <button data-action="home" class="flex min-w-0 items-center gap-3 text-left">
-          <span class="aurelia-gradient grid h-10 w-10 shrink-0 place-items-center rounded-2xl text-sm font-black text-slate-950">A26</span>
+          <span class="aurelia-gradient grid h-11 w-11 shrink-0 place-items-center rounded-2xl text-sm font-black text-[#160e06] shadow-lg">A’26</span>
           <span class="min-w-0">
-            <span class="block truncate text-sm font-black tracking-[.14em] text-white sm:text-base">THE AURELIA 2K26</span>
-            <span class="block text-xs text-slate-400">Secure Ticketing Portal</span>
+            <span class="block truncate text-sm font-black tracking-[.16em] text-[#fff8e8] sm:text-base">AURELIA’26</span>
+            <span class="block truncate text-xs text-[#8e8274]">St. Anne’s College · Kurunegala</span>
           </span>
         </button>
         <div class="flex items-center gap-2">
           ${state.isAdmin ? `<button data-action="admin" class="btn-ghost hidden sm:block">Admin Panel</button>` : ''}
-          <div class="hidden max-w-56 text-right md:block"><div class="truncate text-sm font-semibold">${userName}</div><div class="truncate text-xs text-slate-500">${escapeHtml(state.user?.email || '')}</div></div>
+          <div class="hidden max-w-56 text-right md:block"><div class="truncate text-sm font-semibold">${userName}</div><div class="truncate text-xs text-[#74695f]">${escapeHtml(state.user?.email || '')}</div></div>
           <button data-action="logout" class="btn-ghost">Sign out</button>
         </div>
       </header>` : ''}
@@ -291,38 +291,125 @@ function renderLoading(message = 'Loading your Aurelia portal...') {
 function renderLogin() {
   state.selectedBatch = null;
   app.innerHTML = `
-    <main class="safe-shell grid min-h-[100dvh] place-items-center py-8">
-      <section class="glass w-full max-w-5xl overflow-hidden rounded-[2rem]">
-        <div class="grid lg:grid-cols-[1.15fr_.85fr]">
-          <div class="relative p-7 sm:p-10 lg:p-14">
-            <div class="mb-10 inline-flex items-center gap-2 rounded-full border border-sky-300/15 bg-sky-300/5 px-3 py-1.5 text-xs font-bold tracking-[.16em] text-sky-200">OFFICIAL EVENT PORTAL</div>
-            <div class="max-w-2xl">
-              <h1 class="text-5xl font-black leading-[.92] tracking-[-.055em] text-white sm:text-7xl">THE <span class="aurelia-text">AURELIA</span><br>2K26</h1>
-              <p class="mt-6 max-w-xl text-base leading-7 text-slate-300 sm:text-lg">Register, upload your payment proof, receive your unique QR ticket, and enter the function with one secure scan.</p>
+    <main class="safe-shell mx-auto w-full max-w-[1480px] py-3 sm:py-6">
+      <section class="aurelia-landing">
+        <div class="gold-ring r1"></div>
+        <div class="gold-ring r2"></div>
+
+        <div class="relative z-10 grid min-h-[calc(100dvh-3rem)] xl:grid-cols-[1.2fr_.8fr]">
+          <div class="flex flex-col justify-between p-6 sm:p-9 lg:p-12 xl:p-14">
+            <div>
+              <div class="flex flex-wrap items-center justify-between gap-4">
+                <div class="inline-flex items-center gap-3 rounded-full border border-[#e4b85c]/15 bg-[#120c08]/60 px-3.5 py-2 text-[10px] font-extrabold tracking-[.24em] text-[#e7bd60] backdrop-blur-xl sm:text-xs">
+                  <span class="h-1.5 w-1.5 rounded-full bg-[#efc86e] shadow-[0_0_14px_rgba(239,200,110,.9)]"></span>
+                  ST. ANNE’S COLLEGE · KURUNEGALA
+                </div>
+                <div class="hidden text-right sm:block">
+                  <div class="text-[10px] font-bold tracking-[.22em] text-[#766b60]">OFFICIAL GET TOGETHER</div>
+                  <div class="mt-1 text-xs font-bold text-[#d8c9b2]">2023 O/L × 2026 A/L</div>
+                </div>
+              </div>
+
+              <div class="mt-8 max-w-[840px] sm:mt-10">
+                <div class="hero-kicker text-[10px] sm:text-xs">ONE NIGHT · ONE MEMORY · ONE AURELIA</div>
+                <img src="./assets/aurelia-wordmark.png" alt="AURELIA’26" class="hero-wordmark mt-3 -ml-2 sm:-ml-4" />
+                <h1 class="hero-serif mt-[-1rem] max-w-3xl text-[2.2rem] font-semibold leading-[.95] tracking-[-.04em] text-[#fff7e7] sm:mt-[-2.2rem] sm:text-6xl lg:text-7xl">
+                  Let the moments <span class="aurelia-text italic">glow.</span>
+                </h1>
+                <p class="mt-5 max-w-2xl text-sm leading-7 text-[#b0a496] sm:text-base lg:text-lg">
+                  The official 2023 O/L × 2026 A/L get together of St. Anne’s College, Kurunegala — registration, payment verification and secure QR admission in one premium portal.
+                </p>
+              </div>
+
+              <div class="mt-8 grid max-w-4xl gap-3 sm:grid-cols-3">
+                <div class="event-chip rounded-2xl p-4">
+                  <div class="event-icon">◫</div>
+                  <div class="mt-4 text-[10px] font-black tracking-[.18em] text-[#8f806f]">DATE</div>
+                  <strong class="mt-1 block text-sm sm:text-base">10 October 2026</strong>
+                </div>
+                <div class="event-chip rounded-2xl p-4">
+                  <div class="event-icon">⌖</div>
+                  <div class="mt-4 text-[10px] font-black tracking-[.18em] text-[#8f806f]">VENUE</div>
+                  <strong class="mt-1 block text-sm sm:text-base">Asliya Golden Cassandra</strong>
+                </div>
+                <div class="event-chip rounded-2xl p-4">
+                  <div class="event-icon">◷</div>
+                  <div class="mt-4 text-[10px] font-black tracking-[.18em] text-[#8f806f]">TIME</div>
+                  <strong class="mt-1 block text-sm sm:text-base">6.30 PM onwards</strong>
+                </div>
+              </div>
             </div>
-            <div class="mt-10 grid grid-cols-3 gap-3 text-center">
-              <div class="glass-soft rounded-2xl p-3"><div class="text-lg font-black text-sky-300">01</div><div class="mt-1 text-xs text-slate-400">Register</div></div>
-              <div class="glass-soft rounded-2xl p-3"><div class="text-lg font-black text-emerald-300">02</div><div class="mt-1 text-xs text-slate-400">Approve</div></div>
-              <div class="glass-soft rounded-2xl p-3"><div class="text-lg font-black text-yellow-200">03</div><div class="mt-1 text-xs text-slate-400">Scan</div></div>
+
+            <div class="mt-8 flex flex-wrap items-end justify-between gap-4 border-t border-[#edc36c]/10 pt-5 text-[10px] font-bold tracking-[.14em] text-[#655b52] sm:text-xs">
+              <span>AURELIA’26 · SECURE TICKETING PORTAL</span>
+              <span>REGISTRATION · APPROVAL · QR ENTRY</span>
             </div>
           </div>
-          <div class="border-t border-white/5 bg-slate-950/35 p-7 sm:p-10 lg:border-l lg:border-t-0 lg:p-12">
-            <div class="mb-8">
-              <div class="text-xs font-extrabold tracking-[.18em] text-emerald-300">WELCOME</div>
-              <h2 class="mt-2 text-3xl font-black">Continue with Google</h2>
-              <p class="mt-2 text-sm leading-6 text-slate-400">Your Gmail address becomes your ticket contact email automatically.</p>
+
+          <aside class="relative border-t border-[#efc66d]/10 bg-black/20 p-5 sm:p-8 xl:border-l xl:border-t-0 xl:p-10">
+            <div class="sticky top-6 flex min-h-full flex-col justify-center">
+              <div class="glass rounded-[2rem] p-5 sm:p-7">
+                <div class="mb-6 flex items-start justify-between gap-4">
+                  <div>
+                    <div class="text-[10px] font-black tracking-[.24em] text-[#e6b95a]">ACCESS PORTAL</div>
+                    <h2 class="hero-serif mt-1 text-4xl font-bold leading-none text-[#fff8e8] sm:text-5xl">Your night starts here.</h2>
+                  </div>
+                  <div class="aurelia-gradient grid h-11 w-11 shrink-0 place-items-center rounded-2xl text-xs font-black text-[#160e06]">A26</div>
+                </div>
+
+                <p class="text-sm leading-6 text-[#9e9285]">Continue with your Google account. The same Gmail address will receive your approval notification and secure ticket link.</p>
+
+                <button id="google-login" class="mt-6 flex w-full items-center justify-center gap-3 rounded-2xl bg-[#fffaf0] px-4 py-4 font-black text-[#16110d] shadow-[0_18px_55px_rgba(0,0,0,.28)] transition hover:-translate-y-0.5 hover:bg-white">
+                  <svg viewBox="0 0 24 24" class="h-5 w-5"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.09-1.93 3.27-4.77 3.27-8.1z"/><path fill="#34A853" d="M12 23c2.98 0 5.48-.99 7.31-2.68l-3.57-2.77c-.99.66-2.26 1.05-3.74 1.05-2.87 0-5.3-1.94-6.17-4.54H2.14v2.84A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.83 14.06A6.6 6.6 0 0 1 5.49 12c0-.72.12-1.41.34-2.06V7.1H2.14A11 11 0 0 0 1 12c0 1.77.42 3.45 1.14 4.9l3.69-2.84z"/><path fill="#EA4335" d="M12 5.4c1.62 0 3.06.56 4.2 1.64l3.15-3.15A10.56 10.56 0 0 0 12 1 11 11 0 0 0 2.14 7.1l3.69 2.84C6.7 7.34 9.13 5.4 12 5.4z"/></svg>
+                  Continue with Google
+                </button>
+
+                <div class="event-divider my-6"></div>
+
+                <div class="price-card rounded-2xl p-5">
+                  <div class="flex items-end justify-between gap-4">
+                    <div>
+                      <div class="text-[10px] font-black tracking-[.2em] text-[#a3937f]">CURRENT TICKET PRICE</div>
+                      <div class="mt-1 text-3xl font-black tracking-[-.04em] text-[#f3ce77]">${formatMoney(EVENT_PRICE)}</div>
+                    </div>
+                    <div class="rounded-full border border-[#edc66c]/15 bg-[#edc66c]/5 px-3 py-1 text-[10px] font-black tracking-[.12em] text-[#dfb75f]">LIVE RATE</div>
+                  </div>
+                  <p class="mt-3 text-xs leading-5 text-[#897d70]">The final ticket price may be reduced depending on sponsorships received. The confirmed amount will be communicated once sponsorship arrangements are finalized.</p>
+                </div>
+
+                <div class="mt-5 grid grid-cols-3 gap-2 text-center">
+                  <div class="rounded-xl border border-white/[.04] bg-white/[.02] p-3"><div class="text-sm font-black text-[#efc66d]">01</div><div class="mt-1 text-[10px] text-[#776c61]">Register</div></div>
+                  <div class="rounded-xl border border-white/[.04] bg-white/[.02] p-3"><div class="text-sm font-black text-[#efc66d]">02</div><div class="mt-1 text-[10px] text-[#776c61]">Verify</div></div>
+                  <div class="rounded-xl border border-white/[.04] bg-white/[.02] p-3"><div class="text-sm font-black text-[#efc66d]">03</div><div class="mt-1 text-[10px] text-[#776c61]">Enter</div></div>
+                </div>
+              </div>
             </div>
-            <button id="google-login" class="flex w-full items-center justify-center gap-3 rounded-2xl bg-white px-4 py-4 font-black text-slate-900 transition hover:bg-slate-100">
-              <svg viewBox="0 0 24 24" class="h-5 w-5"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.09-1.93 3.27-4.77 3.27-8.1z"/><path fill="#34A853" d="M12 23c2.98 0 5.48-.99 7.31-2.68l-3.57-2.77c-.99.66-2.26 1.05-3.74 1.05-2.87 0-5.3-1.94-6.17-4.54H2.14v2.84A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.83 14.06A6.6 6.6 0 0 1 5.49 12c0-.72.12-1.41.34-2.06V7.1H2.14A11 11 0 0 0 1 12c0 1.77.42 3.45 1.14 4.9l3.69-2.84z"/><path fill="#EA4335" d="M12 5.4c1.62 0 3.06.56 4.2 1.64l3.15-3.15A10.56 10.56 0 0 0 12 1 11 11 0 0 0 2.14 7.1l3.69 2.84C6.7 7.34 9.13 5.4 12 5.4z"/></svg>
-              Sign in with Google
-            </button>
-            <div class="mt-6 rounded-2xl border border-yellow-300/10 bg-yellow-300/5 p-4 text-xs leading-5 text-slate-400">Ticket price: <strong class="text-yellow-200">${formatMoney(EVENT_PRICE)}</strong>. Payment confirmation is completed manually by the event administration team.</div>
-          </div>
+          </aside>
         </div>
       </section>
     </main>`;
 
-  document.querySelector('#google-login')?.addEventListener('click', handleGoogleLogin);
+  document.querySelector('#google-login')?.addEventListener('click', async (event) => {
+    const btn = event.currentTarget;
+    setBusy(btn, true, 'Opening Google...');
+    try {
+      // Always use popup on GitHub Pages/static hosting. Firebase redirect auth can
+      // lose its helper storage on modern mobile browsers when authDomain differs.
+      await setPersistence(auth, browserLocalPersistence);
+      await signInWithPopup(auth, googleProvider);
+    } catch (error) {
+      console.error(error);
+      const code = String(error?.code || '');
+      if (code.includes('popup-blocked')) {
+        toast('Your browser blocked the Google sign-in window. Allow pop-ups for this site and try again.', 'error');
+      } else if (code.includes('unauthorized-domain')) {
+        toast('This website domain must be added to Firebase Authentication → Authorized domains.', 'error');
+      } else if (!code.includes('popup-closed-by-user') && !code.includes('cancelled-popup-request')) {
+        toast(error.message || 'Google sign-in failed.', 'error');
+      }
+      setBusy(btn, false);
+    }
+  });
 }
 
 async function handleGoogleLogin() {
