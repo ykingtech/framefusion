@@ -287,7 +287,7 @@ function pageShell(content, { nav = true } = {}) {
           </span>
         </button>
         <div class="flex items-center gap-2">
-          ${state.isAdmin ? `<button data-action="admin" class="btn-ghost hidden sm:block">Admin Panel</button>` : ''}
+          ${state.isAdmin ? `<button data-action="admin" class="mobile-admin-btn btn-ghost"><span class="sm:hidden">Admin</span><span class="hidden sm:inline">Admin Panel</span></button>` : ''}
           <div class="hidden max-w-56 text-right md:block"><div class="truncate text-sm font-semibold">${userName}</div><div class="truncate text-xs text-[#74695f]">${escapeHtml(state.user?.email || '')}</div></div>
           <button data-action="logout" class="btn-ghost">Sign out</button>
         </div>
@@ -311,8 +311,8 @@ function renderLogin() {
         <div class="stage-blur b2"></div>
         <div class="stage-grid"></div>
 
-        <div class="relative z-10 grid min-h-[calc(100dvh-3rem)] xl:grid-cols-[1.15fr_.85fr]">
-          <div class="flex flex-col justify-between p-5 sm:p-8 lg:p-12 xl:p-14">
+        <div class="home-layout relative z-10 grid min-h-[calc(100dvh-3rem)] xl:grid-cols-[1.15fr_.85fr]">
+          <div class="home-hero flex flex-col justify-between p-5 sm:p-8 lg:p-12 xl:p-14">
             <div>
               <div class="flex flex-wrap items-center justify-between gap-4">
                 <div class="inline-flex items-center gap-3 rounded-full border border-[#e4b85c]/20 bg-[#120c08]/55 px-3 py-2 text-[10px] font-extrabold tracking-[.24em] text-[#e7bd60] backdrop-blur-xl sm:text-xs">
@@ -390,7 +390,7 @@ function renderLogin() {
             </div>
           </div>
 
-          <aside class="relative border-t border-[#efc66d]/10 bg-black/10 p-4 sm:p-7 xl:border-l xl:border-t-0 xl:p-9">
+          <aside class="home-access relative border-t border-[#efc66d]/10 bg-black/10 p-4 sm:p-7 xl:border-l xl:border-t-0 xl:p-9">
             <div class="sticky top-6 flex min-h-full flex-col justify-center gap-4">
               <div class="glass rounded-[2rem] p-5 sm:p-7">
                 <div class="mb-6 flex items-start justify-between gap-4">

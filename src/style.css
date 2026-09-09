@@ -848,3 +848,226 @@ body::after {
   box-shadow: 0 10px 32px rgba(0,0,0,.45);
   backdrop-filter: blur(10px);
 }
+
+/* Mobile navigation + login hierarchy polish */
+.mobile-admin-btn {
+  flex: none;
+  border-color: rgba(239,200,110,.24);
+  background: linear-gradient(145deg, rgba(239,200,110,.12), rgba(15,10,7,.72));
+  color: #f6d889;
+}
+
+@media (max-width: 639px) {
+  .safe-shell {
+    padding-left: max(.75rem, env(safe-area-inset-left));
+    padding-right: max(.75rem, env(safe-area-inset-right));
+  }
+
+  .safe-shell > header {
+    gap: .55rem;
+    padding: .62rem .7rem;
+    border-radius: 1.35rem;
+    background: rgba(8,6,4,.76);
+    box-shadow: 0 14px 42px rgba(0,0,0,.28);
+  }
+
+  .safe-shell > header .brand-badge {
+    width: 44px;
+    height: 44px;
+    border-radius: 1rem;
+  }
+
+  .safe-shell > header [data-action="home"] {
+    gap: .6rem;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .safe-shell > header [data-action="home"] > span:last-child {
+    min-width: 0;
+  }
+
+  .safe-shell > header [data-action="home"] .text-sm {
+    font-size: .72rem !important;
+    letter-spacing: .1em !important;
+  }
+
+  .safe-shell > header [data-action="home"] .text-xs {
+    max-width: 142px;
+    font-size: .62rem !important;
+  }
+
+  .safe-shell > header > div:last-child {
+    gap: .4rem;
+  }
+
+  .mobile-admin-btn,
+  .safe-shell > header [data-action="logout"] {
+    min-height: 42px;
+    padding: .62rem .72rem;
+    border-radius: 1rem;
+    font-size: .72rem;
+    white-space: nowrap;
+  }
+
+  .mobile-admin-btn {
+    box-shadow: 0 8px 24px rgba(204,143,47,.08), inset 0 1px 0 rgba(255,255,255,.05);
+  }
+
+  /* Put sign-in first on phones so users do not scroll through the whole hero to find login. */
+  .home-layout {
+    display: flex !important;
+    flex-direction: column;
+  }
+
+  .home-access {
+    order: 1;
+    border-top: 0 !important;
+    padding: .75rem .75rem 0 !important;
+    background: transparent !important;
+  }
+
+  .home-hero {
+    order: 2;
+    padding: 1.25rem .9rem 1.1rem !important;
+  }
+
+  .home-access > div {
+    position: static !important;
+  }
+
+  .home-access .glass {
+    border-radius: 1.65rem;
+    padding: 1.15rem;
+    background:
+      radial-gradient(circle at 85% 0%, rgba(239,198,110,.10), transparent 28%),
+      linear-gradient(145deg, rgba(22,15,10,.92), rgba(7,6,5,.86));
+    box-shadow: 0 24px 70px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,245,214,.05);
+  }
+
+  .home-access .hero-serif {
+    font-size: 2.05rem !important;
+    line-height: .98 !important;
+  }
+
+  .home-access #google-login {
+    margin-top: 1rem !important;
+    min-height: 56px;
+    border-radius: 1.15rem;
+    font-size: .94rem;
+    box-shadow: 0 16px 42px rgba(0,0,0,.32), 0 0 0 1px rgba(255,255,255,.05);
+  }
+
+  .home-access .fancy-stat-grid {
+    grid-template-columns: repeat(3, minmax(0,1fr));
+    gap: .45rem;
+    margin-bottom: 1rem !important;
+  }
+
+  .home-access .mini-stat {
+    padding: .68rem .4rem;
+    border-radius: .85rem;
+  }
+
+  .home-access .mini-stat-key {
+    font-size: .48rem;
+    letter-spacing: .11em;
+  }
+
+  .home-access .mini-stat strong {
+    font-size: .7rem;
+  }
+
+  .home-access .event-divider {
+    margin-top: 1rem !important;
+    margin-bottom: 1rem !important;
+  }
+
+  .home-access .grid.gap-3.sm\:grid-cols-2 {
+    gap: .6rem;
+  }
+
+  .home-hero > div:first-child > .flex:first-child {
+    justify-content: center;
+  }
+
+  .home-hero .hero-kicker {
+    margin-top: .2rem;
+    text-align: center;
+    line-height: 1.65;
+  }
+
+  .home-hero .hero-badge {
+    width: 58px;
+    height: 58px;
+    margin-inline: auto;
+  }
+
+  .home-hero .hero-wordmark {
+    width: 100%;
+    margin: .7rem auto 0 !important;
+  }
+
+  .home-hero h1.hero-serif {
+    margin-top: -.15rem !important;
+    text-align: center;
+    font-size: 2.25rem !important;
+    line-height: .96 !important;
+  }
+
+  .home-hero h1.hero-serif + p {
+    margin-top: 1rem !important;
+    text-align: center;
+    font-size: .82rem !important;
+    line-height: 1.65 !important;
+  }
+
+  .home-hero .mt-7.grid.gap-3.sm\:grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0,1fr));
+    gap: .45rem;
+    margin-top: 1.1rem !important;
+  }
+
+  .home-hero .mt-7.grid.gap-3.sm\:grid-cols-3 .event-chip {
+    padding: .75rem .55rem !important;
+    border-radius: 1rem;
+    text-align: center;
+  }
+
+  .home-hero .mt-7.grid.gap-3.sm\:grid-cols-3 .event-icon {
+    width: 34px;
+    height: 34px;
+    margin-inline: auto;
+    border-radius: 11px;
+  }
+
+  .home-hero .mt-7.grid.gap-3.sm\:grid-cols-3 .mt-4 {
+    margin-top: .55rem !important;
+    font-size: .48rem !important;
+    letter-spacing: .1em !important;
+  }
+
+  .home-hero .mt-7.grid.gap-3.sm\:grid-cols-3 strong {
+    font-size: .64rem !important;
+    line-height: 1.35;
+  }
+
+  .poster-shell {
+    margin-top: -.25rem;
+    padding: .7rem !important;
+    border-radius: 1.45rem !important;
+  }
+
+  .poster-card-main {
+    border-radius: 1.25rem;
+  }
+
+  .home-hero > div:last-child {
+    margin-top: 1.2rem !important;
+    justify-content: center !important;
+    text-align: center;
+    gap: .45rem !important;
+    padding-top: 1rem !important;
+    font-size: .55rem !important;
+  }
+}
