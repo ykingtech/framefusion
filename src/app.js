@@ -266,12 +266,14 @@ function pageShell(content, { nav = true } = {}) {
   return `
     <main class="safe-shell mx-auto w-full max-w-7xl">
       ${nav ? `
-      <header class="no-print mb-5 flex items-center justify-between gap-4 rounded-2xl px-1 py-2 sm:mb-8">
+      <header class="no-print mb-5 flex items-center justify-between gap-4 rounded-[1.8rem] border border-[#edc36c]/10 bg-black/20 px-3 py-3 backdrop-blur-xl sm:mb-8 sm:px-4">
         <button data-action="home" class="flex min-w-0 items-center gap-3 text-left">
-          <span class="aurelia-gradient grid h-11 w-11 shrink-0 place-items-center rounded-2xl text-sm font-black text-[#160e06] shadow-lg">A’26</span>
+          <span class="brand-badge shadow-[0_20px_40px_rgba(0,0,0,.32)]">
+            <img src="./assets/aurelia-monogram.svg" alt="AURELIA'26 logo" class="h-full w-full rounded-[1.15rem] object-cover" />
+          </span>
           <span class="min-w-0">
             <span class="block truncate text-sm font-black tracking-[.16em] text-[#fff8e8] sm:text-base">AURELIA’26</span>
-            <span class="block truncate text-xs text-[#8e8274]">St. Anne’s College · Kurunegala</span>
+            <span class="block truncate text-xs text-[#8e8274]">St. Anne's College · Kurunegala</span>
           </span>
         </button>
         <div class="flex items-center gap-2">
@@ -291,96 +293,137 @@ function renderLoading(message = 'Loading your Aurelia portal...') {
 function renderLogin() {
   state.selectedBatch = null;
   app.innerHTML = `
-    <main class="safe-shell mx-auto w-full max-w-[1480px] py-3 sm:py-6">
-      <section class="aurelia-landing">
+    <main class="safe-shell mx-auto w-full max-w-[1500px] py-3 sm:py-6">
+      <section class="aurelia-landing home-stage">
         <div class="gold-ring r1"></div>
         <div class="gold-ring r2"></div>
+        <div class="stage-blur b1"></div>
+        <div class="stage-blur b2"></div>
+        <div class="stage-grid"></div>
 
-        <div class="relative z-10 grid min-h-[calc(100dvh-3rem)] xl:grid-cols-[1.2fr_.8fr]">
-          <div class="flex flex-col justify-between p-6 sm:p-9 lg:p-12 xl:p-14">
+        <div class="relative z-10 grid min-h-[calc(100dvh-3rem)] xl:grid-cols-[1.15fr_.85fr]">
+          <div class="flex flex-col justify-between p-5 sm:p-8 lg:p-12 xl:p-14">
             <div>
               <div class="flex flex-wrap items-center justify-between gap-4">
-                <div class="inline-flex items-center gap-3 rounded-full border border-[#e4b85c]/15 bg-[#120c08]/60 px-3.5 py-2 text-[10px] font-extrabold tracking-[.24em] text-[#e7bd60] backdrop-blur-xl sm:text-xs">
+                <div class="inline-flex items-center gap-3 rounded-full border border-[#e4b85c]/20 bg-[#120c08]/55 px-3 py-2 text-[10px] font-extrabold tracking-[.24em] text-[#e7bd60] backdrop-blur-xl sm:text-xs">
                   <span class="h-1.5 w-1.5 rounded-full bg-[#efc86e] shadow-[0_0_14px_rgba(239,200,110,.9)]"></span>
-                  ST. ANNE’S COLLEGE · KURUNEGALA
+                  OFFICIAL GET TOGETHER 2026
                 </div>
                 <div class="hidden text-right sm:block">
-                  <div class="text-[10px] font-bold tracking-[.22em] text-[#766b60]">OFFICIAL GET TOGETHER</div>
+                  <div class="text-[10px] font-bold tracking-[.22em] text-[#766b60]">ST. ANNE’S COLLEGE · KURUNEGALA</div>
                   <div class="mt-1 text-xs font-bold text-[#d8c9b2]">2023 O/L × 2026 A/L</div>
                 </div>
               </div>
 
-              <div class="mt-8 max-w-[840px] sm:mt-10">
-                <div class="hero-kicker text-[10px] sm:text-xs">ONE NIGHT · ONE MEMORY · ONE AURELIA</div>
-                <img src="./assets/aurelia-wordmark.png" alt="AURELIA’26" class="hero-wordmark mt-3 -ml-2 sm:-ml-4" />
-                <h1 class="hero-serif mt-[-1rem] max-w-3xl text-[2.2rem] font-semibold leading-[.95] tracking-[-.04em] text-[#fff7e7] sm:mt-[-2.2rem] sm:text-6xl lg:text-7xl">
-                  Let the moments <span class="aurelia-text italic">glow.</span>
-                </h1>
-                <p class="mt-5 max-w-2xl text-sm leading-7 text-[#b0a496] sm:text-base lg:text-lg">
-                  The official 2023 O/L × 2026 A/L get together of St. Anne’s College, Kurunegala — registration, payment verification and secure QR admission in one premium portal.
-                </p>
-              </div>
+              <div class="mt-7 grid items-center gap-8 lg:grid-cols-[1.12fr_.88fr]">
+                <div>
+                  <div class="hero-kicker text-[10px] sm:text-xs">LET THE MOMENTS GLOW · SECURE TICKETING PORTAL</div>
+                  <div class="mt-4 flex items-center gap-4">
+                    <span class="brand-badge hero-badge"><img src="./assets/aurelia-monogram.svg" alt="AURELIA'26 logo" class="h-full w-full rounded-[1.55rem] object-cover" /></span>
+                    <div class="event-chip hidden rounded-2xl px-4 py-3 lg:block">
+                      <div class="text-[10px] font-black tracking-[.18em] text-[#8f806f]">SIGNATURE NIGHT</div>
+                      <div class="mt-1 text-sm font-semibold text-[#fff3d5]">Elegant reunion · music · memories</div>
+                    </div>
+                  </div>
+                  <img src="./assets/aurelia-wordmark.png" alt="AURELIA’26" class="hero-wordmark mt-5 -ml-1 sm:-ml-2" />
+                  <h1 class="hero-serif mt-[-.2rem] max-w-3xl text-[2.5rem] font-semibold leading-[.92] tracking-[-.05em] text-[#fff7e7] sm:mt-[-.7rem] sm:text-6xl lg:text-7xl">
+                    A premium night to reconnect, celebrate and <span class="aurelia-text italic">shine.</span>
+                  </h1>
+                  <p class="mt-5 max-w-2xl text-sm leading-7 text-[#b0a496] sm:text-base lg:text-lg">
+                    The official AURELIA’26 ticketing experience brings registration, payment verification, admin approval, secure QR access and premium downloadable tickets into one elegant experience.
+                  </p>
 
-              <div class="mt-8 grid max-w-4xl gap-3 sm:grid-cols-3">
-                <div class="event-chip rounded-2xl p-4">
-                  <div class="event-icon">◫</div>
-                  <div class="mt-4 text-[10px] font-black tracking-[.18em] text-[#8f806f]">DATE</div>
-                  <strong class="mt-1 block text-sm sm:text-base">10 October 2026</strong>
+                  <div class="mt-7 grid gap-3 sm:grid-cols-3">
+                    <div class="event-chip rounded-[1.35rem] p-4">
+                      <div class="event-icon">◫</div>
+                      <div class="mt-4 text-[10px] font-black tracking-[.18em] text-[#8f806f]">DATE</div>
+                      <strong class="mt-1 block text-sm sm:text-base">10 October 2026</strong>
+                    </div>
+                    <div class="event-chip rounded-[1.35rem] p-4">
+                      <div class="event-icon">⌖</div>
+                      <div class="mt-4 text-[10px] font-black tracking-[.18em] text-[#8f806f]">VENUE</div>
+                      <strong class="mt-1 block text-sm sm:text-base">Asliya Golden Cassandra</strong>
+                    </div>
+                    <div class="event-chip rounded-[1.35rem] p-4">
+                      <div class="event-icon">◷</div>
+                      <div class="mt-4 text-[10px] font-black tracking-[.18em] text-[#8f806f]">TIME</div>
+                      <strong class="mt-1 block text-sm sm:text-base">6.30 PM onwards</strong>
+                    </div>
+                  </div>
                 </div>
-                <div class="event-chip rounded-2xl p-4">
-                  <div class="event-icon">⌖</div>
-                  <div class="mt-4 text-[10px] font-black tracking-[.18em] text-[#8f806f]">VENUE</div>
-                  <strong class="mt-1 block text-sm sm:text-base">Asliya Golden Cassandra</strong>
-                </div>
-                <div class="event-chip rounded-2xl p-4">
-                  <div class="event-icon">◷</div>
-                  <div class="mt-4 text-[10px] font-black tracking-[.18em] text-[#8f806f]">TIME</div>
-                  <strong class="mt-1 block text-sm sm:text-base">6.30 PM onwards</strong>
+
+                <div class="poster-shell glass-soft rounded-[2rem] p-4 sm:p-5">
+                  <div class="poster-stack">
+                    <img src="./assets/aurelia-poster.png" alt="Aurelia poster" class="poster-card-main" />
+                    <div class="poster-float poster-float-top event-chip rounded-2xl p-3">
+                      <div class="text-[10px] font-black tracking-[.18em] text-[#8f806f]">CURATED EXPERIENCE</div>
+                      <div class="mt-1 text-sm font-semibold text-[#fff2cd]">Black & gold atmosphere · premium entrance pass</div>
+                    </div>
+                    <div class="poster-float poster-float-bottom rounded-2xl border border-[#e3b867]/15 bg-[#0f0c09]/70 p-4 backdrop-blur-2xl">
+                      <div class="flex items-start justify-between gap-3">
+                        <div>
+                          <div class="text-[10px] font-black tracking-[.18em] text-[#8f806f]">CURRENT TICKET PRICE</div>
+                          <div class="mt-1 text-2xl font-black tracking-[-.04em] text-[#f3ce77]">${formatMoney(EVENT_PRICE)}</div>
+                        </div>
+                        <span class="rounded-full border border-[#edc66c]/15 bg-[#edc66c]/5 px-3 py-1 text-[10px] font-black tracking-[.12em] text-[#dfb75f]">LIVE RATE</span>
+                      </div>
+                      <p class="mt-3 text-xs leading-5 text-[#897d70]">The ticket price is currently Rs. 6,000, but it may be reduced depending on the sponsorships we receive. The final ticket price will be confirmed once sponsorship arrangements are finalized.</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
 
             <div class="mt-8 flex flex-wrap items-end justify-between gap-4 border-t border-[#edc36c]/10 pt-5 text-[10px] font-bold tracking-[.14em] text-[#655b52] sm:text-xs">
-              <span>AURELIA’26 · SECURE TICKETING PORTAL</span>
-              <span>REGISTRATION · APPROVAL · QR ENTRY</span>
+              <span>AURELIA’26 · REGISTRATION · APPROVAL · QR ENTRY</span>
+              <span>DESIGNED FOR MOBILE · FAST · SECURE</span>
             </div>
           </div>
 
-          <aside class="relative border-t border-[#efc66d]/10 bg-black/20 p-5 sm:p-8 xl:border-l xl:border-t-0 xl:p-10">
-            <div class="sticky top-6 flex min-h-full flex-col justify-center">
+          <aside class="relative border-t border-[#efc66d]/10 bg-black/10 p-4 sm:p-7 xl:border-l xl:border-t-0 xl:p-9">
+            <div class="sticky top-6 flex min-h-full flex-col justify-center gap-4">
               <div class="glass rounded-[2rem] p-5 sm:p-7">
                 <div class="mb-6 flex items-start justify-between gap-4">
                   <div>
                     <div class="text-[10px] font-black tracking-[.24em] text-[#e6b95a]">ACCESS PORTAL</div>
-                    <h2 class="hero-serif mt-1 text-4xl font-bold leading-none text-[#fff8e8] sm:text-5xl">Your night starts here.</h2>
+                    <h2 class="hero-serif mt-1 text-4xl font-bold leading-none text-[#fff8e8] sm:text-5xl">Enter the Aurelia experience.</h2>
                   </div>
-                  <div class="aurelia-gradient grid h-11 w-11 shrink-0 place-items-center rounded-2xl text-xs font-black text-[#160e06]">A26</div>
+                  <div class="brand-badge small"><img src="./assets/aurelia-monogram.svg" alt="AURELIA'26 logo" class="h-full w-full rounded-[1rem] object-cover" /></div>
+                </div>
+
+                <div class="fancy-stat-grid mb-6">
+                  <div class="mini-stat">
+                    <span class="mini-stat-key">FLOW</span>
+                    <strong>Register</strong>
+                  </div>
+                  <div class="mini-stat">
+                    <span class="mini-stat-key">VERIFY</span>
+                    <strong>Approve</strong>
+                  </div>
+                  <div class="mini-stat">
+                    <span class="mini-stat-key">ENTRY</span>
+                    <strong>Scan QR</strong>
+                  </div>
                 </div>
 
                 <p class="text-sm leading-6 text-[#9e9285]">Continue with your Google account. The same Gmail address will receive your approval notification and secure ticket link.</p>
 
-                <button id="google-login" class="mt-6 flex w-full items-center justify-center gap-3 rounded-2xl bg-[#fffaf0] px-4 py-4 font-black text-[#16110d] shadow-[0_18px_55px_rgba(0,0,0,.28)] transition hover:-translate-y-0.5 hover:bg-white">
+                <button id="google-login" class="mt-6 flex w-full items-center justify-center gap-3 rounded-[1.3rem] bg-[#fffaf0] px-4 py-4 font-black text-[#16110d] shadow-[0_18px_55px_rgba(0,0,0,.28)] transition hover:-translate-y-0.5 hover:bg-white">
                   <svg viewBox="0 0 24 24" class="h-5 w-5"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.09-1.93 3.27-4.77 3.27-8.1z"/><path fill="#34A853" d="M12 23c2.98 0 5.48-.99 7.31-2.68l-3.57-2.77c-.99.66-2.26 1.05-3.74 1.05-2.87 0-5.3-1.94-6.17-4.54H2.14v2.84A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.83 14.06A6.6 6.6 0 0 1 5.49 12c0-.72.12-1.41.34-2.06V7.1H2.14A11 11 0 0 0 1 12c0 1.77.42 3.45 1.14 4.9l3.69-2.84z"/><path fill="#EA4335" d="M12 5.4c1.62 0 3.06.56 4.2 1.64l3.15-3.15A10.56 10.56 0 0 0 12 1 11 11 0 0 0 2.14 7.1l3.69 2.84C6.7 7.34 9.13 5.4 12 5.4z"/></svg>
                   Continue with Google
                 </button>
 
                 <div class="event-divider my-6"></div>
 
-                <div class="price-card rounded-2xl p-5">
-                  <div class="flex items-end justify-between gap-4">
-                    <div>
-                      <div class="text-[10px] font-black tracking-[.2em] text-[#a3937f]">CURRENT TICKET PRICE</div>
-                      <div class="mt-1 text-3xl font-black tracking-[-.04em] text-[#f3ce77]">${formatMoney(EVENT_PRICE)}</div>
-                    </div>
-                    <div class="rounded-full border border-[#edc66c]/15 bg-[#edc66c]/5 px-3 py-1 text-[10px] font-black tracking-[.12em] text-[#dfb75f]">LIVE RATE</div>
+                <div class="grid gap-3 sm:grid-cols-2">
+                  <div class="price-card rounded-2xl p-4">
+                    <div class="text-[10px] font-black tracking-[.18em] text-[#9d8f7f]">TICKET STATUS</div>
+                    <div class="mt-2 text-sm leading-6 text-[#efe2c8]">Secure registration with admin verification and downloadable A4 QR pass.</div>
                   </div>
-                  <p class="mt-3 text-xs leading-5 text-[#897d70]">The final ticket price may be reduced depending on sponsorships received. The confirmed amount will be communicated once sponsorship arrangements are finalized.</p>
-                </div>
-
-                <div class="mt-5 grid grid-cols-3 gap-2 text-center">
-                  <div class="rounded-xl border border-white/[.04] bg-white/[.02] p-3"><div class="text-sm font-black text-[#efc66d]">01</div><div class="mt-1 text-[10px] text-[#776c61]">Register</div></div>
-                  <div class="rounded-xl border border-white/[.04] bg-white/[.02] p-3"><div class="text-sm font-black text-[#efc66d]">02</div><div class="mt-1 text-[10px] text-[#776c61]">Verify</div></div>
-                  <div class="rounded-xl border border-white/[.04] bg-white/[.02] p-3"><div class="text-sm font-black text-[#efc66d]">03</div><div class="mt-1 text-[10px] text-[#776c61]">Enter</div></div>
+                  <div class="event-chip rounded-2xl p-4">
+                    <div class="text-[10px] font-black tracking-[.18em] text-[#9d8f7f]">NOTE</div>
+                    <div class="mt-2 text-sm leading-6 text-[#efe2c8]">Your Gmail becomes your personal ticket locker. Log in anytime to view your QR ticket.</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -393,8 +436,6 @@ function renderLogin() {
     const btn = event.currentTarget;
     setBusy(btn, true, 'Opening Google...');
     try {
-      // Always use popup on GitHub Pages/static hosting. Firebase redirect auth can
-      // lose its helper storage on modern mobile browsers when authDomain differs.
       await setPersistence(auth, browserLocalPersistence);
       await signInWithPopup(auth, googleProvider);
     } catch (error) {
@@ -411,7 +452,6 @@ function renderLogin() {
     }
   });
 }
-
 async function handleGoogleLogin() {
   const btn = document.querySelector('#google-login');
   setBusy(btn, true, 'Opening Google...');
@@ -471,26 +511,48 @@ function renderHome() {
 
 function renderBatchSelection() {
   app.innerHTML = pageShell(`
-    <section class="mx-auto max-w-5xl py-5 sm:py-10">
-      <div class="mb-7 max-w-2xl">
-        <div class="text-xs font-extrabold tracking-[.18em] text-sky-300">STEP 01</div>
-        <h1 class="mt-2 text-3xl font-black sm:text-5xl">Choose your batch</h1>
-        <p class="mt-3 text-slate-400">This decides which class field appears on your registration.</p>
+    <section class="mx-auto max-w-6xl py-4 sm:py-8">
+      <div class="section-hero mb-7 rounded-[2rem] p-6 sm:p-8">
+        <div class="flex flex-wrap items-start justify-between gap-6">
+          <div class="max-w-3xl">
+            <div class="text-xs font-extrabold tracking-[.18em] text-sky-300">STEP 01 · BATCH SELECTION</div>
+            <h1 class="mt-2 text-3xl font-black leading-tight sm:text-5xl">Choose your batch</h1>
+            <p class="mt-3 max-w-2xl text-slate-400">Select the batch that matches you. The registration form will automatically switch to the correct class field.</p>
+          </div>
+          <div class="event-chip rounded-2xl px-4 py-3">
+            <div class="text-[10px] font-black tracking-[.18em] text-[#8f806f]">AURELIA FLOW</div>
+            <div class="mt-2 flex gap-2 text-xs font-semibold text-[#f5e2af]"><span>1. Batch</span><span>•</span><span>2. Form</span><span>•</span><span>3. Approval</span></div>
+          </div>
+        </div>
       </div>
-      <div class="grid gap-4 md:grid-cols-2">
-        <button data-batch="OL2023" class="group glass relative overflow-hidden rounded-[1.7rem] p-6 text-left transition hover:-translate-y-1 hover:border-sky-300/30 sm:p-8">
-          <div class="absolute right-5 top-4 text-6xl font-black text-sky-300/5">23</div>
-          <div class="mb-8 grid h-12 w-12 place-items-center rounded-2xl bg-sky-400/10 text-lg font-black text-sky-300">O/L</div>
-          <h2 class="text-2xl font-black">2023 O/L Batch</h2>
-          <p class="mt-2 text-sm leading-6 text-slate-400">For students from the 2023 O/L batch. Your previous O/L class will be requested.</p>
-          <div class="mt-7 text-sm font-bold text-sky-300">Continue →</div>
+      <div class="grid gap-5 md:grid-cols-2">
+        <button data-batch="OL2023" class="choice-card choice-card-ol group relative overflow-hidden rounded-[2rem] p-6 text-left transition hover:-translate-y-1 sm:p-8">
+          <div class="choice-no">23</div>
+          <div class="choice-glow"></div>
+          <div class="mb-8 grid h-14 w-14 place-items-center rounded-2xl bg-amber-300/10 text-lg font-black text-amber-200">O/L</div>
+          <div class="max-w-sm">
+            <div class="text-[11px] font-black tracking-[.2em] text-[#a8926b]">FORM PATH</div>
+            <h2 class="mt-3 text-3xl font-black text-[#fff9ef]">2023 O/L Batch</h2>
+            <p class="mt-3 text-sm leading-7 text-slate-400">For students from the 2023 O/L batch. Your previous O/L class will be requested together with your NIC and payment slip.</p>
+          </div>
+          <div class="mt-8 flex items-center justify-between">
+            <span class="rounded-full border border-amber-300/15 bg-amber-300/10 px-4 py-2 text-xs font-black tracking-[.16em] text-amber-200">READY TO REGISTER</span>
+            <span class="choice-arrow">Continue →</span>
+          </div>
         </button>
-        <button data-batch="AL2026" class="group glass relative overflow-hidden rounded-[1.7rem] p-6 text-left transition hover:-translate-y-1 hover:border-emerald-300/30 sm:p-8">
-          <div class="absolute right-5 top-4 text-6xl font-black text-emerald-300/5">26</div>
-          <div class="mb-8 grid h-12 w-12 place-items-center rounded-2xl bg-emerald-400/10 text-lg font-black text-emerald-300">A/L</div>
-          <h2 class="text-2xl font-black">2026 A/L Batch</h2>
-          <p class="mt-2 text-sm leading-6 text-slate-400">For students from the 2026 A/L batch. Your current A/L class will be requested.</p>
-          <div class="mt-7 text-sm font-bold text-emerald-300">Continue →</div>
+        <button data-batch="AL2026" class="choice-card choice-card-al group relative overflow-hidden rounded-[2rem] p-6 text-left transition hover:-translate-y-1 sm:p-8">
+          <div class="choice-no">26</div>
+          <div class="choice-glow"></div>
+          <div class="mb-8 grid h-14 w-14 place-items-center rounded-2xl bg-yellow-300/10 text-lg font-black text-yellow-200">A/L</div>
+          <div class="max-w-sm">
+            <div class="text-[11px] font-black tracking-[.2em] text-[#a8926b]">FORM PATH</div>
+            <h2 class="mt-3 text-3xl font-black text-[#fff9ef]">2026 A/L Batch</h2>
+            <p class="mt-3 text-sm leading-7 text-slate-400">For students from the 2026 A/L batch. Your current A/L class will be requested together with your NIC and payment slip.</p>
+          </div>
+          <div class="mt-8 flex items-center justify-between">
+            <span class="rounded-full border border-yellow-300/15 bg-yellow-300/10 px-4 py-2 text-xs font-black tracking-[.16em] text-yellow-200">READY TO REGISTER</span>
+            <span class="choice-arrow">Continue →</span>
+          </div>
         </button>
       </div>
     </section>`);
@@ -505,51 +567,112 @@ function renderBatchSelection() {
 function renderRegistrationForm() {
   const isOL = state.selectedBatch === 'OL2023';
   app.innerHTML = pageShell(`
-    <section class="mx-auto max-w-3xl py-4 sm:py-8">
-      <div class="glass rounded-[1.8rem] p-5 sm:p-8">
-        <div class="mb-7 flex items-start justify-between gap-4">
-          <div>
-            <div class="text-xs font-extrabold tracking-[.18em] text-emerald-300">STEP 02 · REGISTRATION</div>
-            <h1 class="mt-2 text-3xl font-black">${isOL ? '2023 O/L' : '2026 A/L'} Batch</h1>
-            <p class="mt-2 text-sm text-slate-400">Ticket fee: <span class="font-bold text-yellow-200">${formatMoney(EVENT_PRICE)}</span></p>
+    <section class="mx-auto max-w-6xl py-4 sm:py-8">
+      <div class="grid gap-5 lg:grid-cols-[1.1fr_.9fr]">
+        <section class="glass form-shell rounded-[2rem] p-5 sm:p-8">
+          <div class="mb-7 flex items-start justify-between gap-4">
+            <div>
+              <div class="text-xs font-extrabold tracking-[.18em] text-emerald-300">STEP 02 · REGISTRATION</div>
+              <h1 class="mt-2 text-3xl font-black leading-tight sm:text-5xl">${isOL ? '2023 O/L' : '2026 A/L'} Registration</h1>
+              <p class="mt-3 max-w-xl text-sm leading-6 text-slate-400">Complete the details below to join AURELIA’26. Your payment slip will be reviewed by the admin panel before your ticket is approved.</p>
+            </div>
+            <button id="change-batch" class="btn-ghost text-sm">Change</button>
           </div>
-          <button id="change-batch" class="btn-ghost text-sm">Change</button>
-        </div>
 
-        <form id="registration-form" class="space-y-5">
-          <div>
-            <label class="mb-2 block text-sm font-bold">Full name</label>
-            <input class="field" name="fullName" required minlength="3" maxlength="100" autocomplete="name" placeholder="Your full name" />
+          <div class="mb-6 grid gap-3 sm:grid-cols-3">
+            <div class="event-chip rounded-2xl p-4"><div class="text-[10px] font-black tracking-[.18em] text-[#8f806f]">SELECTED BATCH</div><div class="mt-2 text-lg font-bold text-[#fff4d4]">${isOL ? '2023 O/L' : '2026 A/L'}</div></div>
+            <div class="event-chip rounded-2xl p-4"><div class="text-[10px] font-black tracking-[.18em] text-[#8f806f]">TICKET PRICE</div><div class="mt-2 text-lg font-bold text-[#fff4d4]">${formatMoney(EVENT_PRICE)}</div></div>
+            <div class="event-chip rounded-2xl p-4"><div class="text-[10px] font-black tracking-[.18em] text-[#8f806f]">DELIVERY</div><div class="mt-2 text-lg font-bold text-[#fff4d4]">Email + Live QR</div></div>
           </div>
-          <div>
-            <label class="mb-2 block text-sm font-bold">${isOL ? 'O/L class' : 'A/L class'}</label>
-            <input class="field" name="className" required maxlength="50" placeholder="e.g. 11-A / 13-Maths-A" />
-          </div>
-          <div>
-            <label class="mb-2 block text-sm font-bold">NIC number</label>
-            <input class="field" name="idNumber" required minlength="10" maxlength="12" inputmode="text" autocapitalize="characters" autocomplete="off" pattern="(?:[0-9]{9}[VvXx]|[0-9]{12})" title="Enter 9 digits followed by V/X, or a 12-digit NIC" placeholder="e.g. 200712345678 or 981234567V" />
-            <p class="mt-2 text-xs text-slate-500">Sri Lankan NIC: old format (9 digits + V/X) or new 12-digit format.</p>
-          </div>
-          <div>
-            <label class="mb-2 block text-sm font-bold">Gmail address</label>
-            <input class="field opacity-70" value="${escapeHtml(state.user.email || '')}" disabled />
-            <p class="mt-2 text-xs text-slate-500">Your approval email will be sent to this Google account with a button to open your live QR ticket.</p>
-          </div>
-          <div>
-            <label class="mb-2 block text-sm font-bold">Bank payment slip</label>
-            <label class="block cursor-pointer rounded-2xl border border-dashed border-slate-600/70 bg-slate-950/35 p-5 text-center transition hover:border-sky-400/50">
-              <input id="slip-file" class="sr-only" type="file" name="paymentSlip" accept="image/jpeg,image/png,image/webp" required />
-              <div class="text-2xl">↑</div>
-              <div class="mt-2 font-bold">Upload payment proof</div>
-              <div id="file-label" class="mt-1 text-xs text-slate-500">JPG, PNG or WebP · auto-compressed before upload</div>
+
+          <form id="registration-form" class="space-y-5">
+            <div class="fancy-field-wrap">
+              <label class="field-label">Full name</label>
+              <input class="field fancy-field" name="fullName" required minlength="3" maxlength="100" autocomplete="name" placeholder="Enter your full name" />
+            </div>
+            <div class="grid gap-5 md:grid-cols-2">
+              <div class="fancy-field-wrap">
+                <label class="field-label">${isOL ? 'O/L class' : 'A/L class'}</label>
+                <input class="field fancy-field" name="className" required maxlength="50" placeholder="e.g. 11-A / 13-Maths-A" />
+              </div>
+              <div class="fancy-field-wrap">
+                <label class="field-label">NIC number</label>
+                <input class="field fancy-field" name="idNumber" required minlength="10" maxlength="12" inputmode="text" autocapitalize="characters" autocomplete="off" pattern="(?:[0-9]{9}[VvXx]|[0-9]{12})" title="Enter 9 digits followed by V/X, or a 12-digit NIC" placeholder="200712345678 or 981234567V" />
+                <p class="mt-2 text-xs text-slate-500">Sri Lankan NIC: old format (9 digits + V/X) or new 12-digit format.</p>
+              </div>
+            </div>
+            <div class="fancy-field-wrap">
+              <label class="field-label">Google email</label>
+              <input class="field fancy-field opacity-70" value="${escapeHtml(state.user.email || '')}" disabled />
+              <p class="mt-2 text-xs text-slate-500">Your approval email will be sent to this Google account with a button to open your live QR ticket.</p>
+            </div>
+            <div class="fancy-field-wrap">
+              <label class="field-label">Bank payment slip</label>
+              <label class="upload-dropzone block cursor-pointer rounded-[1.5rem] border border-dashed border-slate-600/70 bg-slate-950/35 p-5 text-center transition hover:border-sky-400/50">
+                <input id="slip-file" class="sr-only" type="file" name="paymentSlip" accept="image/jpeg,image/png,image/webp" required />
+                <div class="mx-auto grid h-14 w-14 place-items-center rounded-2xl border border-[#edc36c]/15 bg-[#edc36c]/10 text-2xl text-[#f5ce72]">↑</div>
+                <div class="mt-3 font-bold text-[#fff8e4]">Upload payment proof</div>
+                <div id="file-label" class="mt-1 text-xs text-slate-500">JPG, PNG or WebP · auto-compressed before upload</div>
+              </label>
+            </div>
+            <label class="flex items-start gap-3 rounded-[1.5rem] bg-slate-950/35 p-4 text-sm text-slate-400">
+              <input class="mt-1" type="checkbox" required />
+              <span>I confirm that the submitted details and payment proof are correct.</span>
             </label>
-          </div>
-          <label class="flex items-start gap-3 rounded-2xl bg-slate-950/35 p-4 text-sm text-slate-400">
-            <input class="mt-1" type="checkbox" required />
-            <span>I confirm that the submitted details and payment proof are correct.</span>
-          </label>
-          <button id="submit-registration" class="btn-primary w-full" type="submit">Submit for approval</button>
-        </form>
+            <button id="submit-registration" class="btn-primary w-full" type="submit">Submit for approval</button>
+          </form>
+        </section>
+
+        <aside class="space-y-5">
+          <section class="glass-soft live-preview-shell rounded-[2rem] p-5 sm:p-6">
+            <div class="flex items-center justify-between gap-4">
+              <div>
+                <div class="text-[10px] font-black tracking-[.24em] text-[#e6b95a]">LIVE TICKET PREVIEW</div>
+                <div class="mt-1 text-xs text-[#7e7265]">Updates while you type</div>
+              </div>
+              <div class="preview-live-pill"><span></span> LIVE</div>
+            </div>
+            <div class="mini-ticket mt-5">
+              <div class="mini-ticket-shine"></div>
+              <div class="mini-ticket-top">
+                <img src="./assets/aurelia-monogram.svg" alt="Aurelia" class="mini-ticket-logo" />
+                <div class="min-w-0">
+                  <div class="text-[9px] font-black tracking-[.24em] text-[#b7a786]">OFFICIAL ADMISSION PASS</div>
+                  <div class="mt-1 truncate text-lg font-black tracking-[.08em] text-[#fff4d6]">AURELIA’26</div>
+                </div>
+                <span class="mini-ticket-status">PREVIEW</span>
+              </div>
+              <div class="mini-ticket-divider"></div>
+              <div class="mini-ticket-name" id="preview-name">YOUR NAME</div>
+              <div class="mini-ticket-meta-grid">
+                <div><span>BATCH</span><strong id="preview-batch">${isOL ? '2023 O/L' : '2026 A/L'}</strong></div>
+                <div><span>CLASS</span><strong id="preview-class">—</strong></div>
+                <div><span>NIC</span><strong id="preview-nic">—</strong></div>
+                <div><span>TICKET</span><strong>PENDING</strong></div>
+              </div>
+              <div class="mini-ticket-bottom">
+                <div class="preview-qr" aria-hidden="true"><span></span></div>
+                <div>
+                  <div class="text-[9px] font-black tracking-[.18em] text-[#8f806f]">10 OCTOBER 2026</div>
+                  <div class="mt-1 text-sm font-bold text-[#f8e7bd]">6.30 PM onwards</div>
+                  <div class="mt-1 text-xs text-[#867a6d]">Asliya Golden Cassandra</div>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="glass-soft rounded-[2rem] p-5 sm:p-6">
+            <div class="text-[10px] font-black tracking-[.24em] text-[#e6b95a]">EVENT PREVIEW</div>
+            <img src="./assets/aurelia-poster.png" alt="Aurelia poster" class="mt-4 w-full rounded-[1.6rem] border border-[#edc36c]/12 object-cover shadow-2xl" />
+          </section>
+          <section class="glass-soft rounded-[2rem] p-5 sm:p-6">
+            <div class="text-[10px] font-black tracking-[.24em] text-[#e6b95a]">WHAT HAPPENS NEXT</div>
+            <div class="mt-4 space-y-3">
+              <div class="flow-step"><span>01</span><div><strong>Register now</strong><p>Submit your name, class, NIC and bank slip.</p></div></div>
+              <div class="flow-step"><span>02</span><div><strong>Admin review</strong><p>Your payment slip is checked and ticket number is assigned.</p></div></div>
+              <div class="flow-step"><span>03</span><div><strong>Get your ticket</strong><p>An approval email will let you open your live QR ticket instantly.</p></div></div>
+            </div>
+          </section>
+        </aside>
       </div>
     </section>`);
 
@@ -562,9 +685,27 @@ function renderRegistrationForm() {
     document.querySelector('#file-label').textContent = file ? `${file.name} · ${(file.size / 1024 / 1024).toFixed(2)} MB` : 'JPG, PNG or WebP · auto-compressed before upload';
   });
   document.querySelector('#registration-form')?.addEventListener('submit', submitRegistration);
+
+  const previewFields = {
+    fullName: document.querySelector('[name="fullName"]'),
+    className: document.querySelector('[name="className"]'),
+    idNumber: document.querySelector('[name="idNumber"]'),
+  };
+  const refreshPreview = () => {
+    const name = String(previewFields.fullName?.value || '').trim();
+    const className = String(previewFields.className?.value || '').trim();
+    const nic = String(previewFields.idNumber?.value || '').trim().toUpperCase();
+    const nameEl = document.querySelector('#preview-name');
+    const classEl = document.querySelector('#preview-class');
+    const nicEl = document.querySelector('#preview-nic');
+    if (nameEl) nameEl.textContent = name || 'YOUR NAME';
+    if (classEl) classEl.textContent = className || '—';
+    if (nicEl) nicEl.textContent = nic || '—';
+  };
+  Object.values(previewFields).forEach((field) => field?.addEventListener('input', refreshPreview));
+  refreshPreview();
   bindGlobalActions();
 }
-
 async function submitRegistration(event) {
   event.preventDefault();
   const form = event.currentTarget;
