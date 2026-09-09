@@ -279,7 +279,7 @@ function pageShell(content, { nav = true } = {}) {
       <header class="no-print mb-5 flex items-center justify-between gap-4 rounded-[1.8rem] border border-[#edc36c]/10 bg-black/20 px-3 py-3 backdrop-blur-xl sm:mb-8 sm:px-4">
         <button data-action="home" class="flex min-w-0 items-center gap-3 text-left">
           <span class="brand-badge shadow-[0_20px_40px_rgba(0,0,0,.32)]">
-            <img src="./assets/aurelia-monogram.svg" alt="AURELIA'26 logo" class="h-full w-full rounded-[1.15rem] object-cover" />
+            <img src="./assets/aurelia-monogram.png" alt="AURELIA'26 logo" class="brand-logo-img brand-logo-main" />
           </span>
           <span class="min-w-0">
             <span class="block truncate text-sm font-black tracking-[.16em] text-[#fff8e8] sm:text-base">AURELIA’26</span>
@@ -329,7 +329,7 @@ function renderLogin() {
                 <div>
                   <div class="hero-kicker text-[10px] sm:text-xs">LET THE MOMENTS GLOW · SECURE TICKETING PORTAL</div>
                   <div class="mt-4 flex items-center gap-4">
-                    <span class="brand-badge hero-badge"><img src="./assets/aurelia-monogram.svg" alt="AURELIA'26 logo" class="h-full w-full rounded-[1.55rem] object-cover" /></span>
+                    <span class="brand-badge hero-badge"><img src="./assets/aurelia-monogram.png" alt="AURELIA'26 logo" class="brand-logo-img brand-logo-main" /></span>
                     <div class="event-chip hidden rounded-2xl px-4 py-3 lg:block">
                       <div class="text-[10px] font-black tracking-[.18em] text-[#8f806f]">SIGNATURE NIGHT</div>
                       <div class="mt-1 text-sm font-semibold text-[#fff3d5]">Elegant reunion · music · memories</div>
@@ -398,7 +398,7 @@ function renderLogin() {
                     <div class="text-[10px] font-black tracking-[.24em] text-[#e6b95a]">ACCESS PORTAL</div>
                     <h2 class="hero-serif mt-1 text-4xl font-bold leading-none text-[#fff8e8] sm:text-5xl">Enter the Aurelia experience.</h2>
                   </div>
-                  <div class="brand-badge small"><img src="./assets/aurelia-monogram.svg" alt="AURELIA'26 logo" class="h-full w-full rounded-[1rem] object-cover" /></div>
+                  <div class="brand-badge small"><img src="./assets/aurelia-monogram.png" alt="AURELIA'26 logo" class="brand-logo-img brand-logo-main" /></div>
                 </div>
 
                 <div class="fancy-stat-grid mb-6">
@@ -663,7 +663,7 @@ function renderRegistrationForm() {
             <div class="mini-ticket mt-5">
               <div class="mini-ticket-shine"></div>
               <div class="mini-ticket-top">
-                <img src="./assets/aurelia-monogram.svg" alt="Aurelia" class="mini-ticket-logo" />
+                <img src="./assets/aurelia-monogram.png" alt="Aurelia" class="mini-ticket-logo brand-logo-img" />
                 <div class="min-w-0">
                   <div class="text-[9px] font-black tracking-[.24em] text-[#b7a786]">OFFICIAL ADMISSION PASS</div>
                   <div class="mt-1 truncate text-lg font-black tracking-[.08em] text-[#fff4d6]">AURELIA’26</div>

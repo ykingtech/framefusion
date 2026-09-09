@@ -1071,3 +1071,34 @@ body::after {
     font-size: .55rem !important;
   }
 }
+
+/* Custom centered 1:1 project logo */
+.brand-badge {
+  background:
+    radial-gradient(circle at 28% 18%, rgba(255,255,255,.08), transparent 32%),
+    linear-gradient(160deg, rgba(18,12,8,.96), rgba(6,4,3,.98));
+}
+.brand-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+}
+.brand-logo-main {
+  padding: 10%;
+}
+.hero-badge .brand-logo-main {
+  padding: 8%;
+}
+.brand-badge.small .brand-logo-main {
+  padding: 12%;
+}
+.mini-ticket-logo.brand-logo-img {
+  object-fit: contain;
+  object-position: center;
+  padding: 10%;
+  background:
+    radial-gradient(circle at 28% 18%, rgba(255,255,255,.08), transparent 32%),
+    linear-gradient(160deg, rgba(18,12,8,.96), rgba(6,4,3,.98));
+}
