@@ -48,14 +48,14 @@
                     </div>
                 </div>
 
-                <!-- Optional 3D camera quick-link buttons -->
+                <!-- Quick Actions -->
                 <div class="bg-white p-5 rounded-xl shadow-sm border border-amber-200">
-                    <h2 class="text-lg font-bold mb-1 border-b pb-2 text-amber-700"><i class="fas fa-cube mr-1"></i> Home 3D Buttons</h2>
-                    <p class="text-xs text-gray-500 mt-2 mb-4">Camera එක ලඟ floating 3D link buttons පෙන්නන්න. Maximum 4. Disable කරලා හෝ Clean View දුන්නම public site එක දැන් තියෙන original camera view එකටම යනවා.</p>
+                    <h2 class="text-lg font-bold mb-1 border-b pb-2 text-amber-700"><i class="fas fa-bolt mr-1"></i> Quick Actions</h2>
+                    <p class="text-xs text-gray-500 mt-2 mb-4">Home page එකේ Quick Access section එකට custom links add කරන්න. Maximum 4. මේ option එක OFF කරලා Save කළොත් public website එකේ Quick Access section එකම hide වෙනවා.</p>
 
-                    <label class="flex items-center gap-2 text-sm font-semibold mb-4 cursor-pointer select-none">
+                    <label class="flex items-center gap-2 text-sm font-semibold mb-4 cursor-pointer select-none bg-amber-50 border border-amber-100 rounded-lg p-3">
                         <input type="checkbox" id="cam-btn-enabled" class="w-4 h-4 accent-amber-600">
-                        Show 3D buttons near camera
+                        Show Quick Access section on home
                     </label>
 
                     <div class="space-y-2 border-t pt-3">
@@ -73,14 +73,48 @@
                             <label class="block text-xs font-semibold text-gray-600 mb-1">Link URL</label>
                             <input type="text" id="cam-btn-url" placeholder="https://example.com" class="w-full border p-2 rounded text-sm">
                         </div>
-                        <button onclick="addCameraButton()" class="w-full bg-amber-100 hover:bg-amber-200 text-amber-800 font-bold py-2 rounded transition text-sm"><i class="fas fa-plus"></i> Add 3D Button</button>
+                        <button onclick="addCameraButton()" class="w-full bg-amber-100 hover:bg-amber-200 text-amber-800 font-bold py-2 rounded transition text-sm"><i class="fas fa-plus"></i> Add Action Button</button>
                     </div>
 
                     <div id="cam-btn-list" class="space-y-2 mt-4"></div>
 
                     <div class="grid grid-cols-2 gap-2 mt-4">
-                        <button onclick="saveCameraButtons()" id="btn-save-cam" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 rounded shadow transition text-sm"><i class="fas fa-save"></i> Save Buttons</button>
-                        <button onclick="clearCameraButtons()" class="bg-gray-800 hover:bg-black text-white font-bold py-2 rounded transition text-sm"><i class="fas fa-eye-slash"></i> Clean View</button>
+                        <button onclick="saveCameraButtons()" id="btn-save-cam" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 rounded shadow transition text-sm"><i class="fas fa-save"></i> Save Quick Actions</button>
+                        <button onclick="clearCameraButtons()" class="bg-gray-800 hover:bg-black text-white font-bold py-2 rounded transition text-sm"><i class="fas fa-eye-slash"></i> Remove All</button>
+                    </div>
+                </div>
+
+                <!-- Tickets / Ticketing Portal -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-lime-300">
+                    <h2 class="text-lg font-bold mb-1 border-b pb-2 text-lime-700"><i class="fas fa-ticket mr-1"></i> Tickets</h2>
+                    <p class="text-xs text-gray-500 mt-2 mb-4">Ticketing portal links වෙනම manage කරන්න. List එකේ පළවෙනි ticket එක public website hero එකේ featured ticket ලෙස පේනවා. ↑ ↓ buttons වලින් order එක වෙනස් කරන්න.</p>
+
+                    <label class="flex items-center gap-2 text-sm font-semibold mb-4 cursor-pointer select-none bg-lime-50 border border-lime-100 rounded-lg p-3">
+                        <input type="checkbox" id="ticket-enabled" class="w-4 h-4 accent-lime-600">
+                        Show ticket portal on home
+                    </label>
+
+                    <div class="space-y-2 border-t pt-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Event / Ticket Name</label>
+                            <input type="text" id="ticket-title" maxlength="60" placeholder="The Aurelia 2K26" class="w-full border p-2 rounded text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Button Text</label>
+                            <input type="text" id="ticket-label" maxlength="40" placeholder="GET TICKETS" class="w-full border p-2 rounded text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Ticketing Portal URL</label>
+                            <input type="text" id="ticket-url" placeholder="https://tickets.example.com" class="w-full border p-2 rounded text-sm">
+                        </div>
+                        <button onclick="addTicket()" class="w-full bg-lime-100 hover:bg-lime-200 text-lime-900 font-bold py-2 rounded transition text-sm"><i class="fas fa-plus"></i> Add Ticket</button>
+                    </div>
+
+                    <div id="ticket-list" class="space-y-2 mt-4"></div>
+
+                    <div class="grid grid-cols-2 gap-2 mt-4">
+                        <button onclick="saveTickets()" id="btn-save-ticket" class="bg-lime-600 hover:bg-lime-700 text-white font-bold py-2 rounded shadow transition text-sm"><i class="fas fa-save"></i> Save Tickets</button>
+                        <button onclick="clearTickets()" class="bg-gray-800 hover:bg-black text-white font-bold py-2 rounded transition text-sm"><i class="fas fa-trash"></i> Remove All</button>
                     </div>
                 </div>
 
@@ -179,6 +213,7 @@
 
         let currentProfileData = {};
         let cameraButtonsDraft = [];
+        let ticketsDraft = [];
         let allProjects = [];
         let allReviews = [];
         let listenersStarted = false;
@@ -204,10 +239,23 @@
                     }))
                     : [];
                 renderCameraButtonsAdmin();
+
+                document.getElementById('ticket-enabled').checked = currentProfileData.ticketsEnabled === true;
+                ticketsDraft = Array.isArray(currentProfileData.tickets)
+                    ? currentProfileData.tickets.slice(0, 6).map(x => ({
+                        title: String(x?.title || 'Event Tickets').slice(0, 60),
+                        label: String(x?.label || 'GET TICKETS').slice(0, 40),
+                        url: String(x?.url || '')
+                    }))
+                    : [];
+                renderTicketsAdmin();
             } else {
                 document.getElementById('cam-btn-enabled').checked = false;
                 cameraButtonsDraft = [];
                 renderCameraButtonsAdmin();
+                document.getElementById('ticket-enabled').checked = false;
+                ticketsDraft = [];
+                renderTicketsAdmin();
             }
         }
 
@@ -233,7 +281,7 @@
             const box = document.getElementById('cam-btn-list');
             if (!box) return;
             if (!cameraButtonsDraft.length) {
-                box.innerHTML = '<div class="text-xs text-gray-500 bg-gray-50 border rounded p-3 text-center">No 3D buttons added. Public site stays clean.</div>';
+                box.innerHTML = '<div class="text-xs text-gray-500 bg-gray-50 border rounded p-3 text-center">No action buttons added. Public site stays clean.</div>';
                 return;
             }
 
@@ -251,7 +299,7 @@
         }
 
         window.addCameraButton = () => {
-            if (cameraButtonsDraft.length >= 4) return alert('Maximum 4 camera buttons.');
+            if (cameraButtonsDraft.length >= 4) return alert('Maximum 4 home action buttons.');
             const emoji = document.getElementById('cam-btn-emoji').value.trim() || '✨';
             const label = document.getElementById('cam-btn-label').value.trim();
             const url = normalizeCameraButtonUrl(document.getElementById('cam-btn-url').value);
@@ -291,16 +339,16 @@
             try {
                 await setDoc(doc(db, 'settings', 'profile'), data);
                 currentProfileData = data;
-                alert(data.cameraButtonsEnabled ? '3D camera buttons are now live!' : '3D buttons saved but hidden.');
+                alert(data.cameraButtonsEnabled ? 'Quick Access section is now live!' : 'Quick Actions saved. Quick Access section is hidden.');
             } catch (e) {
                 alert('Save failed: ' + e.message);
             }
             btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-save"></i> Save Buttons';
+            btn.innerHTML = '<i class="fas fa-save"></i> Save Quick Actions';
         };
 
         window.clearCameraButtons = async () => {
-            if (!confirm('Remove all 3D camera buttons and return to the original clean camera view?')) return;
+            if (!confirm('Remove all home action buttons and return to the clean home view?')) return;
             cameraButtonsDraft = [];
             document.getElementById('cam-btn-enabled').checked = false;
             renderCameraButtonsAdmin();
@@ -308,7 +356,96 @@
             try {
                 await setDoc(doc(db, 'settings', 'profile'), data);
                 currentProfileData = data;
-                alert('Clean View enabled. Public site is back to the original camera view.');
+                alert('All Quick Actions removed. Quick Access section is hidden.');
+            } catch (e) {
+                alert('Save failed: ' + e.message);
+            }
+        };
+
+        function renderTicketsAdmin() {
+            const box = document.getElementById('ticket-list');
+            if (!box) return;
+            if (!ticketsDraft.length) {
+                box.innerHTML = '<div class="text-xs text-gray-500 bg-gray-50 border rounded p-3 text-center">No tickets added. Ticket portal stays hidden.</div>';
+                return;
+            }
+
+            box.innerHTML = ticketsDraft.map((item, i) => `
+                <div class="border rounded-lg p-3 bg-lime-50/60 flex items-center gap-2">
+                    <span class="w-10 h-10 rounded-lg bg-white border flex items-center justify-center text-lime-700 shrink-0"><i class="fas fa-ticket"></i></span>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2">
+                            <div class="font-bold text-sm truncate">${escapeAdminHtml(item.title || 'Event Tickets')}</div>
+                            ${i === 0 ? '<span class="text-[9px] font-bold uppercase tracking-wider bg-lime-600 text-white px-2 py-0.5 rounded-full shrink-0">Featured</span>' : ''}
+                        </div>
+                        <div class="text-[10px] text-gray-600 truncate">${escapeAdminHtml(item.label || 'GET TICKETS')}</div>
+                        <div class="text-[10px] text-gray-400 truncate">${escapeAdminHtml(item.url || '')}</div>
+                    </div>
+                    <button onclick="moveTicket(${i}, -1)" ${i === 0 ? 'disabled' : ''} class="w-7 h-7 rounded border bg-white text-gray-600 disabled:opacity-30" title="Move up"><i class="fas fa-arrow-up text-[10px]"></i></button>
+                    <button onclick="moveTicket(${i}, 1)" ${i === ticketsDraft.length - 1 ? 'disabled' : ''} class="w-7 h-7 rounded border bg-white text-gray-600 disabled:opacity-30" title="Move down"><i class="fas fa-arrow-down text-[10px]"></i></button>
+                    <button onclick="deleteTicket(${i})" class="w-7 h-7 rounded bg-red-600 text-white" title="Delete"><i class="fas fa-times text-[10px]"></i></button>
+                </div>`).join('');
+        }
+
+        window.addTicket = () => {
+            if (ticketsDraft.length >= 6) return alert('Maximum 6 tickets.');
+            const title = document.getElementById('ticket-title').value.trim();
+            const label = document.getElementById('ticket-label').value.trim() || 'GET TICKETS';
+            const url = normalizeCameraButtonUrl(document.getElementById('ticket-url').value);
+            if (!title) return alert('Please enter an event / ticket name.');
+            if (!url) return alert('Please enter a valid ticketing portal URL.');
+
+            ticketsDraft.push({ title: title.slice(0, 60), label: label.slice(0, 40), url });
+            document.getElementById('ticket-title').value = '';
+            document.getElementById('ticket-label').value = '';
+            document.getElementById('ticket-url').value = '';
+            document.getElementById('ticket-enabled').checked = true;
+            renderTicketsAdmin();
+        };
+
+        window.deleteTicket = (index) => {
+            ticketsDraft.splice(index, 1);
+            if (!ticketsDraft.length) document.getElementById('ticket-enabled').checked = false;
+            renderTicketsAdmin();
+        };
+
+        window.moveTicket = (index, direction) => {
+            const target = index + direction;
+            if (target < 0 || target >= ticketsDraft.length) return;
+            [ticketsDraft[index], ticketsDraft[target]] = [ticketsDraft[target], ticketsDraft[index]];
+            renderTicketsAdmin();
+        };
+
+        window.saveTickets = async () => {
+            const btn = document.getElementById('btn-save-ticket');
+            btn.disabled = true;
+            btn.innerHTML = 'Saving...';
+            const data = {
+                ...currentProfileData,
+                ticketsEnabled: document.getElementById('ticket-enabled').checked && ticketsDraft.length > 0,
+                tickets: ticketsDraft.slice(0, 6)
+            };
+            try {
+                await setDoc(doc(db, 'settings', 'profile'), data);
+                currentProfileData = data;
+                alert(data.ticketsEnabled ? 'Ticket portal is now live!' : 'Tickets saved but ticket portal is hidden.');
+            } catch (e) {
+                alert('Save failed: ' + e.message);
+            }
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-save"></i> Save Tickets';
+        };
+
+        window.clearTickets = async () => {
+            if (!confirm('Remove all tickets from the ticketing portal?')) return;
+            ticketsDraft = [];
+            document.getElementById('ticket-enabled').checked = false;
+            renderTicketsAdmin();
+            const data = { ...currentProfileData, ticketsEnabled: false, tickets: [] };
+            try {
+                await setDoc(doc(db, 'settings', 'profile'), data);
+                currentProfileData = data;
+                alert('Ticket portal cleared and hidden.');
             } catch (e) {
                 alert('Save failed: ' + e.message);
             }
