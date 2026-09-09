@@ -6,18 +6,22 @@ const MAX_CHUNKS = 8;
 
 export async function savePaymentSlipToFirestore(uid, file) {
   if (!uid) throw new Error('Missing user ID.');
-  if (!file?.type?.startsWith('image/')) throw new Error('Payment proof must be an image.');
+  const type = String(file?.type || '').toLowerCase();
+  const isImage = type.startsWith('image/');
+  const isPdf = type === 'application/pdf' || String(file?.name || '').toLowerCase().endsWith('.pdf');
+  if (!isImage && !isPdf) throw new Error('Payment proof must be an image or PDF.');
+  if (file.size > 4 * 1024 * 1024) throw new Error('Payment proof must be 4 MB or smaller.');
 
   const buffer = new Uint8Array(await file.arrayBuffer());
   const chunkCount = Math.ceil(buffer.byteLength / CHUNK_BYTES);
   if (chunkCount < 1 || chunkCount > MAX_CHUNKS) {
-    throw new Error('Compressed payment slip is still too large. Please use a clearer crop/photo.');
+    throw new Error('Payment proof is too large for Firestore. Please keep the image/PDF under 4 MB.');
   }
 
   const slipId = `${uid}_${crypto.randomUUID()}`;
   await setDoc(doc(db, 'paymentSlips', slipId), {
     ownerUid: uid,
-    mimeType: file.type || 'image/webp',
+    mimeType: file.type || (String(file.name || '').toLowerCase().endsWith('.pdf') ? 'application/pdf' : 'image/webp'),
     byteLength: buffer.byteLength,
     chunkCount,
     originalName: String(file.name || 'payment-slip.webp').slice(0, 120),
@@ -33,7 +37,7 @@ export async function savePaymentSlipToFirestore(uid, file) {
     });
   }
 
-  return { slipId, byteLength: buffer.byteLength, chunkCount, mimeType: file.type };
+  return { slipId, byteLength: buffer.byteLength, chunkCount, mimeType: file.type || (String(file.name || '').toLowerCase().endsWith('.pdf') ? 'application/pdf' : 'image/webp') };
 }
 
 export async function readPaymentSlipBlob(slipId) {
@@ -65,6 +69,7 @@ export async function readPaymentSlipBlob(slipId) {
 }
 
 export async function createEnhancedSlipUrl(blob) {
+  if (blob?.type === 'application/pdf') return URL.createObjectURL(blob);
   const bitmap = await createImageBitmap(blob);
   const upscale = Math.min(1.35, 3400 / Math.max(bitmap.width, bitmap.height));
   const scale = Math.max(1, upscale);

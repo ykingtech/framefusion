@@ -623,7 +623,7 @@ function renderRegistrationForm() {
             <div class="fancy-field-wrap">
               <label class="field-label">Bank payment slip</label>
               <label class="upload-dropzone block cursor-pointer rounded-[1.5rem] border border-dashed border-slate-600/70 bg-slate-950/35 p-5 text-center transition hover:border-sky-400/50">
-                <input id="slip-file" class="sr-only" type="file" name="paymentSlip" accept="image/*,.heic,.heif" required />
+                <input id="slip-file" class="sr-only" type="file" name="paymentSlip" accept="image/*,.heic,.heif,application/pdf,.pdf" required />
                 <div class="mx-auto grid h-14 w-14 place-items-center rounded-2xl border border-[#edc36c]/15 bg-[#edc36c]/10 text-2xl text-[#f5ce72]">↑</div>
                 <div class="mt-3 font-bold text-[#fff8e4]">Upload payment proof</div>
                 <div id="file-label" class="mt-1 text-xs text-slate-500">Camera photo, JPG, PNG, WebP or HEIC/HEIF · auto-compressed before upload</div>
@@ -754,9 +754,10 @@ async function submitRegistration(event) {
     const existing = await getDoc(doc(db, 'registrations', state.user.uid));
     if (existing.exists()) throw new Error('A registration already exists for this account.');
 
-    const compressed = await compressImage(file);
-    setBusy(btn, true, 'Saving secure photo chunks...');
-    const slip = await savePaymentSlipToFirestore(state.user.uid, compressed);
+    const isPdf = String(file?.type || '').toLowerCase() === 'application/pdf' || String(file?.name || '').toLowerCase().endsWith('.pdf');
+    const preparedSlip = isPdf ? file : await compressImage(file);
+    setBusy(btn, true, isPdf ? 'Saving secure PDF chunks...' : 'Saving secure photo chunks...');
+    const slip = await savePaymentSlipToFirestore(state.user.uid, preparedSlip);
 
     await setDoc(doc(db, 'registrations', state.user.uid), {
       uid: state.user.uid,
@@ -1307,15 +1308,18 @@ async function showPaymentSlip(reg) {
         <button data-close-slip class="btn-ghost text-sm">Close</button>
       </div>
       <div class="grid min-h-0 flex-1 place-items-center overflow-auto bg-black/20 p-3 sm:p-6">
-        <div id="slip-loading" class="flex items-center gap-3 py-16 text-slate-400"><div class="loader"></div><div>Loading compressed Firestore image...</div></div>
+        <div id="slip-loading" class="flex items-center gap-3 py-16 text-slate-400"><div class="loader"></div><div>Loading payment proof from Firestore...</div></div>
         <img id="slip-image" class="hidden max-h-[78dvh] max-w-full rounded-xl object-contain shadow-2xl" alt="Bank payment slip" />
+        <iframe id="slip-pdf" class="hidden h-[78dvh] w-full rounded-xl bg-white shadow-2xl" title="Bank payment slip PDF"></iframe>
       </div>
-      <div class="border-t border-white/[.06] px-4 py-3 text-xs text-slate-500 sm:px-6">Stored as compressed WebP chunks in Cloud Firestore. Viewer applies high-quality browser resampling for clearer inspection.</div>
+      <div class="border-t border-white/[.06] px-4 py-3 text-xs text-slate-500 sm:px-6">Stored securely as Firestore chunks. Images are compressed for storage; PDFs are stored as PDF data and opened in the browser viewer.</div>
     </div>`;
   document.body.appendChild(overlay);
   const close = () => {
     const img = overlay.querySelector('#slip-image');
+    const pdf = overlay.querySelector('#slip-pdf');
     if (img?.src?.startsWith('blob:')) URL.revokeObjectURL(img.src);
+    if (pdf?.src?.startsWith('blob:')) URL.revokeObjectURL(pdf.src);
     overlay.remove();
   };
   overlay.querySelector('[data-close-slip]')?.addEventListener('click', close);
@@ -1324,9 +1328,15 @@ async function showPaymentSlip(reg) {
   try {
     const blob = await readPaymentSlipBlob(reg.paymentSlipId);
     const url = await createEnhancedSlipUrl(blob);
-    const img = overlay.querySelector('#slip-image');
-    img.src = url;
-    img.classList.remove('hidden');
+    if (blob.type === 'application/pdf') {
+      const pdf = overlay.querySelector('#slip-pdf');
+      pdf.src = url;
+      pdf.classList.remove('hidden');
+    } else {
+      const img = overlay.querySelector('#slip-image');
+      img.src = url;
+      img.classList.remove('hidden');
+    }
     overlay.querySelector('#slip-loading')?.remove();
   } catch (error) {
     console.error(error);
@@ -1351,7 +1361,8 @@ function bindAdminCardActions(regs) {
       const a = document.createElement('a');
       a.href = url;
       const safeName = String(reg.fullName || 'payment-slip').replace(/[^A-Za-z0-9_-]+/g, '-').slice(0, 60);
-      a.download = `${safeName}-payment-slip.${blob.type.includes('webp') ? 'webp' : blob.type.includes('png') ? 'png' : 'jpg'}`;
+      const ext = blob.type === 'application/pdf' ? 'pdf' : blob.type.includes('webp') ? 'webp' : blob.type.includes('png') ? 'png' : blob.type.includes('jpeg') ? 'jpg' : 'bin';
+      a.download = `${safeName}-payment-slip.${ext}`;
       document.body.appendChild(a);
       a.click();
       a.remove();
