@@ -86,7 +86,7 @@ service cloud.firestore {
         && request.resource.data.idNumber.size() >= 3
         && request.resource.data.idNumber.size() <= 40
         && request.resource.data.batch in ['OL2023', 'AL2026']
-        && request.resource.data.paymentAmount == 5500
+        && request.resource.data.paymentAmount == 6000
         && request.resource.data.paymentSlipId is string
         && get(/databases/$(database)/documents/paymentSlips/$(request.resource.data.paymentSlipId)).data.ownerUid == request.auth.uid;
 

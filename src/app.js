@@ -241,7 +241,17 @@ async function checkInTicketDirect({ token }) {
       return;
     }
     tx.update(ticketRef, { used: true, usedAt: serverTimestamp(), usedBy: state.user.uid });
-    tx.set(checkinRef, { token, ticketNumber: ticket.ticketNumber, uid: ticket.uid, checkedInBy: state.user.uid, checkedInAt: serverTimestamp() });
+    tx.set(checkinRef, {
+      token,
+      ticketNumber: ticket.ticketNumber,
+      uid: ticket.uid,
+      fullName: ticket.fullName || '',
+      batch: ticket.batch || '',
+      className: ticket.className || '',
+      idNumber: ticket.idNumber || '',
+      checkedInBy: state.user.uid,
+      checkedInAt: serverTimestamp(),
+    });
     tx.set(doc(db, 'registrations', ticket.uid), { ticketUsed: true, ticketUsedAt: serverTimestamp(), updatedAt: serverTimestamp() }, { merge: true });
     result = { status: 'checked_in', ...publicTicket(ticket) };
   });
@@ -269,7 +279,7 @@ function pageShell(content, { nav = true } = {}) {
       <header class="no-print mb-5 flex items-center justify-between gap-4 rounded-[1.8rem] border border-[#edc36c]/10 bg-black/20 px-3 py-3 backdrop-blur-xl sm:mb-8 sm:px-4">
         <button data-action="home" class="flex min-w-0 items-center gap-3 text-left">
           <span class="brand-badge shadow-[0_20px_40px_rgba(0,0,0,.32)]">
-            <img src="./assets/aurelia-wordmark.png" alt="AURELIA'26 logo" class="h-full w-full rounded-[1.15rem] object-cover" />
+            <img src="./assets/aurelia-monogram.svg" alt="AURELIA'26 logo" class="h-full w-full rounded-[1.15rem] object-cover" />
           </span>
           <span class="min-w-0">
             <span class="block truncate text-sm font-black tracking-[.16em] text-[#fff8e8] sm:text-base">AURELIA’26</span>
@@ -319,7 +329,7 @@ function renderLogin() {
                 <div>
                   <div class="hero-kicker text-[10px] sm:text-xs">LET THE MOMENTS GLOW · SECURE TICKETING PORTAL</div>
                   <div class="mt-4 flex items-center gap-4">
-                    <span class="brand-badge hero-badge"><img src="./assets/aurelia-wordmark.png" alt="AURELIA'26 logo" class="h-full w-full rounded-[1.55rem] object-cover" /></span>
+                    <span class="brand-badge hero-badge"><img src="./assets/aurelia-monogram.svg" alt="AURELIA'26 logo" class="h-full w-full rounded-[1.55rem] object-cover" /></span>
                     <div class="event-chip hidden rounded-2xl px-4 py-3 lg:block">
                       <div class="text-[10px] font-black tracking-[.18em] text-[#8f806f]">SIGNATURE NIGHT</div>
                       <div class="mt-1 text-sm font-semibold text-[#fff3d5]">Elegant reunion · music · memories</div>
@@ -337,7 +347,7 @@ function renderLogin() {
                     <div class="event-chip rounded-[1.35rem] p-4">
                       <div class="event-icon">◫</div>
                       <div class="mt-4 text-[10px] font-black tracking-[.18em] text-[#8f806f]">DATE</div>
-                      <strong class="mt-1 block text-sm sm:text-base">10 October 2026</strong>
+                      <strong class="mt-1 block text-sm sm:text-base">9 September 2026</strong>
                     </div>
                     <div class="event-chip rounded-[1.35rem] p-4">
                       <div class="event-icon">⌖</div>
@@ -388,7 +398,7 @@ function renderLogin() {
                     <div class="text-[10px] font-black tracking-[.24em] text-[#e6b95a]">ACCESS PORTAL</div>
                     <h2 class="hero-serif mt-1 text-4xl font-bold leading-none text-[#fff8e8] sm:text-5xl">Enter the Aurelia experience.</h2>
                   </div>
-                  <div class="brand-badge small"><img src="./assets/aurelia-wordmark.png" alt="AURELIA'26 logo" class="h-full w-full rounded-[1rem] object-cover" /></div>
+                  <div class="brand-badge small"><img src="./assets/aurelia-monogram.svg" alt="AURELIA'26 logo" class="h-full w-full rounded-[1rem] object-cover" /></div>
                 </div>
 
                 <div class="fancy-stat-grid mb-6">
@@ -635,7 +645,7 @@ function renderRegistrationForm() {
             <div class="mini-ticket mt-5">
               <div class="mini-ticket-shine"></div>
               <div class="mini-ticket-top">
-                <img src="./assets/aurelia-wordmark.png" alt="Aurelia" class="mini-ticket-logo" />
+                <img src="./assets/aurelia-monogram.svg" alt="Aurelia" class="mini-ticket-logo" />
                 <div class="min-w-0">
                   <div class="text-[9px] font-black tracking-[.24em] text-[#b7a786]">OFFICIAL ADMISSION PASS</div>
                   <div class="mt-1 truncate text-lg font-black tracking-[.08em] text-[#fff4d6]">AURELIA’26</div>
@@ -653,7 +663,7 @@ function renderRegistrationForm() {
               <div class="mini-ticket-bottom">
                 <div class="preview-qr" aria-hidden="true"><span></span></div>
                 <div>
-                  <div class="text-[9px] font-black tracking-[.18em] text-[#8f806f]">10 OCTOBER 2026</div>
+                  <div class="text-[9px] font-black tracking-[.18em] text-[#8f806f]">9 SEPTEMBER 2026</div>
                   <div class="mt-1 text-sm font-bold text-[#f8e7bd]">6.30 PM onwards</div>
                   <div class="mt-1 text-xs text-[#867a6d]">Asliya Golden Cassandra</div>
                 </div>
@@ -662,7 +672,22 @@ function renderRegistrationForm() {
           </section>
           <section class="glass-soft rounded-[2rem] p-5 sm:p-6">
             <div class="text-[10px] font-black tracking-[.24em] text-[#e6b95a]">EVENT PREVIEW</div>
-            <img src="./assets/aurelia-poster.png" alt="Aurelia poster" class="mt-4 w-full rounded-[1.6rem] border border-[#edc36c]/12 object-cover shadow-2xl" />
+            <div class="mt-4 overflow-hidden rounded-[1.6rem] border border-[#edc36c]/12 bg-black/35 p-5 shadow-2xl">
+              <img src="./assets/aurelia-wordmark.png" alt="Aurelia 26" class="mx-auto w-full max-w-[360px]" />
+              <div class="mt-2 grid gap-2 text-sm">
+                <div class="event-chip rounded-xl p-3"><span class="text-[#8f806f]">DATE</span><strong class="float-right text-[#fff3d2]">9 September 2026</strong></div>
+                <div class="event-chip rounded-xl p-3"><span class="text-[#8f806f]">VENUE</span><strong class="float-right text-[#fff3d2]">Asliya Golden Cassandra</strong></div>
+                <div class="event-chip rounded-xl p-3"><span class="text-[#8f806f]">TIME</span><strong class="float-right text-[#fff3d2]">6.30 PM onwards</strong></div>
+              </div>
+            </div>
+          </section>
+          <section class="glass-soft rounded-[2rem] p-5 sm:p-6">
+            <div class="flex items-center justify-between gap-3"><div><div class="text-[10px] font-black tracking-[.24em] text-[#e6b95a]">PAYMENT DETAILS</div><div class="mt-1 text-xs text-[#7e7265]">Tap any row to copy</div></div><span class="rounded-full border border-[#edc36c]/15 bg-[#edc36c]/10 px-3 py-1 text-[10px] font-black text-[#f0c76e]">BANK OF CEYLON</span></div>
+            <div class="mt-4 space-y-2">
+              <button type="button" data-copy-payment="0075166868" class="payment-copy-row"><span><small>ACCOUNT NUMBER</small><strong>0075166868</strong></span><b>COPY</b></button>
+              <button type="button" data-copy-payment="Bank of Ceylon" class="payment-copy-row"><span><small>BANK</small><strong>Bank of Ceylon</strong></span><b>COPY</b></button>
+              <button type="button" data-copy-payment="MR R M N N B RAJAGURU" class="payment-copy-row"><span><small>ACCOUNT HOLDER</small><strong>MR R M N N B RAJAGURU</strong></span><b>COPY</b></button>
+            </div>
           </section>
           <section class="glass-soft rounded-[2rem] p-5 sm:p-6">
             <div class="text-[10px] font-black tracking-[.24em] text-[#e6b95a]">WHAT HAPPENS NEXT</div>
@@ -685,6 +710,20 @@ function renderRegistrationForm() {
     document.querySelector('#file-label').textContent = file ? `${file.name} · ${(file.size / 1024 / 1024).toFixed(2)} MB` : 'JPG, PNG or WebP · auto-compressed before upload';
   });
   document.querySelector('#registration-form')?.addEventListener('submit', submitRegistration);
+  document.querySelectorAll('[data-copy-payment]').forEach((btn) => btn.addEventListener('click', async () => {
+    const value = btn.dataset.copyPayment || '';
+    try {
+      if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(value);
+      else {
+        const ta = document.createElement('textarea');
+        ta.value = value; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+      }
+      const old = btn.querySelector('b')?.textContent;
+      if (btn.querySelector('b')) btn.querySelector('b').textContent = 'COPIED';
+      toast('Copied to clipboard.', 'success');
+      setTimeout(() => { if (btn.querySelector('b')) btn.querySelector('b').textContent = old || 'COPY'; }, 1200);
+    } catch (error) { toast('Could not copy. Please copy it manually.', 'error'); }
+  }));
 
   const previewFields = {
     fullName: document.querySelector('[name="fullName"]'),
@@ -1145,6 +1184,13 @@ async function renderAdmin() {
           <div id="admin-users" class="space-y-3"><div class="py-10 text-center text-slate-500">Loading users...</div></div>
         </div>
       </div>
+      <div class="glass mt-5 rounded-[1.7rem] p-4 sm:p-6">
+        <div class="mb-4 flex flex-wrap items-end justify-between gap-3">
+          <div><div class="text-lg font-black">Checked-in guests</div><div class="text-xs text-slate-500">Latest successful QR scans appear here</div></div>
+          <div class="rounded-full border border-emerald-300/15 bg-emerald-300/10 px-3 py-1 text-xs font-black text-emerald-200">LIVE ENTRY LOG</div>
+        </div>
+        <div id="admin-checkins" class="space-y-3"><div class="py-10 text-center text-slate-500">Loading checked-in guests...</div></div>
+      </div>
     </section>`);
   bindGlobalActions();
   document.querySelector('#refresh-admin')?.addEventListener('click', loadAdminData);
@@ -1154,15 +1200,18 @@ async function renderAdmin() {
 async function loadAdminData() {
   const regContainer = document.querySelector('#admin-registrations');
   const userContainer = document.querySelector('#admin-users');
-  if (!regContainer || !userContainer) return;
+  const checkinContainer = document.querySelector('#admin-checkins');
+  if (!regContainer || !userContainer || !checkinContainer) return;
 
   try {
-    const [regSnap, userSnap] = await Promise.all([
+    const [regSnap, userSnap, checkinSnap] = await Promise.all([
       getDocs(query(collection(db, 'registrations'), orderBy('createdAt', 'desc'), limit(200))),
       getDocs(query(collection(db, 'users'), orderBy('lastLoginAt', 'desc'), limit(200))),
+      getDocs(query(collection(db, 'checkins'), orderBy('checkedInAt', 'desc'), limit(200))),
     ]);
     const regs = regSnap.docs.map(d => ({ id: d.id, ...d.data() }));
     const users = userSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const checkins = checkinSnap.docs.map(d => ({ id: d.id, ...d.data() }));
     const counts = {
       total: regs.length,
       pending: regs.filter(r => r.status === 'pending').length,
@@ -1178,11 +1227,27 @@ async function loadAdminData() {
 
     regContainer.innerHTML = regs.length ? regs.map(registrationAdminCard).join('') : `<div class="py-10 text-center text-slate-500">No registrations yet.</div>`;
     userContainer.innerHTML = users.length ? users.map(userAdminCard).join('') : `<div class="py-10 text-center text-slate-500">No users yet.</div>`;
+    checkinContainer.innerHTML = checkins.length ? checkins.map(c => checkinAdminCard(c, regs)).join('') : `<div class="py-10 text-center text-slate-500">No guests have been scanned yet.</div>`;
     bindAdminCardActions(regs, users);
   } catch (error) {
     console.error(error);
     toast(error.message || 'Could not load admin data.', 'error');
   }
+}
+
+function checkinAdminCard(c, regs = []) {
+  const reg = regs.find(r => r.uid === c.uid || r.id === c.uid) || {};
+  const fullName = c.fullName || reg.fullName || 'Unknown guest';
+  const batch = c.batch || reg.batch || '';
+  const className = c.className || reg.className || '';
+  const nic = c.idNumber || reg.idNumber || '';
+  return `<article class="rounded-2xl border border-emerald-300/10 bg-emerald-950/10 p-4">
+    <div class="flex flex-wrap items-start justify-between gap-3">
+      <div class="min-w-0"><div class="truncate font-black text-white">${escapeHtml(fullName)}</div><div class="mt-1 text-xs text-slate-500">${escapeHtml(batchLabel(batch))}${className ? ` · ${escapeHtml(className)}` : ''}${nic ? ` · NIC ${escapeHtml(nic)}` : ''}</div></div>
+      <span class="rounded-full border border-emerald-300/15 bg-emerald-300/10 px-2.5 py-1 text-[11px] font-black text-emerald-200">CHECKED IN</span>
+    </div>
+    <div class="mt-3 grid gap-2 text-xs sm:grid-cols-2"><div class="rounded-xl bg-white/[.025] p-2.5"><div class="text-slate-600">Ticket</div><div class="mt-1 font-semibold text-yellow-100">${escapeHtml(c.ticketNumber || reg.ticketNumber || '—')}</div></div><div class="rounded-xl bg-white/[.025] p-2.5"><div class="text-slate-600">Scanned at</div><div class="mt-1 font-semibold text-slate-300">${formatDate(c.checkedInAt)}</div></div></div>
+  </article>`;
 }
 
 function registrationAdminCard(r) {
@@ -1200,13 +1265,14 @@ function registrationAdminCard(r) {
     </div>
     <div class="mt-4 flex flex-wrap gap-2">
       <button data-view-slip="${r.id}" class="btn-ghost text-sm">View slip</button>
+      <button data-download-slip="${r.id}" class="btn-ghost text-sm">Download slip</button>
       ${r.status === 'approved' ? `<button data-resend="${r.id}" class="btn-ghost text-sm">Resend email</button>` : ''}
     </div>
     ${r.status === 'pending' ? `
       <div class="mt-3 rounded-2xl border border-sky-300/10 bg-sky-300/[.035] p-3">
         <label class="mb-2 block text-[11px] font-black uppercase tracking-[.14em] text-sky-300">Manual Ticket Number</label>
         <div class="flex flex-col gap-2 sm:flex-row">
-          <input data-ticket-input="${r.id}" class="field flex-1" maxlength="30" autocomplete="off" placeholder="e.g. 001 or A26/001" />
+          <input data-ticket-input="${r.id}" class="field flex-1" required maxlength="30" autocomplete="off" placeholder="Enter ticket number, e.g. 001 or A26/001" />
           <button data-approve="${r.id}" class="btn-primary whitespace-nowrap text-sm">Approve & Issue</button>
           <button data-reject="${r.id}" class="btn-danger whitespace-nowrap text-sm">Reject</button>
         </div>
@@ -1279,6 +1345,30 @@ function bindAdminCardActions(regs) {
     if (reg) await showPaymentSlip(reg);
   }));
 
+  document.querySelectorAll('[data-download-slip]').forEach((btn) => btn.addEventListener('click', async () => {
+    const reg = regs.find(r => r.id === btn.dataset.downloadSlip);
+    if (!reg?.paymentSlipId) return toast('Payment slip is not available.', 'error');
+    setBusy(btn, true, 'Preparing...');
+    try {
+      const blob = await readPaymentSlipBlob(reg.paymentSlipId);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      const safeName = String(reg.fullName || 'payment-slip').replace(/[^A-Za-z0-9_-]+/g, '-').slice(0, 60);
+      a.download = `${safeName}-payment-slip.${blob.type.includes('webp') ? 'webp' : blob.type.includes('png') ? 'png' : 'jpg'}`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1500);
+      toast('Payment slip downloaded.', 'success');
+    } catch (error) {
+      console.error(error);
+      toast(error.message || 'Could not download payment slip.', 'error');
+    } finally {
+      setBusy(btn, false);
+    }
+  }));
+
   document.querySelectorAll('[data-approve]').forEach((btn) => btn.addEventListener('click', async () => {
     const reg = regs.find(r => r.id === btn.dataset.approve);
     const card = btn.closest('[data-reg-card]');
@@ -1349,6 +1439,24 @@ function bindAdminCardActions(regs) {
   }));
 }
 
+function showAlreadyUsedWarning(data) {
+  const overlay = document.createElement('div');
+  overlay.className = 'fixed inset-0 z-[120] grid place-items-center bg-red-950/75 p-4 backdrop-blur-md';
+  overlay.innerHTML = `<div class="w-full max-w-xl rounded-[2rem] border border-red-300/25 bg-[#210707]/95 p-6 text-center shadow-[0_30px_100px_rgba(127,29,29,.5)] sm:p-8">
+    <div class="mx-auto grid h-20 w-20 place-items-center rounded-full border border-red-300/25 bg-red-400/10 text-4xl">⚠</div>
+    <div class="mt-5 text-xs font-black tracking-[.24em] text-red-300">WARNING · DUPLICATE ENTRY ATTEMPT</div>
+    <h2 class="mt-3 text-3xl font-black text-white sm:text-4xl">This ticket is already USED</h2>
+    <p class="mt-3 text-sm leading-6 text-red-100/80">${escapeHtml(data.fullName || 'Guest')} · Ticket <strong>${escapeHtml(data.ticketNumber || '—')}</strong> was previously checked in${data.usedAtText ? ` at ${escapeHtml(data.usedAtText)}` : ''}.</p>
+    <button data-close-used-warning class="btn-danger mt-6 w-full">Close warning</button>
+  </div>`;
+  document.body.appendChild(overlay);
+  const close = () => overlay.remove();
+  overlay.querySelector('[data-close-used-warning]')?.addEventListener('click', close);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+  if (navigator.vibrate) navigator.vibrate([180, 80, 180, 80, 260]);
+  setTimeout(() => overlay.isConnected && overlay.remove(), 6500);
+}
+
 async function renderScanner() {
   if (!state.isAdmin) return renderHome();
   location.hash = '#scanner';
@@ -1384,8 +1492,9 @@ async function renderScanner() {
       { fps: 10, qrbox: (w, h) => ({ width: Math.min(280, w * .75), height: Math.min(280, h * .75) }), aspectRatio: 1 },
       async (decodedText) => {
         await state.scanner.pause(true);
-        await verifyScan(decodedText);
-        setTimeout(() => state.scanner?.resume().catch(() => {}), 1800);
+        const scanStatus = await verifyScan(decodedText);
+        const resumeDelay = scanStatus === 'already_used' ? 6500 : 1800;
+        setTimeout(() => state.scanner?.resume().catch(() => {}), resumeDelay);
       },
       () => {}
     );
@@ -1404,12 +1513,16 @@ async function verifyScan(payload) {
     const d = response.data;
     if (d.status === 'checked_in') {
       resultBox.innerHTML = `<div class="text-xs font-black tracking-[.16em] text-emerald-300">ENTRY APPROVED</div><div class="mt-2 text-2xl font-black text-white">${escapeHtml(d.fullName)}</div><div class="mt-3 grid gap-2 text-xs"><div>Ticket: <strong class="text-yellow-100">${escapeHtml(d.ticketNumber)}</strong></div><div>${escapeHtml(d.batchLabel)} · ${escapeHtml(d.className)}</div></div>`;
+      return 'checked_in';
     } else if (d.status === 'already_used') {
       resultBox.innerHTML = `<div class="text-xs font-black tracking-[.16em] text-red-300">ALREADY USED</div><div class="mt-2 text-2xl font-black text-white">${escapeHtml(d.fullName)}</div><div class="mt-3 text-sm text-red-200">Ticket ${escapeHtml(d.ticketNumber)} was previously checked in at ${escapeHtml(d.usedAtText || 'an earlier time')}.</div>`;
+      showAlreadyUsedWarning(d);
+      return 'already_used';
     }
   } catch (error) {
     console.error(error);
     resultBox.innerHTML = `<div class="text-xs font-black tracking-[.16em] text-red-300">INVALID TICKET</div><div class="mt-2 text-sm text-red-100">${escapeHtml(error.message || 'Ticket verification failed.')}</div>`;
+    return 'invalid';
   }
 }
 

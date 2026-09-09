@@ -783,3 +783,68 @@ body::after {
     transition-duration: .01ms !important;
   }
 }
+
+.payment-copy-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: .9rem 1rem;
+  text-align: left;
+  border-radius: 1.15rem;
+  border: 1px solid rgba(232,190,95,.12);
+  background: linear-gradient(145deg, rgba(255,255,255,.025), rgba(10,7,5,.55));
+  transition: transform .18s ease, border-color .18s ease, background .18s ease;
+}
+.payment-copy-row:hover {
+  transform: translateY(-1px);
+  border-color: rgba(239,200,110,.28);
+  background: linear-gradient(145deg, rgba(239,200,110,.055), rgba(10,7,5,.62));
+}
+.payment-copy-row small {
+  display: block;
+  font-size: .62rem;
+  font-weight: 900;
+  letter-spacing: .16em;
+  color: #786e62;
+}
+.payment-copy-row strong {
+  display: block;
+  margin-top: .25rem;
+  color: #fff4d6;
+  font-size: .9rem;
+  overflow-wrap: anywhere;
+}
+.payment-copy-row b {
+  flex: none;
+  border: 1px solid rgba(239,200,110,.18);
+  border-radius: 999px;
+  background: rgba(239,200,110,.08);
+  padding: .45rem .65rem;
+  color: #efc86e;
+  font-size: .62rem;
+  letter-spacing: .12em;
+}
+
+/* Cover the old printed date area in the supplied poster with live event details. */
+.poster-stack::after {
+  content: "9 SEPTEMBER 2026  •  ASLIYA GOLDEN CASSANDRA  •  6.30 PM ONWARDS";
+  position: absolute;
+  left: 16%;
+  right: 16%;
+  top: 62%;
+  z-index: 4;
+  padding: .72rem .8rem;
+  border-radius: .8rem;
+  text-align: center;
+  font-size: clamp(.56rem, 1vw, .72rem);
+  font-weight: 900;
+  letter-spacing: .08em;
+  line-height: 1.5;
+  color: #f4d88f;
+  border: 1px solid rgba(232,190,95,.28);
+  background: rgba(12,8,5,.95);
+  box-shadow: 0 10px 32px rgba(0,0,0,.45);
+  backdrop-filter: blur(10px);
+}

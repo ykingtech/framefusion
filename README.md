@@ -1,3 +1,17 @@
+# AURELIA’26 — Premium Black & Gold Edition
+
+This build preserves the existing Firebase/Auth/Firestore/EmailJS/QR/admin/check-in workflow and redesigns the user interface around the official AURELIA’26 black-and-gold event identity.
+
+**Event details shown in the portal**
+- St. Anne’s College, Kurunegala
+- 2023 O/L × 2026 A/L Get Together
+- 9 September 2026
+- Asliya Golden Cassandra
+- 6.30 PM onwards
+- Current ticket price: LKR 6,000 (may be reduced depending on sponsorships)
+
+Main entry remains **`Auraliya.html`**, so it can coexist with another `index.html` on the same server.
+
 # The Aurelia 2K26 — Auraliya.html Edition
 
 This is the full Spark/no-Blaze ticketing project.

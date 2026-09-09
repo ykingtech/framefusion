@@ -1,0 +1,23 @@
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="24" y1="24" x2="220" y2="232" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF6E0"/>
+      <stop offset="0.42" stop-color="#F0CB74"/>
+      <stop offset="1" stop-color="#B9782F"/>
+    </linearGradient>
+    <linearGradient id="ink" x1="70" y1="60" x2="176" y2="196" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#211307"/>
+      <stop offset="1" stop-color="#060403"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(74 52) rotate(45) scale(180)">
+      <stop stop-color="#FFFDF4" stop-opacity="0.95"/>
+      <stop offset="1" stop-color="#FFFDF4" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect x="10" y="10" width="236" height="236" rx="64" fill="url(#bg)"/>
+  <rect x="10" y="10" width="236" height="236" rx="64" fill="url(#glow)" opacity="0.6"/>
+  <rect x="14" y="14" width="228" height="228" rx="60" stroke="#FFF8E8" stroke-opacity="0.45" stroke-width="2"/>
+  <path d="M76 172L111 80C114.8 70 128.9 70 132.6 80L168 172H145L136.2 147.4H107.1L98.3 172H76ZM112.7 131.5H130.6L121.8 106.4L112.7 131.5Z" fill="url(#ink)"/>
+  <path d="M176.5 98.8C176.5 89 184.3 81.2 194.1 81.2C203.8 81.2 211.7 89 211.7 98.8C211.7 106 207.3 111.9 201 114.6L210.1 172H191.7L185.2 122.1H181.5V172H164.8V81.2H181.5V98.8H176.5Z" fill="url(#ink)" opacity="0.95"/>
+  <text x="128" y="206" text-anchor="middle" fill="#0A0806" font-family="Inter, Arial, sans-serif" font-size="54" font-weight="900" letter-spacing="5">’26</text>
+</svg>
