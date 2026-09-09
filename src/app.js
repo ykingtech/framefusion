@@ -589,6 +589,24 @@ function renderRegistrationForm() {
             <button id="change-batch" class="btn-ghost text-sm">Change</button>
           </div>
 
+          <section class="payment-first-card mb-6 rounded-[1.65rem] border border-[#edc36c]/16 bg-[#0b0806]/70 p-4 sm:p-5">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <div class="text-[10px] font-black tracking-[.24em] text-[#e6b95a]">PAYMENT DETAILS · PAY FIRST</div>
+                <div class="mt-1 text-sm font-bold text-[#fff3d2]">Bank transfer details for your Aurelia’26 ticket</div>
+              </div>
+              <span class="rounded-full border border-[#edc36c]/15 bg-[#edc36c]/10 px-3 py-1 text-[10px] font-black text-[#f0c76e]">BANK OF CEYLON</span>
+            </div>
+            <div class="mt-4 grid gap-2 sm:grid-cols-3">
+              <button type="button" data-copy-payment="0075166868" class="payment-copy-row"><span><small>ACCOUNT NUMBER</small><strong>0075166868</strong></span><b>COPY</b></button>
+              <button type="button" data-copy-payment="Bank of Ceylon" class="payment-copy-row"><span><small>BANK</small><strong>Bank of Ceylon</strong></span><b>COPY</b></button>
+              <button type="button" data-copy-payment="MR R M N N B RAJAGURU" class="payment-copy-row"><span><small>ACCOUNT HOLDER</small><strong>MR R M N N B RAJAGURU</strong></span><b>COPY</b></button>
+            </div>
+            <div class="mt-3 rounded-xl border border-[#edc36c]/10 bg-black/20 px-3 py-2 text-xs leading-5 text-[#9b8f80]">
+              Current ticket price: <strong class="text-[#f3ce77]">${formatMoney(EVENT_PRICE)}</strong>. After payment, upload the bank slip below and submit your registration for admin approval.
+            </div>
+          </section>
+
           <div class="mb-6 grid gap-3 sm:grid-cols-3">
             <div class="event-chip rounded-2xl p-4"><div class="text-[10px] font-black tracking-[.18em] text-[#8f806f]">SELECTED BATCH</div><div class="mt-2 text-lg font-bold text-[#fff4d4]">${isOL ? '2023 O/L' : '2026 A/L'}</div></div>
             <div class="event-chip rounded-2xl p-4"><div class="text-[10px] font-black tracking-[.18em] text-[#8f806f]">TICKET PRICE</div><div class="mt-2 text-lg font-bold text-[#fff4d4]">${formatMoney(EVENT_PRICE)}</div></div>
@@ -679,14 +697,6 @@ function renderRegistrationForm() {
                 <div class="event-chip rounded-xl p-3"><span class="text-[#8f806f]">VENUE</span><strong class="float-right text-[#fff3d2]">Asliya Golden Cassandra</strong></div>
                 <div class="event-chip rounded-xl p-3"><span class="text-[#8f806f]">TIME</span><strong class="float-right text-[#fff3d2]">6.30 PM onwards</strong></div>
               </div>
-            </div>
-          </section>
-          <section class="glass-soft rounded-[2rem] p-5 sm:p-6">
-            <div class="flex items-center justify-between gap-3"><div><div class="text-[10px] font-black tracking-[.24em] text-[#e6b95a]">PAYMENT DETAILS</div><div class="mt-1 text-xs text-[#7e7265]">Tap any row to copy</div></div><span class="rounded-full border border-[#edc36c]/15 bg-[#edc36c]/10 px-3 py-1 text-[10px] font-black text-[#f0c76e]">BANK OF CEYLON</span></div>
-            <div class="mt-4 space-y-2">
-              <button type="button" data-copy-payment="0075166868" class="payment-copy-row"><span><small>ACCOUNT NUMBER</small><strong>0075166868</strong></span><b>COPY</b></button>
-              <button type="button" data-copy-payment="Bank of Ceylon" class="payment-copy-row"><span><small>BANK</small><strong>Bank of Ceylon</strong></span><b>COPY</b></button>
-              <button type="button" data-copy-payment="MR R M N N B RAJAGURU" class="payment-copy-row"><span><small>ACCOUNT HOLDER</small><strong>MR R M N N B RAJAGURU</strong></span><b>COPY</b></button>
             </div>
           </section>
           <section class="glass-soft rounded-[2rem] p-5 sm:p-6">
