@@ -829,7 +829,7 @@ body::after {
 
 /* Cover the old printed date area in the supplied poster with live event details. */
 .poster-stack::after {
-  content: "9 SEPTEMBER 2026  •  ASLIYA GOLDEN CASSANDRA  •  6.30 PM ONWARDS";
+  content: "9 SEPTEMBER 2026  •  ASLIYA GOLDEN CASSANDRA  •  7.00 PM ONWARDS";
   position: absolute;
   left: 16%;
   right: 16%;

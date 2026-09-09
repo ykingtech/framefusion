@@ -357,7 +357,7 @@ function renderLogin() {
                     <div class="event-chip rounded-[1.35rem] p-4">
                       <div class="event-icon">◷</div>
                       <div class="mt-4 text-[10px] font-black tracking-[.18em] text-[#8f806f]">TIME</div>
-                      <strong class="mt-1 block text-sm sm:text-base">6.30 PM onwards</strong>
+                      <strong class="mt-1 block text-sm sm:text-base">7.00 PM onwards</strong>
                     </div>
                   </div>
                 </div>
@@ -637,10 +637,10 @@ function renderRegistrationForm() {
             <div class="fancy-field-wrap">
               <label class="field-label">Bank payment slip</label>
               <label class="upload-dropzone block cursor-pointer rounded-[1.5rem] border border-dashed border-slate-600/70 bg-slate-950/35 p-5 text-center transition hover:border-sky-400/50">
-                <input id="slip-file" class="sr-only" type="file" name="paymentSlip" accept="image/jpeg,image/png,image/webp" required />
+                <input id="slip-file" class="sr-only" type="file" name="paymentSlip" accept="image/*,.heic,.heif" required />
                 <div class="mx-auto grid h-14 w-14 place-items-center rounded-2xl border border-[#edc36c]/15 bg-[#edc36c]/10 text-2xl text-[#f5ce72]">↑</div>
                 <div class="mt-3 font-bold text-[#fff8e4]">Upload payment proof</div>
-                <div id="file-label" class="mt-1 text-xs text-slate-500">JPG, PNG or WebP · auto-compressed before upload</div>
+                <div id="file-label" class="mt-1 text-xs text-slate-500">Camera photo, JPG, PNG, WebP or HEIC/HEIF · auto-compressed before upload</div>
               </label>
             </div>
             <label class="flex items-start gap-3 rounded-[1.5rem] bg-slate-950/35 p-4 text-sm text-slate-400">
@@ -682,7 +682,7 @@ function renderRegistrationForm() {
                 <div class="preview-qr" aria-hidden="true"><span></span></div>
                 <div>
                   <div class="text-[9px] font-black tracking-[.18em] text-[#8f806f]">9 SEPTEMBER 2026</div>
-                  <div class="mt-1 text-sm font-bold text-[#f8e7bd]">6.30 PM onwards</div>
+                  <div class="mt-1 text-sm font-bold text-[#f8e7bd]">7.00 PM onwards</div>
                   <div class="mt-1 text-xs text-[#867a6d]">Asliya Golden Cassandra</div>
                 </div>
               </div>
@@ -695,7 +695,7 @@ function renderRegistrationForm() {
               <div class="mt-2 grid gap-2 text-sm">
                 <div class="event-chip rounded-xl p-3"><span class="text-[#8f806f]">DATE</span><strong class="float-right text-[#fff3d2]">9 September 2026</strong></div>
                 <div class="event-chip rounded-xl p-3"><span class="text-[#8f806f]">VENUE</span><strong class="float-right text-[#fff3d2]">Asliya Golden Cassandra</strong></div>
-                <div class="event-chip rounded-xl p-3"><span class="text-[#8f806f]">TIME</span><strong class="float-right text-[#fff3d2]">6.30 PM onwards</strong></div>
+                <div class="event-chip rounded-xl p-3"><span class="text-[#8f806f]">TIME</span><strong class="float-right text-[#fff3d2]">7.00 PM onwards</strong></div>
               </div>
             </div>
           </section>
@@ -717,7 +717,7 @@ function renderRegistrationForm() {
   });
   document.querySelector('#slip-file')?.addEventListener('change', (e) => {
     const file = e.target.files?.[0];
-    document.querySelector('#file-label').textContent = file ? `${file.name} · ${(file.size / 1024 / 1024).toFixed(2)} MB` : 'JPG, PNG or WebP · auto-compressed before upload';
+    document.querySelector('#file-label').textContent = file ? `${file.name} · ${(file.size / 1024 / 1024).toFixed(2)} MB` : 'Camera photo, JPG, PNG, WebP or HEIC/HEIF · auto-compressed before upload';
   });
   document.querySelector('#registration-form')?.addEventListener('submit', submitRegistration);
   document.querySelectorAll('[data-copy-payment]').forEach((btn) => btn.addEventListener('click', async () => {
