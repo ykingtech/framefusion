@@ -1102,3 +1102,104 @@ body::after {
     radial-gradient(circle at 28% 18%, rgba(255,255,255,.08), transparent 32%),
     linear-gradient(160deg, rgba(18,12,8,.96), rgba(6,4,3,.98));
 }
+
+/* Desktop landing page re-composition: disciplined centered two-column layout */
+@media (min-width: 1024px) {
+  .desktop-clean-home {
+    min-height: auto;
+  }
+  .desktop-clean-home .desktop-hero-grid {
+    align-items: start;
+  }
+  .desktop-clean-home .desktop-hero-copy {
+    padding: 1.2rem .4rem .6rem 0;
+  }
+  .desktop-clean-home .desktop-wordmark {
+    width: min(100%, 690px);
+    margin-left: -6px;
+    margin-bottom: .2rem;
+  }
+  .desktop-clean-home .desktop-hero-title {
+    margin-top: -1.1rem;
+    max-width: 800px;
+  }
+  .desktop-clean-home .desktop-event-grid > * {
+    min-height: 142px;
+  }
+  .desktop-clean-home .desktop-price-strip {
+    max-width: 860px;
+  }
+  .desktop-clean-home .desktop-access-column {
+    align-self: start;
+  }
+  .desktop-clean-home .desktop-access-card {
+    position: sticky;
+    top: 1.5rem;
+  }
+  .desktop-clean-home .desktop-poster-preview {
+    margin-top: 1rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .desktop-clean-home .desktop-hero-grid {
+    grid-template-columns: minmax(0, 1.08fr) minmax(410px, .72fr);
+  }
+  .desktop-clean-home .desktop-access-card {
+    padding: 2rem;
+  }
+  .desktop-clean-home .desktop-poster-preview img {
+    height: 218px;
+  }
+}
+
+@media (min-width: 1536px) {
+  .desktop-clean-home .desktop-hero-grid {
+    grid-template-columns: minmax(0, 1.12fr) minmax(430px, .68fr);
+    gap: 3.25rem;
+  }
+  .desktop-clean-home .desktop-wordmark {
+    width: min(100%, 740px);
+  }
+}
+
+/* Keep the existing mobile-first access ordering and spacing clean. */
+@media (max-width: 1023px) {
+  .desktop-clean-home .desktop-topline {
+    display: none;
+  }
+  .desktop-clean-home .desktop-hero-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 0;
+  }
+  .desktop-clean-home .desktop-access-column {
+    order: -1;
+  }
+  .desktop-clean-home .desktop-hero-copy {
+    padding-top: .25rem;
+  }
+  .desktop-clean-home .desktop-wordmark {
+    margin-top: 1rem;
+    margin-left: 0;
+  }
+  .desktop-clean-home .desktop-hero-title {
+    margin-top: -.3rem;
+  }
+  .desktop-clean-home .desktop-poster-preview {
+    display: none;
+  }
+  .desktop-clean-home .desktop-event-grid {
+    grid-template-columns: 1fr;
+  }
+  .desktop-clean-home .desktop-price-strip {
+    margin-top: 1rem;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 1023px) {
+  .desktop-clean-home .desktop-event-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

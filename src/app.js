@@ -303,141 +303,126 @@ function renderLoading(message = 'Loading your Aurelia portal...') {
 function renderLogin() {
   state.selectedBatch = null;
   app.innerHTML = `
-    <main class="safe-shell mx-auto w-full max-w-[1500px] py-3 sm:py-6">
-      <section class="aurelia-landing home-stage">
+    <main class="safe-shell mx-auto w-full max-w-[1380px] py-3 sm:py-6 lg:py-8">
+      <section class="aurelia-landing home-stage desktop-clean-home">
         <div class="gold-ring r1"></div>
         <div class="gold-ring r2"></div>
         <div class="stage-blur b1"></div>
         <div class="stage-blur b2"></div>
         <div class="stage-grid"></div>
 
-        <div class="home-layout relative z-10 grid min-h-[calc(100dvh-3rem)] xl:grid-cols-[1.15fr_.85fr]">
-          <div class="home-hero flex flex-col justify-between p-5 sm:p-8 lg:p-12 xl:p-14">
-            <div>
-              <div class="flex flex-wrap items-center justify-between gap-4">
-                <div class="inline-flex items-center gap-3 rounded-full border border-[#e4b85c]/20 bg-[#120c08]/55 px-3 py-2 text-[10px] font-extrabold tracking-[.24em] text-[#e7bd60] backdrop-blur-xl sm:text-xs">
-                  <span class="h-1.5 w-1.5 rounded-full bg-[#efc86e] shadow-[0_0_14px_rgba(239,200,110,.9)]"></span>
-                  OFFICIAL GET TOGETHER 2026
-                </div>
-                <div class="hidden text-right sm:block">
-                  <div class="text-[10px] font-bold tracking-[.22em] text-[#766b60]">ST. ANNE’S COLLEGE · KURUNEGALA</div>
-                  <div class="mt-1 text-xs font-bold text-[#d8c9b2]">2023 O/L × 2026 A/L</div>
-                </div>
-              </div>
-
-              <div class="mt-7 grid items-center gap-8 lg:grid-cols-[1.12fr_.88fr]">
-                <div>
-                  <div class="hero-kicker text-[10px] sm:text-xs">LET THE MOMENTS GLOW · SECURE TICKETING PORTAL</div>
-                  <div class="mt-4 flex items-center gap-4">
-                    <span class="brand-badge hero-badge"><img src="./assets/aurelia-monogram.png" alt="AURELIA'26 logo" class="brand-logo-img brand-logo-main" /></span>
-                    <div class="event-chip hidden rounded-2xl px-4 py-3 lg:block">
-                      <div class="text-[10px] font-black tracking-[.18em] text-[#8f806f]">SIGNATURE NIGHT</div>
-                      <div class="mt-1 text-sm font-semibold text-[#fff3d5]">Elegant reunion · music · memories</div>
-                    </div>
-                  </div>
-                  <img src="./assets/aurelia-wordmark.png" alt="AURELIA’26" class="hero-wordmark mt-5 -ml-1 sm:-ml-2" />
-                  <h1 class="hero-serif mt-[-.2rem] max-w-3xl text-[2.5rem] font-semibold leading-[.92] tracking-[-.05em] text-[#fff7e7] sm:mt-[-.7rem] sm:text-6xl lg:text-7xl">
-                    A premium night to reconnect, celebrate and <span class="aurelia-text italic">shine.</span>
-                  </h1>
-                  <p class="mt-5 max-w-2xl text-sm leading-7 text-[#b0a496] sm:text-base lg:text-lg">
-                    The official AURELIA’26 ticketing experience brings registration, payment verification, admin approval, secure QR access and premium downloadable tickets into one elegant experience.
-                  </p>
-
-                  <div class="mt-7 grid gap-3 sm:grid-cols-3">
-                    <div class="event-chip rounded-[1.35rem] p-4">
-                      <div class="event-icon">◫</div>
-                      <div class="mt-4 text-[10px] font-black tracking-[.18em] text-[#8f806f]">DATE</div>
-                      <strong class="mt-1 block text-sm sm:text-base">9 September 2026</strong>
-                    </div>
-                    <div class="event-chip rounded-[1.35rem] p-4">
-                      <div class="event-icon">⌖</div>
-                      <div class="mt-4 text-[10px] font-black tracking-[.18em] text-[#8f806f]">VENUE</div>
-                      <strong class="mt-1 block text-sm sm:text-base">Asliya Golden Cassandra</strong>
-                    </div>
-                    <div class="event-chip rounded-[1.35rem] p-4">
-                      <div class="event-icon">◷</div>
-                      <div class="mt-4 text-[10px] font-black tracking-[.18em] text-[#8f806f]">TIME</div>
-                      <strong class="mt-1 block text-sm sm:text-base">7.00 PM onwards</strong>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="poster-shell glass-soft rounded-[2rem] p-4 sm:p-5">
-                  <div class="poster-stack">
-                    <img src="./assets/aurelia-poster.png" alt="Aurelia poster" class="poster-card-main" />
-                    <div class="poster-float poster-float-top event-chip rounded-2xl p-3">
-                      <div class="text-[10px] font-black tracking-[.18em] text-[#8f806f]">CURATED EXPERIENCE</div>
-                      <div class="mt-1 text-sm font-semibold text-[#fff2cd]">Black & gold atmosphere · premium entrance pass</div>
-                    </div>
-                    <div class="poster-float poster-float-bottom rounded-2xl border border-[#e3b867]/15 bg-[#0f0c09]/70 p-4 backdrop-blur-2xl">
-                      <div class="flex items-start justify-between gap-3">
-                        <div>
-                          <div class="text-[10px] font-black tracking-[.18em] text-[#8f806f]">CURRENT TICKET PRICE</div>
-                          <div class="mt-1 text-2xl font-black tracking-[-.04em] text-[#f3ce77]">${formatMoney(EVENT_PRICE)}</div>
-                        </div>
-                        <span class="rounded-full border border-[#edc66c]/15 bg-[#edc66c]/5 px-3 py-1 text-[10px] font-black tracking-[.12em] text-[#dfb75f]">LIVE RATE</span>
-                      </div>
-                      <p class="mt-3 text-xs leading-5 text-[#897d70]">The ticket price is currently Rs. 6,000, but it may be reduced depending on the sponsorships we receive. The final ticket price will be confirmed once sponsorship arrangements are finalized.</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+        <div class="relative z-10 p-5 sm:p-8 lg:p-10 xl:p-12">
+          <div class="desktop-topline flex flex-wrap items-center justify-between gap-4">
+            <div class="inline-flex items-center gap-3 rounded-full border border-[#e4b85c]/20 bg-[#120c08]/55 px-3.5 py-2 text-[10px] font-extrabold tracking-[.24em] text-[#e7bd60] backdrop-blur-xl sm:text-xs">
+              <span class="h-1.5 w-1.5 rounded-full bg-[#efc86e] shadow-[0_0_14px_rgba(239,200,110,.9)]"></span>
+              OFFICIAL GET TOGETHER 2026
             </div>
-
-            <div class="mt-8 flex flex-wrap items-end justify-between gap-4 border-t border-[#edc36c]/10 pt-5 text-[10px] font-bold tracking-[.14em] text-[#655b52] sm:text-xs">
-              <span>AURELIA’26 · REGISTRATION · APPROVAL · QR ENTRY</span>
-              <span>DESIGNED FOR MOBILE · FAST · SECURE</span>
+            <div class="text-right">
+              <div class="text-[10px] font-bold tracking-[.22em] text-[#766b60]">ST. ANNE’S COLLEGE · KURUNEGALA</div>
+              <div class="mt-1 text-xs font-bold text-[#d8c9b2]">2023 O/L × 2026 A/L</div>
             </div>
           </div>
 
-          <aside class="home-access relative border-t border-[#efc66d]/10 bg-black/10 p-4 sm:p-7 xl:border-l xl:border-t-0 xl:p-9">
-            <div class="sticky top-6 flex min-h-full flex-col justify-center gap-4">
-              <div class="glass rounded-[2rem] p-5 sm:p-7">
+          <div class="desktop-hero-grid mt-7 grid gap-7 lg:grid-cols-[minmax(0,1.05fr)_minmax(390px,.72fr)] xl:gap-10">
+            <section class="desktop-hero-copy min-w-0">
+              <div class="hero-kicker text-[10px] sm:text-xs">LET THE MOMENTS GLOW · SECURE TICKETING PORTAL</div>
+              <div class="mt-4 flex items-center gap-4">
+                <span class="brand-badge hero-badge"><img src="./assets/aurelia-monogram.png" alt="AURELIA'26 logo" class="brand-logo-img brand-logo-main" /></span>
+                <div class="event-chip hidden rounded-2xl px-4 py-3 sm:block">
+                  <div class="text-[10px] font-black tracking-[.18em] text-[#8f806f]">SIGNATURE NIGHT</div>
+                  <div class="mt-1 text-sm font-semibold text-[#fff3d5]">Elegant reunion · music · memories</div>
+                </div>
+              </div>
+
+              <img src="./assets/aurelia-wordmark.png" alt="AURELIA’26" class="hero-wordmark desktop-wordmark mt-5" />
+              <h1 class="hero-serif desktop-hero-title max-w-4xl text-[2.6rem] font-semibold leading-[.92] tracking-[-.05em] text-[#fff7e7] sm:text-6xl xl:text-[5.2rem]">
+                Reconnect. Celebrate. <span class="aurelia-text italic">Glow.</span>
+              </h1>
+              <p class="mt-5 max-w-2xl text-sm leading-7 text-[#b0a496] sm:text-base lg:text-lg">
+                One premium night for the 2023 O/L and 2026 A/L batches — with secure registration, payment verification, admin approval and QR entry in one seamless experience.
+              </p>
+
+              <div class="desktop-event-grid mt-7 grid gap-3 sm:grid-cols-3">
+                <div class="event-chip rounded-[1.35rem] p-4">
+                  <div class="event-icon">◫</div>
+                  <div class="mt-4 text-[10px] font-black tracking-[.18em] text-[#8f806f]">DATE</div>
+                  <strong class="mt-1 block text-sm sm:text-base">9 September 2026</strong>
+                </div>
+                <div class="event-chip rounded-[1.35rem] p-4">
+                  <div class="event-icon">⌖</div>
+                  <div class="mt-4 text-[10px] font-black tracking-[.18em] text-[#8f806f]">VENUE</div>
+                  <strong class="mt-1 block text-sm sm:text-base">Asliya Golden Cassandra</strong>
+                </div>
+                <div class="event-chip rounded-[1.35rem] p-4">
+                  <div class="event-icon">◷</div>
+                  <div class="mt-4 text-[10px] font-black tracking-[.18em] text-[#8f806f]">TIME</div>
+                  <strong class="mt-1 block text-sm sm:text-base">7.00 PM onwards</strong>
+                </div>
+              </div>
+
+              <div class="desktop-price-strip mt-5 rounded-[1.5rem] border border-[#e3b867]/15 bg-[#100b07]/65 p-4 backdrop-blur-xl sm:p-5">
+                <div class="flex flex-wrap items-center justify-between gap-4">
+                  <div>
+                    <div class="text-[10px] font-black tracking-[.2em] text-[#9b8d7d]">CURRENT TICKET PRICE</div>
+                    <div class="mt-1 text-2xl font-black tracking-[-.04em] text-[#f3ce77]">${formatMoney(EVENT_PRICE)}</div>
+                  </div>
+                  <span class="rounded-full border border-[#edc66c]/15 bg-[#edc66c]/5 px-3 py-1 text-[10px] font-black tracking-[.12em] text-[#dfb75f]">SPONSORSHIP-ADJUSTABLE</span>
+                </div>
+                <p class="mt-2 max-w-3xl text-xs leading-5 text-[#897d70]">The final ticket price may be reduced depending on sponsorships received. The confirmed amount will be announced once sponsorship arrangements are finalized.</p>
+              </div>
+            </section>
+
+            <aside class="desktop-access-column min-w-0">
+              <div class="glass desktop-access-card rounded-[2rem] p-5 sm:p-7 lg:p-7">
                 <div class="mb-6 flex items-start justify-between gap-4">
                   <div>
                     <div class="text-[10px] font-black tracking-[.24em] text-[#e6b95a]">ACCESS PORTAL</div>
-                    <h2 class="hero-serif mt-1 text-4xl font-bold leading-none text-[#fff8e8] sm:text-5xl">Enter the Aurelia experience.</h2>
+                    <h2 class="hero-serif mt-1 text-4xl font-bold leading-[.98] text-[#fff8e8] sm:text-5xl">Enter the Aurelia experience.</h2>
                   </div>
                   <div class="brand-badge small"><img src="./assets/aurelia-monogram.png" alt="AURELIA'26 logo" class="brand-logo-img brand-logo-main" /></div>
                 </div>
 
                 <div class="fancy-stat-grid mb-6">
-                  <div class="mini-stat">
-                    <span class="mini-stat-key">FLOW</span>
-                    <strong>Register</strong>
-                  </div>
-                  <div class="mini-stat">
-                    <span class="mini-stat-key">VERIFY</span>
-                    <strong>Approve</strong>
-                  </div>
-                  <div class="mini-stat">
-                    <span class="mini-stat-key">ENTRY</span>
-                    <strong>Scan QR</strong>
-                  </div>
+                  <div class="mini-stat"><span class="mini-stat-key">FLOW</span><strong>Register</strong></div>
+                  <div class="mini-stat"><span class="mini-stat-key">VERIFY</span><strong>Approve</strong></div>
+                  <div class="mini-stat"><span class="mini-stat-key">ENTRY</span><strong>Scan QR</strong></div>
                 </div>
 
                 <p class="text-sm leading-6 text-[#9e9285]">Continue with your Google account. The same Gmail address will receive your approval notification and secure ticket link.</p>
 
-                <button id="google-login" class="mt-6 flex w-full items-center justify-center gap-3 rounded-[1.3rem] bg-[#fffaf0] px-4 py-4 font-black text-[#16110d] shadow-[0_18px_55px_rgba(0,0,0,.28)] transition hover:-translate-y-0.5 hover:bg-white">
+                <button id="google-login" class="desktop-google-login mt-6 flex w-full items-center justify-center gap-3 rounded-[1.3rem] bg-[#fffaf0] px-4 py-4 font-black text-[#16110d] shadow-[0_18px_55px_rgba(0,0,0,.28)] transition hover:-translate-y-0.5 hover:bg-white">
                   <svg viewBox="0 0 24 24" class="h-5 w-5"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.09-1.93 3.27-4.77 3.27-8.1z"/><path fill="#34A853" d="M12 23c2.98 0 5.48-.99 7.31-2.68l-3.57-2.77c-.99.66-2.26 1.05-3.74 1.05-2.87 0-5.3-1.94-6.17-4.54H2.14v2.84A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.83 14.06A6.6 6.6 0 0 1 5.49 12c0-.72.12-1.41.34-2.06V7.1H2.14A11 11 0 0 0 1 12c0 1.77.42 3.45 1.14 4.9l3.69-2.84z"/><path fill="#EA4335" d="M12 5.4c1.62 0 3.06.56 4.2 1.64l3.15-3.15A10.56 10.56 0 0 0 12 1 11 11 0 0 0 2.14 7.1l3.69 2.84C6.7 7.34 9.13 5.4 12 5.4z"/></svg>
                   Continue with Google
                 </button>
 
                 <div class="event-divider my-6"></div>
-
-                <div class="grid gap-3 sm:grid-cols-2">
+                <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
                   <div class="price-card rounded-2xl p-4">
                     <div class="text-[10px] font-black tracking-[.18em] text-[#9d8f7f]">TICKET STATUS</div>
-                    <div class="mt-2 text-sm leading-6 text-[#efe2c8]">Secure registration with admin verification and downloadable A4 QR pass.</div>
+                    <div class="mt-2 text-sm leading-6 text-[#efe2c8]">Admin verified, downloadable A4 QR pass.</div>
                   </div>
                   <div class="event-chip rounded-2xl p-4">
-                    <div class="text-[10px] font-black tracking-[.18em] text-[#9d8f7f]">NOTE</div>
-                    <div class="mt-2 text-sm leading-6 text-[#efe2c8]">Your Gmail becomes your personal ticket locker. Log in anytime to view your QR ticket.</div>
+                    <div class="text-[10px] font-black tracking-[.18em] text-[#9d8f7f]">PERSONAL LOCKER</div>
+                    <div class="mt-2 text-sm leading-6 text-[#efe2c8]">Log in anytime to view your approved QR ticket.</div>
                   </div>
                 </div>
               </div>
-            </div>
-          </aside>
+
+              <div class="desktop-poster-preview mt-5 grid grid-cols-[150px_1fr] gap-4 rounded-[1.7rem] border border-[#edc36c]/12 bg-[#0d0906]/70 p-3 backdrop-blur-xl">
+                <img src="./assets/aurelia-poster.png" alt="Aurelia poster" class="h-[200px] w-full rounded-[1.25rem] object-cover object-top" />
+                <div class="flex flex-col justify-center pr-2">
+                  <div class="text-[10px] font-black tracking-[.22em] text-[#e6b95a]">AURELIA’26</div>
+                  <div class="hero-serif mt-2 text-2xl font-bold leading-tight text-[#fff5df]">A night designed to be remembered.</div>
+                  <div class="mt-3 text-xs leading-5 text-[#928678]">2023 O/L × 2026 A/L · St. Anne’s College, Kurunegala</div>
+                </div>
+              </div>
+            </aside>
+          </div>
+
+          <div class="mt-8 flex flex-wrap items-end justify-between gap-4 border-t border-[#edc36c]/10 pt-5 text-[10px] font-bold tracking-[.14em] text-[#655b52] sm:text-xs">
+            <span>AURELIA’26 · REGISTRATION · APPROVAL · QR ENTRY</span>
+            <span>DESIGNED FOR MOBILE · FAST · SECURE</span>
+          </div>
         </div>
       </section>
     </main>`;
@@ -462,6 +447,7 @@ function renderLogin() {
     }
   });
 }
+
 async function handleGoogleLogin() {
   const btn = document.querySelector('#google-login');
   setBusy(btn, true, 'Opening Google...');
