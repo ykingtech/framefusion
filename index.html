@@ -618,6 +618,76 @@
             .work-wrap, .profile-wrap { padding-left:14px; padding-right:14px; }
         }
 
+        /* Mobile hero density fix — prevents tall phones from stretching Quick Access to the bottom */
+        @media (max-width: 760px) {
+            .hero-minimal {
+                min-height: auto !important;
+                height: auto !important;
+                overflow: visible;
+            }
+            .hero-inner {
+                grid-template-rows: auto auto auto !important;
+                align-content: start;
+                padding-top: 20px;
+                padding-bottom: 16px;
+            }
+            .hero-main {
+                align-items: start !important;
+                align-content: start !important;
+                padding: 30px 0 0 !important;
+                gap: 22px !important;
+            }
+            .hero-desc {
+                margin-bottom: 0;
+            }
+            .hero-side {
+                width: 100%;
+                align-self: auto !important;
+                border: 0 !important;
+                border-radius: 0 !important;
+                padding: 0 !important;
+                background: transparent !important;
+                box-shadow: none !important;
+            }
+            .hero-side-label {
+                margin: 0 0 9px 2px !important;
+                font-size: 9px;
+                letter-spacing: .11em;
+            }
+            #camera-quicklinks {
+                gap: 8px;
+            }
+            .camera-3d-link {
+                min-height: 60px;
+                border-radius: 16px;
+                padding: 8px 10px;
+                box-shadow: 0 5px 18px rgba(17,18,20,.045);
+            }
+            .hero-side-empty {
+                padding: 13px 14px;
+                border-radius: 15px;
+                background: var(--soft);
+            }
+            .hero-foot {
+                margin-top: 20px;
+                padding-top: 13px;
+                align-items: center;
+            }
+        }
+
+        @media (min-width: 421px) and (max-width: 760px) {
+            .hero-title {
+                font-size: clamp(54px, 12.4vw, 68px);
+                max-width: 620px;
+            }
+            .hero-desc {
+                max-width: 590px;
+            }
+            .camera-3d-link {
+                max-width: 100%;
+            }
+        }
+
     </style>
 </head>
 <body class="min-h-screen selection:bg-white selection:text-black">
